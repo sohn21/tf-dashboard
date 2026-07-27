@@ -35,6 +35,13 @@ A/B vs D/E, base 1st/2nd vs 4th+). These cutoffs are standard textbook
 O'Neil/Minervini conventions, not proprietary — decided 2026-07-27 to
 keep the color coding rather than flatten it to plain numbers.
 
+## Metadata fields
+
+`generatedAt` (added 2026-07-27) is a plain export-time timestamp
+("YYYY-MM-DD HH:MM KST"), not a scoring input — no exclusion concerns.
+Existing KV blobs written before this field existed will render it as
+`undefined` in the UI until the next daily export overwrites the key.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

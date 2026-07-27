@@ -159,6 +159,7 @@ export interface AlphaDecay {
 }
 
 export interface DashboardData {
+  generatedAt: string;
   signalsDate: string;
   summary: Summary;
   regimeHistory: RegimeHistoryPoint[];

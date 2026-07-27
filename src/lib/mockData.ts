@@ -1,6 +1,7 @@
 import type { DashboardData } from "./types";
 
 export const mockData: DashboardData = {
+  generatedAt: "2026-07-27 09:00 KST",
   signalsDate: "2026-07-27",
   summary: {
     nav: 118420,

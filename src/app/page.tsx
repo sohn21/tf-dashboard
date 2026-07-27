@@ -22,7 +22,7 @@ export default async function Home() {
       <div>
         <h1>페이퍼 트레이딩 대시보드</h1>
         <div className="subtitle">
-          최근 신호: {data.signalsDate}
+          업데이트: {data.generatedAt} · 최근 신호: {data.signalsDate}
           {!live && " · 예시 데이터 (아직 실데이터 없음)"}
         </div>
       </div>
