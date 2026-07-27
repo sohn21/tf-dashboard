@@ -5,10 +5,10 @@ import type { Summary, RegimeHistoryPoint } from "@/lib/types";
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
 export function SummaryCard({ summary, regimeHistory }: { summary: Summary; regimeHistory: RegimeHistoryPoint[] }) {
+  const entriesLabel =
+    typeof summary.newEntriesPerWeek === "number" ? `${summary.newEntriesPerWeek}/주` : (summary.newEntriesPerWeek ?? "N/A");
   const exposureSub =
-    summary.maxExposurePct != null
-      ? `최대 노출 ${summary.maxExposurePct}% · 신규진입 ${summary.newEntriesPerWeek ?? "N/A"}/주`
-      : "N/A";
+    summary.maxExposurePct != null ? `최대 노출 ${summary.maxExposurePct}% · 신규진입 ${entriesLabel}` : "N/A";
   const flagsSub = `🚀${summary.nRunners} · ➕${summary.nPyramided} · ✂${summary.nTrimmed}`;
 
   return (

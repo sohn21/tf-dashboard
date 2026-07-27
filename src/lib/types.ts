@@ -15,7 +15,7 @@ export interface Summary {
   regime: Regime;
   regimeStatus: RegimeStatus;
   maxExposurePct: number | null;
-  newEntriesPerWeek: number | null;
+  newEntriesPerWeek: number | string | null;
   nRunners: number;
   nPyramided: number;
   nTrimmed: number;
