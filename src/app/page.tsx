@@ -1,4 +1,5 @@
 import { mockData } from "@/lib/mockData";
+import { getDashboardData } from "@/lib/kv";
 import { SummaryCard } from "@/components/dashboard/SummaryCard";
 import { NavChart } from "@/components/dashboard/NavChart";
 import { BacktestSummaryCard } from "@/components/dashboard/BacktestSummaryCard";
@@ -12,14 +13,18 @@ import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { Card } from "@/components/dashboard/Card";
 
-export default function Home() {
-  const data = mockData;
+export default async function Home() {
+  const live = await getDashboardData();
+  const data = live ?? mockData;
 
   return (
     <div className="wrap">
       <div>
         <h1>페이퍼 트레이딩 대시보드</h1>
-        <div className="subtitle">최근 신호: {data.signalsDate}</div>
+        <div className="subtitle">
+          최근 신호: {data.signalsDate}
+          {!live && " · 예시 데이터 (아직 실데이터 없음)"}
+        </div>
       </div>
 
       <SummaryCard summary={data.summary} regimeHistory={data.regimeHistory} />
