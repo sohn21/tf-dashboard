@@ -44,6 +44,12 @@ changes, update `types.ts` first and treat it as the spec.
 
 ## Storage
 
+- Provider: **Upstash Redis** via Vercel Marketplace (`@upstash/redis`) —
+  "Vercel KV" as a first-party product is sunset; Upstash is its
+  functional replacement, provisioned 2026-07-27 and connected to this
+  project. Env vars: `KV_REST_API_URL` / `KV_REST_API_TOKEN` (also
+  `REDIS_URL` / `KV_URL` if using a raw Redis client instead of the REST
+  client).
 - Key: `dashboard:latest` (single JSON blob, whole-object overwrite daily)
 - No history/versioning in KV — daily snapshots are ephemeral by design,
   consistent with "no historical signal data in public infra"
