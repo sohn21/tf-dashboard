@@ -54,6 +54,14 @@ run at least once (file doesn't exist yet in a fresh clone/before
 2026-08-05). No backtest yet — live-only for now, `Set2Data` has no
 `backtest` field.
 
+**Bug fixed 2026-08-06 (private repo, `paper_trader/run_daily.py`):** the
+Upstash push ran inside the main-account update, *before* the Set2 account
+updated for the day — so `set2` in the KV blob was always one trading day
+stale relative to `main`, even though `generatedAt`/main data looked fresh.
+Fixed by moving the push to after both accounts update (see private repo
+commit `50a2f9d`). No schema/type change here, just noting it since it
+looked like a dashboard bug from this side.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the
