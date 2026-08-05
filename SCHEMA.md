@@ -42,6 +42,18 @@ keep the color coding rather than flatten it to plain numbers.
 Existing KV blobs written before this field existed will render it as
 `undefined` in the UI until the next daily export overwrites the key.
 
+## `set2` — second live account (added 2026-08-05)
+
+A completely separate $10,000 paper account (`data/paper_portfolio_set2.json`
+in the private repo) running a different stop/trim ladder than the main
+account: -8% initial stop; at +24% gain sell 30% and lock the stop to +8%;
+at +50% sell half the remainder; at +100% sell all. Max 4 positions, 25%
+NAV cap per position. Candidate selection reuses the main account's gates
+(G0–G4)/guards — only sizing and exits differ. `null` until the account has
+run at least once (file doesn't exist yet in a fresh clone/before
+2026-08-05). No backtest yet — live-only for now, `Set2Data` has no
+`backtest` field.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

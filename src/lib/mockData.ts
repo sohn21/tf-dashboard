@@ -130,4 +130,14 @@ export const mockData: DashboardData = {
     nOverall: 214,
     nRecent: 22,
   },
+  set2: {
+    nav: 9998.75,
+    cash: 7500,
+    nPositions: 1,
+    navHistory: [{ date: "2026-08-05", nav: 9998.75 }],
+    holdings: [
+      { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0 },
+    ],
+    recentTrades: [],
+  },
 };

@@ -11,6 +11,7 @@ import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTabl
 import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
+import { Set2Card } from "@/components/dashboard/Set2Card";
 import { Card } from "@/components/dashboard/Card";
 
 export default async function Home() {
@@ -50,6 +51,8 @@ export default async function Home() {
       <RecentTradesTable rows={data.recentTrades} />
 
       <AlphaDecayCard data={data.alphaDecay} />
+
+      <Set2Card data={data.set2} />
     </div>
   );
 }

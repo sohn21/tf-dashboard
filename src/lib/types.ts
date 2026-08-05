@@ -148,6 +148,24 @@ export interface TradeRow {
   reason: string;
 }
 
+export interface Set2HoldingRow {
+  ticker: string;
+  entryPx: number;
+  lastClose: number;
+  gainPct: number;
+  currentStopPct: number;
+  trimStage: number;
+}
+
+export interface Set2Data {
+  nav: number;
+  cash: number;
+  nPositions: number;
+  navHistory: NavPoint[];
+  holdings: Set2HoldingRow[];
+  recentTrades: TradeRow[];
+}
+
 export interface AlphaDecay {
   reliable: boolean;
   overallWinRate: number | null;
@@ -176,4 +194,5 @@ export interface DashboardData {
   holdings: HoldingRow[];
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
+  set2: Set2Data | null;
 }
