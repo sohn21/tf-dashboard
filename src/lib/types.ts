@@ -144,6 +144,7 @@ export interface HoldingRow {
   isRunner: boolean;
   pyramided: boolean;
   climaxTrimmed: boolean;
+  spark: number[];
 }
 
 export interface TradeRow {
@@ -163,6 +164,7 @@ export interface Set2HoldingRow {
   gainPct: number;
   currentStopPct: number;
   trimStage: number;
+  spark: number[];
 }
 
 export interface Set2ExitReasonRow {
@@ -193,6 +195,7 @@ export interface AlphaDecay {
   status: string;
   nOverall: number;
   nRecent: number;
+  profitFactor: number | null;
 }
 
 export interface DashboardData {

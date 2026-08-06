@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
+import { Sparkline } from "./Sparkline";
 import type { Set2Data, Set2ExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -137,6 +138,7 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                   <th>현재가</th>
                   <th>수익률</th>
                   <th>스탑</th>
+                  <th>최근 추이</th>
                   <th>단계</th>
                 </tr>
               </thead>
@@ -156,6 +158,9 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                       <td className="tabular ink-secondary">
                         {p.currentStopPct >= 0 ? "+" : ""}
                         {p.currentStopPct.toFixed(0)}%
+                      </td>
+                      <td>
+                        <Sparkline values={p.spark} />
                       </td>
                       <td className="ink-secondary">{TRIM_STAGE_LABEL[p.trimStage] ?? p.trimStage}</td>
                     </tr>

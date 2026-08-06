@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { Sparkline } from "./Sparkline";
 import type { HoldingRow } from "@/lib/types";
 
 export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
@@ -16,6 +17,7 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                 <th>현재가</th>
                 <th>수익률</th>
                 <th>스탑</th>
+                <th>최근 추이</th>
                 <th>플래그</th>
               </tr>
             </thead>
@@ -39,6 +41,9 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                     <td className="tabular ink-secondary">
                       {p.currentStopPct >= 0 ? "+" : ""}
                       {p.currentStopPct.toFixed(0)}%
+                    </td>
+                    <td>
+                      <Sparkline values={p.spark} />
                     </td>
                     <td>{flags.length > 0 ? flags.join(" ") : <span className="ink-muted">-</span>}</td>
                   </tr>

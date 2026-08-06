@@ -42,6 +42,16 @@ keep the color coding rather than flatten it to plain numbers.
 Existing KV blobs written before this field existed will render it as
 `undefined` in the UI until the next daily export overwrites the key.
 
+## `HoldingRow.spark` / `Set2HoldingRow.spark`, `AlphaDecay.profitFactor` (added 2026-08-06)
+
+Small additions borrowed from ideas seen in `tfbook/briefing_chartdecks/` (a different,
+external system's daily briefing tool — not something this dashboard displays directly, just
+metrics/visualizations worth reusing on our own data): `spark` is a 60-trading-day close-price
+array per holding (rendered as a small inline sparkline, `src/components/dashboard/Sparkline.tsx`),
+sourced from `data_io.get_daily_ohlcv()`'s existing per-ticker cache (`refresh=False` — the
+day's signals scan already refreshed it). `AlphaDecay.profitFactor` is gross win ÷ |gross loss|
+from `trade_log.csv`, `null` when there's no loss to divide by (incl. zero closed trades).
+
 ## `daTrend` — Distribution/Rally Day 3-month trend (added 2026-08-06)
 
 `DaTrendPoint[]`, trailing ~65 trading days: `date`, `gspcDd`/`ixicDd` (25-day rolling
