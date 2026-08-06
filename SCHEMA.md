@@ -54,6 +54,17 @@ run at least once (file doesn't exist yet in a fresh clone/before
 2026-08-05). No backtest yet — live-only for now, `Set2Data` has no
 `backtest` field.
 
+**Backtest field added 2026-08-06** (`Set2Data.backtest`, `Set2BacktestSummary` in
+`types.ts`): same shape as the main account's `BacktestSummary` (`startDate`/`endDate`/
+`totalReturnPct`/`mddPct`/`nTrades`/`winRatePct`/`benchmarks`) plus an `exitReasons` array
+(`reason` raw key — `stop`/`stop_locked8`/`trim1_24pct`/`trim2_50pct`/`final_100` —
+`count`, `avgPnlPct`) unique to Set2's stop/trim ladder. Korean labels and per-reason colors
+are assigned client-side in `Set2Card.tsx`, not exported, to keep the export "outcomes only"
+per the design rule above. Source: `backtest.run_backtest_set2()` (private repo,
+`data/backtest_{nav_history,trade_log,summary}_set2.csv/json`, canonical no-suffix-variant
+filenames matching the live Set2 file naming convention) — first run 2026-08-06, 5y window,
++107.27%/-29.80% MDD, 74 trades.
+
 **Bug fixed 2026-08-06 (private repo, `paper_trader/run_daily.py`):** the
 Upstash push ran inside the main-account update, *before* the Set2 account
 updated for the day — so `set2` in the KV blob was always one trading day

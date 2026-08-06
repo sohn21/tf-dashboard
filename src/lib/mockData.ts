@@ -139,5 +139,24 @@ export const mockData: DashboardData = {
       { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0 },
     ],
     recentTrades: [],
+    backtest: {
+      startDate: "2021-07-28",
+      endDate: "2026-07-28",
+      totalReturnPct: 107.3,
+      mddPct: -29.8,
+      nTrades: 74,
+      winRatePct: 57,
+      benchmarks: [
+        { label: "SPY", returnPct: 80.6, excessPct: 26.6 },
+        { label: "QQQ", returnPct: 90.3, excessPct: 17.0 },
+      ],
+      exitReasons: [
+        { reason: "stop", count: 32, avgPnlPct: -9.7 },
+        { reason: "stop_locked8", count: 7, avgPnlPct: 5.6 },
+        { reason: "trim1_24pct", count: 16, avgPnlPct: 27.0 },
+        { reason: "trim2_50pct", count: 11, avgPnlPct: 53.4 },
+        { reason: "final_100", count: 8, avgPnlPct: 101.7 },
+      ],
+    },
   },
 };

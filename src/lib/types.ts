@@ -157,6 +157,16 @@ export interface Set2HoldingRow {
   trimStage: number;
 }
 
+export interface Set2ExitReasonRow {
+  reason: string;
+  count: number;
+  avgPnlPct: number;
+}
+
+export interface Set2BacktestSummary extends BacktestSummary {
+  exitReasons: Set2ExitReasonRow[];
+}
+
 export interface Set2Data {
   nav: number;
   cash: number;
@@ -164,6 +174,7 @@ export interface Set2Data {
   navHistory: NavPoint[];
   holdings: Set2HoldingRow[];
   recentTrades: TradeRow[];
+  backtest: Set2BacktestSummary | null;
 }
 
 export interface AlphaDecay {

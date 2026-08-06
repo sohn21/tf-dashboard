@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
-import type { Set2Data } from "@/lib/types";
+import type { Set2Data, Set2ExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
@@ -8,6 +11,97 @@ const TRIM_STAGE_LABEL: Record<number, string> = {
   1: "1차 트림(24%)",
   2: "2차 트림(50%)",
 };
+
+const REASON_LABEL: Record<string, string> = {
+  stop: "손절 (-8%)",
+  stop_locked8: "고정스탑 청산 (+8%)",
+  trim1_24pct: "1차 트림 (+24%)",
+  trim2_50pct: "2차 트림 (+50%)",
+  final_100: "전량 청산 (+100%)",
+};
+const REASON_COLOR: Record<string, string> = {
+  stop: "var(--reason-stop)",
+  stop_locked8: "var(--reason-locked)",
+  trim1_24pct: "var(--reason-trim1)",
+  trim2_50pct: "var(--reason-trim2)",
+  final_100: "var(--reason-final)",
+};
+const REASON_ORDER = ["stop", "stop_locked8", "trim1_24pct", "trim2_50pct", "final_100"];
+
+function ExitReasonDonut({ rows }: { rows: Set2ExitReasonRow[] }) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const ordered = [...rows].sort((a, b) => REASON_ORDER.indexOf(a.reason) - REASON_ORDER.indexOf(b.reason));
+  const total = ordered.reduce((s, r) => s + r.count, 0);
+  if (total === 0) return null;
+
+  const cx = 110, cy = 110, r = 80, sw = 30;
+  const circumference = 2 * Math.PI * r;
+  const gap = 3;
+  let offset = 0;
+
+  return (
+    <div className="donut-grid" style={{ gridTemplateColumns: "220px 1fr" }}>
+      <div className="donut-wrap">
+        <svg viewBox="0 0 220 220" width={220} height={220}>
+          {ordered.map((seg) => {
+            const rawLen = (seg.count / total) * circumference;
+            const len = Math.max(rawLen - gap, 1);
+            const dashoffset = -offset;
+            offset += rawLen;
+            const color = REASON_COLOR[seg.reason] ?? "var(--text-muted)";
+            return (
+              <circle
+                key={seg.reason}
+                className={`donut-arc ${hovered && hovered !== seg.reason ? "dim" : ""}`}
+                cx={cx}
+                cy={cy}
+                r={r}
+                fill="none"
+                stroke={color}
+                strokeWidth={sw}
+                strokeDasharray={`${len} ${circumference - len}`}
+                strokeDashoffset={dashoffset}
+                transform={`rotate(-90 ${cx} ${cy})`}
+                onMouseEnter={() => setHovered(seg.reason)}
+                onMouseLeave={() => setHovered(null)}
+              />
+            );
+          })}
+        </svg>
+        <div className="donut-center">
+          <div className="n">{total}</div>
+          <div className="lbl">건</div>
+        </div>
+      </div>
+      <div className="donut-legend" style={{ marginTop: 0, justifyContent: "center", display: "flex", flexDirection: "column" }}>
+        {ordered.map((seg) => {
+          const pct = ((seg.count / total) * 100).toFixed(0);
+          return (
+            <div
+              key={seg.reason}
+              className="donut-legend-row"
+              style={{ opacity: hovered && hovered !== seg.reason ? 0.4 : 1 }}
+              onMouseEnter={() => setHovered(seg.reason)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              <span className="donut-swatch" style={{ background: REASON_COLOR[seg.reason] }} />
+              <span className="donut-legend-name">{REASON_LABEL[seg.reason] ?? seg.reason}</span>
+              <span className="donut-legend-count">{seg.count}</span>
+              <span className="donut-legend-pct">{pct}%</span>
+              <span
+                className="tabular"
+                style={{ width: 56, textAlign: "right", fontWeight: 600, color: seg.avgPnlPct >= 0 ? "var(--good)" : "var(--critical)" }}
+              >
+                {seg.avgPnlPct >= 0 ? "+" : ""}
+                {seg.avgPnlPct.toFixed(1)}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export function Set2Card({ data }: { data: Set2Data | null }) {
   if (!data) {
@@ -105,6 +199,45 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {data.backtest && (
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--gridline)" }}>
+          <div className="label-sm ink-secondary" style={{ marginBottom: 10 }}>
+            백테스트 요약 (참고용 — 라이브 계좌와 별개) · {data.backtest.startDate} ~ {data.backtest.endDate}
+          </div>
+          <StatRow columns={4}>
+            <StatTile
+              label="총수익률"
+              value={`${data.backtest.totalReturnPct >= 0 ? "+" : ""}${data.backtest.totalReturnPct.toFixed(1)}%`}
+              valueClassName={data.backtest.totalReturnPct >= 0 ? "delta-good" : "delta-critical"}
+            />
+            <StatTile label="MDD" value={`${data.backtest.mddPct.toFixed(1)}%`} valueClassName="delta-critical" />
+            <StatTile label="거래수 · 승률" value={`${data.backtest.nTrades} · ${data.backtest.winRatePct.toFixed(0)}%`} />
+            <StatTile
+              label={data.backtest.benchmarks[0]?.label ? `vs ${data.backtest.benchmarks[0].label}` : "벤치마크"}
+              value={
+                data.backtest.benchmarks[0] ? (
+                  <span className={data.backtest.benchmarks[0].excessPct >= 0 ? "delta-good" : "delta-critical"} style={{ fontSize: 15 }}>
+                    {data.backtest.benchmarks[0].excessPct >= 0 ? "+" : ""}
+                    {data.backtest.benchmarks[0].excessPct.toFixed(1)}%p
+                  </span>
+                ) : (
+                  "-"
+                )
+              }
+            />
+          </StatRow>
+
+          {data.backtest.exitReasons.length > 0 && (
+            <div style={{ marginTop: 16 }}>
+              <div className="label-sm ink-muted" style={{ marginBottom: 10 }}>
+                청산사유별 분포 — 손절(빨강)에서 트림 단계가 깊어질수록 진한 초록
+              </div>
+              <ExitReasonDonut rows={data.backtest.exitReasons} />
+            </div>
+          )}
         </div>
       )}
     </Card>
