@@ -42,16 +42,18 @@ export function NavChart({ data }: { data: NavPoint[] }) {
   return (
     <div style={{ position: "relative" }}>
       <svg viewBox={`0 0 ${w} ${h}`} className="nav-chart" role="img" aria-label="NAV 추이">
-        {[0, 0.5, 1].map((f) => (
-          <line
-            key={f}
-            x1={padL}
-            y1={padT + plotH * f}
-            x2={w - padR}
-            y2={padT + plotH * f}
-            className="grid-line"
-          />
-        ))}
+        {[0, 0.5, 1].map((f) => {
+          const y = padT + plotH * f;
+          const value = vmax - (vmax - vmin) * f;
+          return (
+            <g key={f}>
+              <line x1={padL} y1={y} x2={w - padR} y2={y} className="grid-line" />
+              <text x={padL - 8} y={y} textAnchor="end" dominantBaseline="middle" className="ink-muted label-sm">
+                {fmtMoney(value)}
+              </text>
+            </g>
+          );
+        })}
         <path d={areaD} className="nav-area" />
         <path d={pathD} className="nav-line" />
         {points.map(([x, y], i) => (
