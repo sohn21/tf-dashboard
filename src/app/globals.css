@@ -31,6 +31,18 @@
   --reason-trim1: #7cc47c;
   --reason-trim2: #3fa53f;
   --reason-final: #0c7d0c;
+  /* 베이스 Phase 분포(PhaseTrendCard) — tfbook/briefing_chartdecks 자료의 PCOL 색상표를
+     라이트 서피스 기준 그대로 가져옴(2026-08-06) */
+  --phase-4plus: #1f4d38;
+  --phase-4: #3e7d5c;
+  --phase-5plus: #35756b;
+  --phase-5: #7faf9b;
+  --phase-3: #9caf6e;
+  --phase-2: #c9a961;
+  --phase-1: #b7b7ba;
+  --phase-6: #c07a3e;
+  --phase-7: #a34a44;
+  --phase-0: #98989b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,6 +73,16 @@
     --reason-trim1: #7fd17f;
     --reason-trim2: #4bbd4b;
     --reason-final: #2a9d2a;
+    --phase-4plus: #2e7050;
+    --phase-4: #4e9973;
+    --phase-5plus: #4a9186;
+    --phase-5: #8fc0ae;
+    --phase-3: #b4c589;
+    --phase-2: #d9bc7c;
+    --phase-1: #8a8a8d;
+    --phase-6: #d28f52;
+    --phase-7: #c05f5c;
+    --phase-0: #6e6e71;
   }
 }
 

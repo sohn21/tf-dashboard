@@ -81,6 +81,31 @@ export interface DaTrendPoint {
   ixicRd: number;
 }
 
+export interface PhaseCounts {
+  "4plus": number;
+  "4": number;
+  "5plus": number;
+  "5": number;
+  "3": number;
+  "2": number;
+  "1": number;
+  "6": number;
+  "7": number;
+  "0": number;
+}
+
+export interface PhasePoint {
+  date: string;
+  universe: number;
+  counts: PhaseCounts;
+}
+
+export interface PhaseTrend {
+  points: PhasePoint[];
+  greenPct: number;
+  agingPct: number;
+}
+
 export interface NewHighLowRow {
   kind: "신고가" | "신저가";
   ticker: string;
@@ -209,6 +234,7 @@ export interface DashboardData {
   sentiment: SentimentMetrics | null;
   distributionRally: DistributionRally | null;
   daTrend: DaTrendPoint[];
+  phaseTrend: PhaseTrend | null;
   newHighsLows: NewHighLowRow[];
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];

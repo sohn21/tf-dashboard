@@ -52,6 +52,26 @@ sourced from `data_io.get_daily_ohlcv()`'s existing per-ticker cache (`refresh=F
 day's signals scan already refreshed it). `AlphaDecay.profitFactor` is gross win ÷ |gross loss|
 from `trade_log.csv`, `null` when there's no loss to divide by (incl. zero closed trades).
 
+## `phaseTrend` — base Phase distribution, 3-month (added 2026-08-06)
+
+`PhaseTrend { points: PhasePoint[], greenPct, agingPct }`, trailing ~65 trading days.
+`PhasePoint { date, universe, counts: PhaseCounts }` — daily stacked counts across 10
+lifecycle stages (`4plus`/`4`/`5plus`/`5`/`3`/`2`/`1`/`6`/`7`/`0`, see labels in
+`PhaseTrendCard.tsx`). `greenPct`/`agingPct` are the latest day's derived headline metrics
+(entry-candidate pool % and market-aging %).
+
+Source: private repo's new `pattern_engine.classify_phase()` — an **approximation**, not a
+byte-exact port. The concept and the 10-stage naming/color scheme come from
+`tfbook/briefing_chartdecks/`'s briefing tool (a different, external system), but only its
+client-side JS (label/color/stack-order constants) was recoverable — the actual
+classification thresholds are computed server-side there and weren't available. The private
+repo instead built its own thresholds from columns it already computes (`dist_pivot_pct`,
+`base_depth_pct`, `rs_rating`, `trend_pass`, `extension_pct_200sma`, `rs_divergence`, etc.),
+confirmed with the user before implementing — expect real threshold differences from
+whatever the source system actually uses. `data/phase_history.csv` (private repo) was
+backfilled 63 trading days by re-running the signal computation over cached price history,
+kept as its own file for the same reason as `da_trend_history.csv` above.
+
 ## `daTrend` — Distribution/Rally Day 3-month trend (added 2026-08-06)
 
 `DaTrendPoint[]`, trailing ~65 trading days: `date`, `gspcDd`/`ixicDd` (25-day rolling

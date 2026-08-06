@@ -74,6 +74,16 @@ export const mockData: DashboardData = {
     { date: "2026-08-03", gspcDd: 6, ixicDd: 6, gspcRd: 4, ixicRd: 5 },
     { date: "2026-08-06", gspcDd: 6, ixicDd: 6, gspcRd: 4, ixicRd: 4 },
   ],
+  phaseTrend: {
+    greenPct: 12.4,
+    agingPct: 5.3,
+    points: [
+      { date: "2026-07-20", universe: 903, counts: { "4plus": 64, "4": 49, "5plus": 11, "5": 6, "3": 483, "2": 2, "1": 270, "6": 0, "7": 14, "0": 4 } },
+      { date: "2026-07-27", universe: 903, counts: { "4plus": 66, "4": 51, "5plus": 7, "5": 6, "3": 483, "2": 2, "1": 276, "6": 1, "7": 7, "0": 4 } },
+      { date: "2026-08-03", universe: 903, counts: { "4plus": 72, "4": 35, "5plus": 3, "5": 5, "3": 490, "2": 4, "1": 255, "6": 1, "7": 34, "0": 4 } },
+      { date: "2026-08-06", universe: 903, counts: { "4plus": 58, "4": 41, "5plus": 10, "5": 3, "3": 478, "2": 3, "1": 258, "6": 1, "7": 47, "0": 4 } },
+    ],
+  },
   newHighsLows: [
     { kind: "신고가", ticker: "NVDA", sector: "Technology", industry: "Semiconductors", close: 142.31, rsRating: 97, extensionPct200sma: 42 },
     { kind: "신고가", ticker: "PLTR", sector: "Technology", industry: "Software", close: 38.92, rsRating: 95, extensionPct200sma: 68 },
