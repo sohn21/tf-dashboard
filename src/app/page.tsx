@@ -13,6 +13,7 @@ import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
 import { PhaseTrendCard } from "@/components/dashboard/PhaseTrendCard";
+import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { Set2Card } from "@/components/dashboard/Set2Card";
 import { Card } from "@/components/dashboard/Card";
 
@@ -51,6 +52,8 @@ export default async function Home() {
       <CandidatesTable rows={data.candidates} />
 
       <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} />
+
+      <ThemeLeadershipCard data={data.themeLeadership} />
 
       <HoldingsTable rows={data.holdings} />
 

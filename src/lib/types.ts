@@ -106,6 +106,18 @@ export interface PhaseTrend {
   agingPct: number;
 }
 
+export interface ThemeLeadershipPoint {
+  date: string;
+  nLeading: number;
+  nTotal: number;
+}
+
+export interface ThemeLeadership {
+  points: ThemeLeadershipPoint[];
+  bandLo: number;
+  bandHi: number;
+}
+
 export interface NewHighLowRow {
   kind: "신고가" | "신저가";
   ticker: string;
@@ -235,6 +247,7 @@ export interface DashboardData {
   distributionRally: DistributionRally | null;
   daTrend: DaTrendPoint[];
   phaseTrend: PhaseTrend | null;
+  themeLeadership: ThemeLeadership | null;
   newHighsLows: NewHighLowRow[];
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];

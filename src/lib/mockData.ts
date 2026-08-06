@@ -84,6 +84,16 @@ export const mockData: DashboardData = {
       { date: "2026-08-06", universe: 903, counts: { "4plus": 58, "4": 41, "5plus": 10, "5": 3, "3": 478, "2": 3, "1": 258, "6": 1, "7": 47, "0": 4 } },
     ],
   },
+  themeLeadership: {
+    bandLo: 37,
+    bandHi: 41,
+    points: [
+      { date: "2026-07-20", nLeading: 35, nTotal: 146 },
+      { date: "2026-07-27", nLeading: 39, nTotal: 146 },
+      { date: "2026-08-03", nLeading: 43, nTotal: 146 },
+      { date: "2026-08-06", nLeading: 46, nTotal: 146 },
+    ],
+  },
   newHighsLows: [
     { kind: "신고가", ticker: "NVDA", sector: "Technology", industry: "Semiconductors", close: 142.31, rsRating: 97, extensionPct200sma: 42 },
     { kind: "신고가", ticker: "PLTR", sector: "Technology", industry: "Software", close: 38.92, rsRating: 95, extensionPct200sma: 68 },

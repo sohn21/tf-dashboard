@@ -52,6 +52,21 @@ sourced from `data_io.get_daily_ohlcv()`'s existing per-ticker cache (`refresh=F
 day's signals scan already refreshed it). `AlphaDecay.profitFactor` is gross win ÷ |gross loss|
 from `trade_log.csv`, `null` when there's no loss to divide by (incl. zero closed trades).
 
+## `themeLeadership` — leading-theme count trend (added 2026-08-06)
+
+`ThemeLeadership { points: ThemeLeadershipPoint[], bandLo, bandHi }`, trailing ~65 trading
+days. `ThemeLeadershipPoint { date, nLeading, nTotal }` — count of industries whose average
+`total_score` clears the private repo's `exposure.THEME_STRONG_THRESHOLD` (60, absolute) that
+day, out of all industries with ≥1 scanned stock. `bandLo`/`bandHi` are the 25th/75th
+percentile of this repo's own 3-month series — **not** copied from any external reference
+band, computed fresh each export.
+
+Deliberately does not reuse the existing `theme_leading` per-ticker flag (G1) — that's a
+75th-percentile-of-the-day cutoff, so its daily leading-industry count is nearly constant at
+~25% of all industries by construction and wouldn't show a meaningful trend. This field uses
+an absolute score threshold instead, so the count actually varies day to day (seen ranging
+33–46 out of 146 industries over the initial 3-month backfill).
+
 ## `phaseTrend` — base Phase distribution, 3-month (added 2026-08-06)
 
 `PhaseTrend { points: PhasePoint[], greenPct, agingPct }`, trailing ~65 trading days.
