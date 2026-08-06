@@ -207,7 +207,7 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
           <div className="label-sm ink-secondary" style={{ marginBottom: 10 }}>
             백테스트 요약 (참고용 — 라이브 계좌와 별개) · {data.backtest.startDate} ~ {data.backtest.endDate}
           </div>
-          <StatRow columns={4}>
+          <StatRow columns={3}>
             <StatTile
               label="총수익률"
               value={`${data.backtest.totalReturnPct >= 0 ? "+" : ""}${data.backtest.totalReturnPct.toFixed(1)}%`}
@@ -215,20 +215,25 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
             />
             <StatTile label="MDD" value={`${data.backtest.mddPct.toFixed(1)}%`} valueClassName="delta-critical" />
             <StatTile label="거래수 · 승률" value={`${data.backtest.nTrades} · ${data.backtest.winRatePct.toFixed(0)}%`} />
-            <StatTile
-              label={data.backtest.benchmarks[0]?.label ? `vs ${data.backtest.benchmarks[0].label}` : "벤치마크"}
-              value={
-                data.backtest.benchmarks[0] ? (
-                  <span className={data.backtest.benchmarks[0].excessPct >= 0 ? "delta-good" : "delta-critical"} style={{ fontSize: 15 }}>
-                    {data.backtest.benchmarks[0].excessPct >= 0 ? "+" : ""}
-                    {data.backtest.benchmarks[0].excessPct.toFixed(1)}%p
-                  </span>
-                ) : (
-                  "-"
-                )
-              }
-            />
           </StatRow>
+
+          {data.backtest.benchmarks.length > 0 && (
+            <StatRow columns={data.backtest.benchmarks.length}>
+              {data.backtest.benchmarks.map((b) => (
+                <StatTile
+                  key={b.label}
+                  label={`${b.label} buy&hold 수익률`}
+                  value={<span style={{ fontSize: 15 }}>{`${b.returnPct >= 0 ? "+" : ""}${b.returnPct.toFixed(1)}%`}</span>}
+                  sub={
+                    <span className={b.excessPct >= 0 ? "delta-good" : "delta-critical"}>
+                      우리 시스템 초과분 {b.excessPct >= 0 ? "+" : ""}
+                      {b.excessPct.toFixed(1)}%p
+                    </span>
+                  }
+                />
+              ))}
+            </StatRow>
+          )}
 
           {data.backtest.exitReasons.length > 0 && (
             <div style={{ marginTop: 16 }}>
