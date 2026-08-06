@@ -42,6 +42,19 @@ keep the color coding rather than flatten it to plain numbers.
 Existing KV blobs written before this field existed will render it as
 `undefined` in the UI until the next daily export overwrites the key.
 
+## `daTrend` — Distribution/Rally Day 3-month trend (added 2026-08-06)
+
+`DaTrendPoint[]`, trailing ~65 trading days: `date`, `gspcDd`/`ixicDd` (25-day rolling
+Distribution Day count for S&P500/Nasdaq), `gspcRd`/`ixicRd` (same for Rally Day). Source:
+private repo's `data/da_trend_history.csv`, a file dedicated to this chart — deliberately
+*not* read from `market_pulse_history.csv`, which only has recorded history back to
+2026-07-22 and mixes many other columns/consumers (e.g. the regime sparkline) that weren't
+worth the risk of backfilling around. The private repo backfilled 2026-05-07~08-06 by
+recomputing `distribution_days()`/`rally_days()` from cached index price history (a pure
+function of past OHLCV, safe to reconstruct retroactively — values may differ ±1 from the
+same date's live-recorded number due to yfinance volume revisions). `run_daily.py` appends
+one row per trading day going forward, so the window keeps rolling.
+
 ## `set2` — second live account (added 2026-08-05)
 
 A completely separate $10,000 paper account (`data/paper_portfolio_set2.json`

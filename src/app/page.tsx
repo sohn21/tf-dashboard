@@ -11,6 +11,7 @@ import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTabl
 import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
+import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
 import { Set2Card } from "@/components/dashboard/Set2Card";
 import { Card } from "@/components/dashboard/Card";
 
@@ -37,6 +38,8 @@ export default async function Home() {
       <BacktestSummaryCard data={data.backtest} />
 
       <MarketBreadthCard breadth={data.breadth} sentiment={data.sentiment} distributionRally={data.distributionRally} />
+
+      <DaTrendCard data={data.daTrend} />
 
       <NewHighsLowsTable rows={data.newHighsLows} />
 

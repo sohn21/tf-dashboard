@@ -68,6 +68,12 @@ export const mockData: DashboardData = {
     ndxDistributionDays: 2,
     ndxRallyDays: 6,
   },
+  daTrend: [
+    { date: "2026-07-20", gspcDd: 5, ixicDd: 9, gspcRd: 5, ixicRd: 5 },
+    { date: "2026-07-27", gspcDd: 5, ixicDd: 8, gspcRd: 3, ixicRd: 3 },
+    { date: "2026-08-03", gspcDd: 6, ixicDd: 6, gspcRd: 4, ixicRd: 5 },
+    { date: "2026-08-06", gspcDd: 6, ixicDd: 6, gspcRd: 4, ixicRd: 4 },
+  ],
   newHighsLows: [
     { kind: "신고가", ticker: "NVDA", sector: "Technology", industry: "Semiconductors", close: 142.31, rsRating: 97, extensionPct200sma: 42 },
     { kind: "신고가", ticker: "PLTR", sector: "Technology", industry: "Software", close: 38.92, rsRating: 95, extensionPct200sma: 68 },

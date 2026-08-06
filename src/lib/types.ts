@@ -73,6 +73,14 @@ export interface DistributionRally {
   ndxRallyDays: number;
 }
 
+export interface DaTrendPoint {
+  date: string;
+  gspcDd: number;
+  ixicDd: number;
+  gspcRd: number;
+  ixicRd: number;
+}
+
 export interface NewHighLowRow {
   kind: "신고가" | "신저가";
   ticker: string;
@@ -197,6 +205,7 @@ export interface DashboardData {
   breadth: MarketBreadth | null;
   sentiment: SentimentMetrics | null;
   distributionRally: DistributionRally | null;
+  daTrend: DaTrendPoint[];
   newHighsLows: NewHighLowRow[];
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];
