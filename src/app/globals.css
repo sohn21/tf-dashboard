@@ -354,6 +354,35 @@ h1 {
   white-space: nowrap;
 }
 
+.hbar-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+.hbar-label {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hbar-track {
+  height: 16px;
+  background: var(--gridline);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hbar-fill {
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+}
+.hbar-value {
+  font-size: 12px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .view-toggle-btn {
   font-size: 12px;
   color: var(--text-secondary);
