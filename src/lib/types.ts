@@ -241,7 +241,6 @@ export interface DashboardData {
   summary: Summary;
   regimeHistory: RegimeHistoryPoint[];
   navHistory: NavPoint[];
-  backtest: BacktestSummary | null;
   breadth: MarketBreadth | null;
   sentiment: SentimentMetrics | null;
   distributionRally: DistributionRally | null;

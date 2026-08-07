@@ -123,6 +123,17 @@ per the design rule above. Source: `backtest.run_backtest_set2()` (private repo,
 filenames matching the live Set2 file naming convention) — first run 2026-08-06, 5y window,
 +107.27%/-29.80% MDD, 74 trades.
 
+**Main account `DashboardData.backtest` field removed 2026-08-07**: the main account's live
+position sizing changed that day (`MAX_POSITIONS` 12→4, runner cap 5→2, added a 25%-of-NAV
+per-position cap — see the private repo's worklog), so the existing 5-year backtest baseline
+(computed under the old 12/5/uncapped sizing) no longer represents what the live account
+actually runs. Rather than show a stale/mismatched number publicly, `BacktestSummaryCard.tsx`
+and the `backtest` field were deleted outright (`BacktestSummary`/`BenchmarkReturn` types kept,
+since `Set2BacktestSummary` still extends `BacktestSummary`). Set2's sizing didn't change, so
+its backtest field/card stays. If the main backtest is ever re-run under the new sizing and
+the number is worth publishing again, re-add the field/card rather than resurrecting the old
+baseline.
+
 **Bug fixed 2026-08-06 (private repo, `paper_trader/run_daily.py`):** the
 Upstash push ran inside the main-account update, *before* the Set2 account
 updated for the day — so `set2` in the KV blob was always one trading day

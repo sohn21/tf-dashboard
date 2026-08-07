@@ -33,18 +33,6 @@ export const mockData: DashboardData = {
     date: `2026-06-${String(i * 2 + 1).padStart(2, "0")}`,
     nav: 100000 + i * 800 + (i % 3 === 0 ? -1500 : 0),
   })),
-  backtest: {
-    startDate: "2021-01-04",
-    endDate: "2026-07-24",
-    totalReturnPct: 135.0,
-    mddPct: -18.4,
-    nTrades: 214,
-    winRatePct: 47,
-    benchmarks: [
-      { label: "SPY", returnPct: 78.2, excessPct: 56.8 },
-      { label: "QQQ", returnPct: 102.6, excessPct: 32.4 },
-    ],
-  },
   breadth: {
     above50emaPct: 61.4,
     netNewHighs: 38,
