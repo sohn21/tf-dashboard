@@ -142,6 +142,21 @@ Fixed by moving the push to after both accounts update (see private repo
 commit `50a2f9d`). No schema/type change here, just noting it since it
 looked like a dashboard bug from this side.
 
+## `HoldingRow.stopDistPct` / `.statusCat` / `.lockTier` / `.isBe` (added 2026-08-08)
+
+Another idea borrowed from `tfbook/briefing_chartdecks/` (per-position 손절여유/보호단계 status
+tags), main account only for now (Set2 has a different stop/trim ladder without `LOCK_TIERS`,
+not yet mapped). `stopDistPct` = distance from `lastClose` to the actual stop price, as a % of
+`lastClose` (derived from `entryPx`/`currentStopPct`, not a new field). `statusCat` is one of
+`critical`/`review`/`protect`/`normal` — **not** a byte-exact port: the briefing's 4-way
+category is computed server-side there and wasn't recoverable, only its `stopDist` 4%/7% color
+cutoffs were visible client-side. The private repo reused those two cutoffs as-is and added its
+own split for the remaining range (`protect` if `currentStopPct >= 0`, i.e. stop already locked
+at or above breakeven; `normal` otherwise) — confirmed with the user before implementing.
+`lockTier` (1-based index into `LOCK_TIERS`, `null` if the stop is still below breakeven) and
+`isBe` (`lockTier === 1`, i.e. stop locked exactly at breakeven) are outcomes of the existing
+Lock-ratchet mechanism, not new business logic. Source: `paper_trader.portfolio.position_status()`.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

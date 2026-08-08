@@ -126,9 +126,9 @@ export const mockData: DashboardData = {
     { label: "다우존스", rs: 52.7 },
   ],
   holdings: [
-    { ticker: "NVDA", entryPx: 118.2, lastClose: 142.31, gainPct: 20.4, currentStopPct: -8, isRunner: true, pyramided: true, climaxTrimmed: false, spark: [118.2, 121.4, 125.9, 130.1, 128.7, 133.2, 138.5, 135.9, 140.1, 142.31] },
-    { ticker: "AAPL", entryPx: 224.1, lastClose: 231.5, gainPct: 3.3, currentStopPct: -8, isRunner: false, pyramided: false, climaxTrimmed: false, spark: [224.1, 226.5, 223.8, 227.9, 229.1, 225.4, 228.8, 230.2, 229.5, 231.5] },
-    { ticker: "MSTR", entryPx: 402.0, lastClose: 512.4, gainPct: 27.5, currentStopPct: -6, isRunner: false, pyramided: true, climaxTrimmed: true, spark: [402.0, 420.5, 445.1, 438.9, 462.3, 481.0, 470.5, 495.8, 505.2, 512.4] },
+    { ticker: "NVDA", entryPx: 118.2, lastClose: 142.31, gainPct: 20.4, currentStopPct: -8, isRunner: true, pyramided: true, climaxTrimmed: false, spark: [118.2, 121.4, 125.9, 130.1, 128.7, 133.2, 138.5, 135.9, 140.1, 142.31], stopDistPct: 23.6, statusCat: "normal", lockTier: null, isBe: false },
+    { ticker: "AAPL", entryPx: 224.1, lastClose: 231.5, gainPct: 3.3, currentStopPct: -3, isRunner: false, pyramided: false, climaxTrimmed: false, spark: [224.1, 226.5, 223.8, 227.9, 229.1, 225.4, 228.8, 230.2, 229.5, 231.5], stopDistPct: 6.1, statusCat: "review", lockTier: null, isBe: false },
+    { ticker: "MSTR", entryPx: 402.0, lastClose: 512.4, gainPct: 27.5, currentStopPct: 10, isRunner: false, pyramided: true, climaxTrimmed: true, spark: [402.0, 420.5, 445.1, 438.9, 462.3, 481.0, 470.5, 495.8, 505.2, 512.4], stopDistPct: 13.7, statusCat: "protect", lockTier: 2, isBe: false },
   ],
   recentTrades: [
     { ticker: "AMD", entryDate: "2026-06-02", exitDate: "2026-07-11", entryPx: 132.4, exitPx: 118.9, pnlPct: -10.2, reason: "stop" },

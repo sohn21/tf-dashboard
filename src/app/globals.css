@@ -14,6 +14,7 @@
   --warning: #fab219;
   --serious: #ec835a;
   --critical: #d03b3b;
+  --protect: #35756b;
   /* 카테고리 팔레트(8슬롯, 고정 순서) — dataviz 스킬 reference/palette.md 그대로, 신고가/신저가
      섹터 도넛(NewHighsLowsTable)처럼 카테고리컬 색이 필요한 차트가 공유해서 쓴다 */
   --cat-1: #2a78d6;
@@ -60,6 +61,7 @@
     --warning: #fab219;
     --serious: #ec835a;
     --critical: #d03b3b;
+    --protect: #35756b;
     --cat-1: #3987e5;
     --cat-2: #199e70;
     --cat-3: #c98500;
@@ -190,6 +192,10 @@ h1 {
 .badge-critical {
   background: color-mix(in srgb, var(--critical) 15%, transparent);
   color: var(--critical);
+}
+.badge-protect {
+  background: color-mix(in srgb, var(--protect) 16%, transparent);
+  color: var(--protect);
 }
 
 .nav-chart {

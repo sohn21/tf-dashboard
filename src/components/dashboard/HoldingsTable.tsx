@@ -1,6 +1,13 @@
 import { Card } from "./Card";
 import { Sparkline } from "./Sparkline";
-import type { HoldingRow } from "@/lib/types";
+import type { HoldingRow, HoldingStatusCat } from "@/lib/types";
+
+const STATUS_BADGE: Record<HoldingStatusCat, { cls: string; label: string }> = {
+  critical: { cls: "badge-critical", label: "손절임박" },
+  review: { cls: "badge-warning", label: "검토" },
+  protect: { cls: "badge-protect", label: "보호중" },
+  normal: { cls: "badge-good", label: "순항" },
+};
 
 export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
   return (
@@ -17,6 +24,8 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                 <th>현재가</th>
                 <th>수익률</th>
                 <th>스탑</th>
+                <th>손절여유</th>
+                <th>상태</th>
                 <th>최근 추이</th>
                 <th>플래그</th>
               </tr>
@@ -25,10 +34,15 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
               {rows.map((p) => {
                 const cls = p.gainPct >= 0 ? "delta-good" : "delta-critical";
                 const arrow = p.gainPct >= 0 ? "▲" : "▼";
+                const status = STATUS_BADGE[p.statusCat];
+                const stopDistCls =
+                  p.stopDistPct <= 4 ? "delta-critical" : p.stopDistPct > 7 ? "delta-good" : "ink-secondary";
                 const flags: string[] = [];
                 if (p.isRunner) flags.push("🚀 런너");
                 if (p.pyramided) flags.push("➕ 피라미드");
                 if (p.climaxTrimmed) flags.push("✂ 트림");
+                if (p.isBe) flags.push("🔒 본전 BE");
+                else if (p.lockTier) flags.push(`🔒 이익잠금 T${p.lockTier}`);
                 return (
                   <tr key={p.ticker}>
                     <td className="ink-primary">{p.ticker}</td>
@@ -41,6 +55,10 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                     <td className="tabular ink-secondary">
                       {p.currentStopPct >= 0 ? "+" : ""}
                       {p.currentStopPct.toFixed(0)}%
+                    </td>
+                    <td className={`tabular ${stopDistCls}`}>{p.stopDistPct.toFixed(1)}%</td>
+                    <td>
+                      <span className={`badge ${status.cls}`}>{status.label}</span>
                     </td>
                     <td>
                       <Sparkline values={p.spark} />

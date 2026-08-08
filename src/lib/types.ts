@@ -172,6 +172,8 @@ export interface IndexRsRow {
   rs: number;
 }
 
+export type HoldingStatusCat = "critical" | "review" | "protect" | "normal";
+
 export interface HoldingRow {
   ticker: string;
   entryPx: number;
@@ -182,6 +184,10 @@ export interface HoldingRow {
   pyramided: boolean;
   climaxTrimmed: boolean;
   spark: number[];
+  stopDistPct: number;
+  statusCat: HoldingStatusCat;
+  lockTier: number | null;
+  isBe: boolean;
 }
 
 export interface TradeRow {
