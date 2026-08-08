@@ -154,7 +154,7 @@ export const mockData: DashboardData = {
     nPositions: 1,
     navHistory: [{ date: "2026-08-05", nav: 9998.75 }],
     holdings: [
-      { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0, spark: [190.46, 188.2, 186.9, 189.5, 186.6] },
+      { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0, spark: [190.46, 188.2, 186.9, 189.5, 186.6], stopDistPct: 8.0, statusCat: "normal" },
     ],
     recentTrades: [],
     backtest: {

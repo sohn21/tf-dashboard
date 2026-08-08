@@ -213,6 +213,10 @@ export interface Set2HoldingRow {
   currentStopPct: number;
   trimStage: number;
   spark: number[];
+  // 옵셔널(2026-08-08, main account HoldingRow와 같은 마이그레이션 이유) — lockTier/isBe는
+  // 세트2엔 없음(LOCK_TIERS 없이 -8%→+8% 단일 락이라 개념이 안 맞음, SCHEMA.md 참고)
+  stopDistPct?: number;
+  statusCat?: HoldingStatusCat;
 }
 
 export interface Set2ExitReasonRow {

@@ -145,8 +145,7 @@ looked like a dashboard bug from this side.
 ## `HoldingRow.stopDistPct` / `.statusCat` / `.lockTier` / `.isBe` (added 2026-08-08)
 
 Another idea borrowed from `tfbook/briefing_chartdecks/` (per-position 손절여유/보호단계 status
-tags), main account only for now (Set2 has a different stop/trim ladder without `LOCK_TIERS`,
-not yet mapped). `stopDistPct` = distance from `lastClose` to the actual stop price, as a % of
+tags). `stopDistPct` = distance from `lastClose` to the actual stop price, as a % of
 `lastClose` (derived from `entryPx`/`currentStopPct`, not a new field). `statusCat` is one of
 `critical`/`review`/`protect`/`normal` — **not** a byte-exact port: the briefing's 4-way
 category is computed server-side there and wasn't recoverable, only its `stopDist` 4%/7% color
@@ -156,6 +155,12 @@ at or above breakeven; `normal` otherwise) — confirmed with the user before im
 `lockTier` (1-based index into `LOCK_TIERS`, `null` if the stop is still below breakeven) and
 `isBe` (`lockTier === 1`, i.e. stop locked exactly at breakeven) are outcomes of the existing
 Lock-ratchet mechanism, not new business logic. Source: `paper_trader.portfolio.position_status()`.
+
+**`Set2HoldingRow` (added 2026-08-08, same day)**: `stopDistPct`/`statusCat` only — reuses the
+same `position_status()` since its stopDist/cat derivation only needs `entryPx`/`lastClose`/
+`currentStopPct` (account-agnostic). No `lockTier`/`isBe`: Set2's stop only ever takes two
+values (-8% initial, +8% after the +24%-gain trim), neither of which coincides with any
+`LOCK_TIERS` tier value, so those fields would always be `null`/`false` — not worth exporting.
 
 ## `NavPoint.spy` / `.qqq` / `.tqqq` (added 2026-08-08, §16-A)
 

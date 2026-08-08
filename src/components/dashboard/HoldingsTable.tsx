@@ -2,7 +2,7 @@ import { Card } from "./Card";
 import { Sparkline } from "./Sparkline";
 import type { HoldingRow, HoldingStatusCat } from "@/lib/types";
 
-const STATUS_BADGE: Record<HoldingStatusCat, { cls: string; label: string }> = {
+export const STATUS_BADGE: Record<HoldingStatusCat, { cls: string; label: string }> = {
   critical: { cls: "badge-critical", label: "손절임박" },
   review: { cls: "badge-warning", label: "검토" },
   protect: { cls: "badge-protect", label: "보호중" },

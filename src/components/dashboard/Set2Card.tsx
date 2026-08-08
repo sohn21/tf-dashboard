@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
 import { Sparkline } from "./Sparkline";
+import { STATUS_BADGE } from "./HoldingsTable";
 import type { Set2Data, Set2ExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -138,6 +139,8 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                   <th>현재가</th>
                   <th>수익률</th>
                   <th>스탑</th>
+                  <th>손절여유</th>
+                  <th>상태</th>
                   <th>최근 추이</th>
                   <th>단계</th>
                 </tr>
@@ -146,6 +149,15 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                 {data.holdings.map((p) => {
                   const cls = p.gainPct >= 0 ? "delta-good" : "delta-critical";
                   const arrow = p.gainPct >= 0 ? "▲" : "▼";
+                  const status = p.statusCat ? STATUS_BADGE[p.statusCat] : null;
+                  const stopDistCls =
+                    p.stopDistPct == null
+                      ? "ink-muted"
+                      : p.stopDistPct <= 4
+                        ? "delta-critical"
+                        : p.stopDistPct > 7
+                          ? "delta-good"
+                          : "ink-secondary";
                   return (
                     <tr key={p.ticker}>
                       <td className="ink-primary">{p.ticker}</td>
@@ -158,6 +170,12 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                       <td className="tabular ink-secondary">
                         {p.currentStopPct >= 0 ? "+" : ""}
                         {p.currentStopPct.toFixed(0)}%
+                      </td>
+                      <td className={`tabular ${stopDistCls}`}>
+                        {p.stopDistPct != null ? `${p.stopDistPct.toFixed(1)}%` : "-"}
+                      </td>
+                      <td>
+                        {status ? <span className={`badge ${status.cls}`}>{status.label}</span> : <span className="ink-muted">-</span>}
                       </td>
                       <td>
                         <Sparkline values={p.spark} />
