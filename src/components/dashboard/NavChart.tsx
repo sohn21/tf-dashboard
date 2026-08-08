@@ -5,11 +5,29 @@ import type { NavPoint } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
+const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq", { label: string; color: string; dashed: boolean }> = {
+  spy: { label: "SPY", color: "#8a8a86", dashed: false },
+  qqq: { label: "QQQ", color: "#2a78d6", dashed: false },
+  tqqq: { label: "TQQQ", color: "#c07a3e", dashed: true },
+};
+
 export function NavChart({ data }: { data: NavPoint[] }) {
   const [hover, setHover] = useState<number | null>(null);
 
   if (data.length === 0) {
     return <p className="ink-muted">NAV 기록 없음</p>;
+  }
+
+  // tfbook/briefing_chartdecks 아이디어(2026-08-08, §16-A) — SPY/QQQ/TQQQ를 NAV 시작값과
+  // 같은 달러 기준으로 리베이스해 오버레이. 전 구간에 값이 있는 시리즈만(중간 결측 시 생략).
+  const benchmarkKeys = (Object.keys(BENCHMARK_STYLE) as Array<keyof typeof BENCHMARK_STYLE>).filter((key) =>
+    data.every((d) => d[key] != null)
+  );
+  const navStart = data[0].nav;
+  const benchmarkSeries: Record<string, number[]> = {};
+  for (const key of benchmarkKeys) {
+    const start = data[0][key]!;
+    benchmarkSeries[key] = data.map((d) => (d[key]! / start) * navStart);
   }
 
   const w = 700;
@@ -27,34 +45,46 @@ export function NavChart({ data }: { data: NavPoint[] }) {
   const ddPlotH = ddH - ddPadT - 18;
 
   const values = data.map((d) => d.nav);
-  let vmin = Math.min(...values);
-  let vmax = Math.max(...values);
+  const allSeriesValues = [values, ...Object.values(benchmarkSeries)].flat() as number[];
+  let vmin = Math.min(...allSeriesValues);
+  let vmax = Math.max(...allSeriesValues);
   if (vmax === vmin) {
     vmin -= 1;
     vmax += 1;
   }
 
-  let runningMax = -Infinity;
-  const drawdowns = values.map((v) => {
-    runningMax = Math.max(runningMax, v);
-    return (v / runningMax - 1) * 100;
-  });
-  const ddMin = Math.min(...drawdowns, 0);
+  const drawdownsOf = (series: number[]) => {
+    let runningMax = -Infinity;
+    return series.map((v) => {
+      runningMax = Math.max(runningMax, v);
+      return (v / runningMax - 1) * 100;
+    });
+  };
+  const drawdowns = drawdownsOf(values);
+  const benchmarkDrawdowns: Record<string, number[]> = {};
+  for (const key of benchmarkKeys) benchmarkDrawdowns[key] = drawdownsOf(benchmarkSeries[key]!);
+  const ddMin = Math.min(...drawdowns, ...Object.values(benchmarkDrawdowns).flat(), 0);
 
   const n = data.length;
   const xOf = (i: number) => (n === 1 ? padL : padL + (plotW * i) / (n - 1));
   const yOf = (v: number) => padT + plotH * (1 - (v - vmin) / (vmax - vmin));
   const ddYOf = (v: number) => ddPadT + (ddMin === 0 ? 0 : ddPlotH * (v / ddMin));
 
-  const points = data.map((d, i) => [xOf(i), yOf(d.nav)] as const);
-  const pathD = "M " + points.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" L ");
-  const areaD = `${pathD} L ${points[points.length - 1][0].toFixed(1)},${(padT + plotH).toFixed(1)} L ${points[0][0].toFixed(1)},${(padT + plotH).toFixed(1)} Z`;
+  const pathOf = (series: number[], y: (v: number) => number) => {
+    const pts = series.map((v, i) => [xOf(i), y(v)] as const);
+    return { pts, d: "M " + pts.map(([x, y2]) => `${x.toFixed(1)},${y2.toFixed(1)}`).join(" L ") };
+  };
 
-  const ddPoints = drawdowns.map((v, i) => [xOf(i), ddYOf(v)] as const);
-  const ddPathD = "M " + ddPoints.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" L ");
+  const { pts: points, d: pathD } = pathOf(values, yOf);
+  const areaD = `${pathD} L ${points[points.length - 1][0].toFixed(1)},${(padT + plotH).toFixed(1)} L ${points[0][0].toFixed(1)},${(padT + plotH).toFixed(1)} Z`;
+  const benchmarkPaths = benchmarkKeys.map((key) => ({ key, ...pathOf(benchmarkSeries[key]!, yOf) }));
+
+  const { pts: ddPoints, d: ddPathD } = pathOf(drawdowns, ddYOf);
   const ddAreaD = `${ddPathD} L ${ddPoints[ddPoints.length - 1][0].toFixed(1)},${ddPadT.toFixed(1)} L ${ddPoints[0][0].toFixed(1)},${ddPadT.toFixed(1)} Z`;
+  const benchmarkDdPaths = benchmarkKeys.map((key) => ({ key, ...pathOf(benchmarkDrawdowns[key]!, ddYOf) }));
 
   const last = points[points.length - 1];
+  const returnPct = (series: number[]) => ((series[series.length - 1] / series[0] - 1) * 100).toFixed(1);
 
   return (
     <div style={{ position: "relative" }}>
@@ -72,6 +102,20 @@ export function NavChart({ data }: { data: NavPoint[] }) {
           );
         })}
         <path d={areaD} className="nav-area" />
+        {benchmarkPaths.map(({ key, d }) => {
+          const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
+          return (
+            <path
+              key={key}
+              d={d}
+              fill="none"
+              stroke={style.color}
+              strokeWidth={1.4}
+              strokeDasharray={style.dashed ? "5,3" : undefined}
+              opacity={0.85}
+            />
+          );
+        })}
         <path d={pathD} className="nav-line" />
         {points.map(([x, y], i) => (
           <circle
@@ -89,11 +133,50 @@ export function NavChart({ data }: { data: NavPoint[] }) {
         </text>
       </svg>
 
-      <div className="label-sm ink-muted" style={{ marginTop: 2, marginBottom: 2 }}>
+      {benchmarkKeys.length > 0 && (
+        <div className="label-sm ink-secondary" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 4 }}>
+          <span>
+            <span style={{ display: "inline-block", width: 12, borderTop: "1.4px solid var(--series-1)", marginRight: 4 }} />
+            NAV <b className="tabular">{returnPct(values)}%</b>
+          </span>
+          {benchmarkKeys.map((key) => {
+            const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
+            return (
+              <span key={key}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 12,
+                    borderTop: `1.4px ${style.dashed ? "dashed" : "solid"} ${style.color}`,
+                    marginRight: 4,
+                  }}
+                />
+                {style.label} <b className="tabular">{returnPct(benchmarkSeries[key]!)}%</b>
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="label-sm ink-muted" style={{ marginTop: 6, marginBottom: 2 }}>
         드로다운 (최고점 대비, 최대 {ddMin.toFixed(1)}%)
       </div>
       <svg viewBox={`0 0 ${w} ${ddH}`} width="100%" height={ddH} role="img" aria-label="드로다운">
         <line x1={padL} y1={ddPadT} x2={w - padR} y2={ddPadT} className="grid-line" />
+        {benchmarkDdPaths.map(({ key, d }) => {
+          const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
+          return (
+            <path
+              key={key}
+              d={d}
+              fill="none"
+              stroke={style.color}
+              strokeWidth={1.2}
+              strokeDasharray={style.dashed ? "5,3" : undefined}
+              opacity={0.75}
+            />
+          );
+        })}
         <path d={ddAreaD} fill="var(--critical)" opacity={0.12} />
         <path d={ddPathD} fill="none" stroke="var(--critical)" strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />
         {hover !== null && <circle cx={ddPoints[hover][0]} cy={ddPoints[hover][1]} r={3} fill="var(--critical)" />}

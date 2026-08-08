@@ -29,6 +29,9 @@ export interface RegimeHistoryPoint {
 export interface NavPoint {
   date: string;
   nav: number;
+  spy?: number;
+  qqq?: number;
+  tqqq?: number;
 }
 
 export interface BenchmarkReturn {
@@ -184,10 +187,12 @@ export interface HoldingRow {
   pyramided: boolean;
   climaxTrimmed: boolean;
   spark: number[];
-  stopDistPct: number;
-  statusCat: HoldingStatusCat;
-  lockTier: number | null;
-  isBe: boolean;
+  // 옵셔널(2026-08-08): 이 필드들이 추가되기 전에 쓰인 KV blob엔 없을 수 있음 — 다음 일일
+  // export 전까지는 undefined로 온다(generatedAt 필드 때와 같은 마이그레이션 패턴, SCHEMA.md 참고)
+  stopDistPct?: number;
+  statusCat?: HoldingStatusCat;
+  lockTier?: number | null;
+  isBe?: boolean;
 }
 
 export interface TradeRow {

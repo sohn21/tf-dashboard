@@ -157,6 +157,27 @@ at or above breakeven; `normal` otherwise) — confirmed with the user before im
 `isBe` (`lockTier === 1`, i.e. stop locked exactly at breakeven) are outcomes of the existing
 Lock-ratchet mechanism, not new business logic. Source: `paper_trader.portfolio.position_status()`.
 
+## `NavPoint.spy` / `.qqq` / `.tqqq` (added 2026-08-08, §16-A)
+
+Another `tfbook/briefing_chartdecks/` idea — raw daily close prices (not rebased) for the three
+benchmark ETFs, main account's `navHistory` only (Set2 unchanged). `NavChart.tsx` rebases each
+series to the live NAV's own starting value client-side and derives both the overlay lines and
+their drawdown-from-peak lines there — same "compute outcomes client-side from raw prices"
+pattern already used for the NAV drawdown subplot. Fields are optional and a series is only
+plotted if every point in the window has a value (no partial/broken lines). Source: private
+repo's `data/benchmark_history.csv`, backfilled once for the account's existing NAV history
+range, appended one row per trading day going forward (`run_daily.py:_record_benchmarks()`) —
+pure historical ETF closes, safe to backfill retroactively like `da_trend_history.csv`.
+
+## Optional-field migration note (added 2026-08-08)
+
+`HoldingRow.stopDistPct`/`.statusCat`/`.lockTier`/`.isBe` are typed optional, **not** because
+they're sometimes absent by design, but because a KV blob written before this field existed
+still validates against the type and must not crash the UI (`generatedAt`'s original
+precedent above, restated here after actually breaking a preview deployment this way once —
+see private repo `WORKLOG.md` 2026-08-08). Any field added to an exported type from now on
+should default to optional unless there's a hard guarantee every already-live KV blob has it.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

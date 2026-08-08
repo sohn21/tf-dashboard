@@ -32,6 +32,9 @@ export const mockData: DashboardData = {
   navHistory: Array.from({ length: 24 }, (_, i) => ({
     date: `2026-06-${String(i * 2 + 1).padStart(2, "0")}`,
     nav: 100000 + i * 800 + (i % 3 === 0 ? -1500 : 0),
+    spy: 740 + i * 3.2 + (i % 4 === 0 ? -6 : 0),
+    qqq: 690 + i * 3.6 + (i % 4 === 0 ? -8 : 0),
+    tqqq: 68 + i * 1.8 + (i % 4 === 0 ? -3.5 : 0),
   })),
   breadth: {
     above50emaPct: 61.4,

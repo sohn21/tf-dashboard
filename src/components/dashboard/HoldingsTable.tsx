@@ -34,9 +34,15 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
               {rows.map((p) => {
                 const cls = p.gainPct >= 0 ? "delta-good" : "delta-critical";
                 const arrow = p.gainPct >= 0 ? "▲" : "▼";
-                const status = STATUS_BADGE[p.statusCat];
+                const status = p.statusCat ? STATUS_BADGE[p.statusCat] : null;
                 const stopDistCls =
-                  p.stopDistPct <= 4 ? "delta-critical" : p.stopDistPct > 7 ? "delta-good" : "ink-secondary";
+                  p.stopDistPct == null
+                    ? "ink-muted"
+                    : p.stopDistPct <= 4
+                      ? "delta-critical"
+                      : p.stopDistPct > 7
+                        ? "delta-good"
+                        : "ink-secondary";
                 const flags: string[] = [];
                 if (p.isRunner) flags.push("🚀 런너");
                 if (p.pyramided) flags.push("➕ 피라미드");
@@ -56,9 +62,11 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                       {p.currentStopPct >= 0 ? "+" : ""}
                       {p.currentStopPct.toFixed(0)}%
                     </td>
-                    <td className={`tabular ${stopDistCls}`}>{p.stopDistPct.toFixed(1)}%</td>
+                    <td className={`tabular ${stopDistCls}`}>
+                      {p.stopDistPct != null ? `${p.stopDistPct.toFixed(1)}%` : "-"}
+                    </td>
                     <td>
-                      <span className={`badge ${status.cls}`}>{status.label}</span>
+                      {status ? <span className={`badge ${status.cls}`}>{status.label}</span> : <span className="ink-muted">-</span>}
                     </td>
                     <td>
                       <Sparkline values={p.spark} />
