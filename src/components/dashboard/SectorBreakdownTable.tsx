@@ -11,17 +11,30 @@ type RulerItem = { key: string; label: string; rs: number; sub?: string };
 // (dataviz 스킬 choosing-a-form.md — "one series is the point, rest are context").
 // 업종끼리 값이 몰려도 겹치지 않도록 그리디 겹침방지만 적용, 지수는 소수(≤3개)라 그대로 실제
 // 위치에 라벨링. 정확한 수치는 호버/표 보기에서 그대로 유지(표는 이 컴포넌트 안에 있음).
+// 2026-08-10: 지수 RS를 넘는(모든 지수를 상회하는) 업종은 삼각형 대신 지수와 같은 수직선+라벨로
+// 승격 — 나머지 업종은 그대로 컨텍스트 삼각형. 겹치는 라벨은 기존처럼 단(tier)을 올리되, 이번엔
+// 라벨만 옮기지 않고 수직선 길이 자체를 단마다 늘려(리더라인 효과, dataviz 스킬
+// marks-and-anatomy.md의 "겹치는 끝라벨엔 leader line" 권고) 선-라벨 매칭이 한눈에 보이게 함.
 const CONTEXT_GRAY = "#8a8a86";
+const INDEX_COLOR = "var(--cat-5)";
+const LEADER_COLOR = "var(--cat-1)";
 const VW = 700;
-const H = 112;
 const PAD_L = 14;
 const PAD_R = 14;
-const BASELINE_Y = 78;
-const TICK_H = 9; // 업종 삼각형 높이
-const PIN_H = 26; // 지수 핀 높이(모든 핀 동일 — 라벨만 겹칠 때 위 단으로 어긋냄)
+const MIN_BASELINE_Y = 78;
+const BOTTOM_PAD = 34; // 축 눈금+라벨용 하단 여백
+const TICK_H = 9; // 업종(지수 이하) 삼각형 높이
+const BASE_PIN_H = 26; // 수직선 기본 길이(0단)
+const TIER_STEP = 16; // 겹치는 라벨마다 수직선을 이만큼씩 늘려 단을 구분
 const MIN_GAP = 11; // 업종 마크 간 최소 간격(px)
-const LABEL_COLLIDE_PX = 80; // 지수 라벨끼리 이 거리보다 가까우면 위 단으로 어긋냄
-const LABEL_TIER_OFFSET = 14;
+const LABEL_MARGIN = 10; // 핀 라벨 겹침판정 시 글자폭 양옆에 추가하는 여유
+const LABEL_GAP = 4; // 수직선 끝~라벨 사이 간격
+const TEXT_TOP_PAD = 16; // 가장 높은 단 라벨이 캔버스 위로 안 잘리게 하는 여유
+const MAX_LEADERS = 6; // 지수를 넘는 업종 중 수직선으로 승격할 최대 개수(RS 상위순)
+
+// 지수 라벨("S&P500")은 짧지만 업종명("Technology Hardware, Storage & Peripherals")은 훨씬 길어서
+// 고정 px 겹침판정으로는 부족함 — 12px bold 기준 대략치로 실제 텍스트 폭을 추정해 판정한다.
+const approxLabelHalfWidth = (label: string) => (label.length * 6.4) / 2 + LABEL_MARGIN;
 
 export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; indexRs: IndexRsRow[] }) {
   const [showTable, setShowTable] = useState(false);
@@ -29,40 +42,65 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
   const hasData = rows.length > 0 || indexRs.length > 0;
 
   const indexItems: RulerItem[] = indexRs.map((r) => ({ key: `idx-${r.label}`, label: r.label, rs: r.rs }));
-  const industryItems: RulerItem[] = rows.map((r, i) => ({ key: `sec-${i}`, label: r.industry, rs: r.avgRs, sub: r.sector }));
+  const allIndustryItems: RulerItem[] = rows.map((r, i) => ({ key: `sec-${i}`, label: r.industry, rs: r.avgRs, sub: r.sector }));
 
-  const maxRs = Math.max(100, ...indexItems.map((it) => it.rs), ...industryItems.map((it) => it.rs));
+  // 모든 지수를 상회하는 업종 중 RS 상위 MAX_LEADERS개만 "리더"로 승격 — 나머지는 기존처럼
+  // 컨텍스트 삼각형. 시장 폭이 넓어 지수를 넘는 업종이 많은 날(예: 20개 중 17개)에도 승격 개수를
+  // 고정해서 "몇 개만 강조"라는 emphasis 패턴이 무너지지 않게 함(2026-08-10).
+  const maxIndexRs = indexItems.length > 0 ? Math.max(...indexItems.map((it) => it.rs)) : -Infinity;
+  const leaderItems: RulerItem[] = allIndustryItems
+    .filter((it) => it.rs > maxIndexRs)
+    .sort((a, b) => b.rs - a.rs)
+    .slice(0, MAX_LEADERS);
+  const leaderKeys = new Set(leaderItems.map((it) => it.key));
+  const contextItems: RulerItem[] = allIndustryItems.filter((it) => !leaderKeys.has(it.key));
+
+  const maxRs = Math.max(100, ...indexItems.map((it) => it.rs), ...allIndustryItems.map((it) => it.rs));
   const plotW = VW - PAD_L - PAD_R;
   const xOf = (rs: number) => PAD_L + (rs / maxRs) * plotW;
 
-  const industryPositioned = [...industryItems]
+  const industryPositioned = [...contextItems]
     .sort((a, b) => a.rs - b.rs)
     .reduce<Array<RulerItem & { x: number }>>((acc, it) => {
       const prevX = acc.length > 0 ? acc[acc.length - 1].x : -Infinity;
       acc.push({ ...it, x: Math.max(xOf(it.rs), prevX + MIN_GAP) });
       return acc;
     }, []);
-  // 지수 라벨 겹침방지 — 정렬 후 인접(prev)만 보면 3개가 서로 다 가까울 때 1번째/3번째가
-  // 같은 단(tier)에 남아 다시 겹친다. 각 단에 마지막으로 배치한 x와 비교해 안 겹치는
-  // 가장 낮은 단을 그리디로 찾는다(단이 부족하면 자동으로 새 단 추가).
-  const tierLastX: number[] = [];
-  const indexPositioned = [...indexItems]
+
+  // 지수+리더업종을 같은 채널(수직선)로 합쳐서 겹침방지 — 정렬 후 인접(prev)만 보면 여러 개가
+  // 서로 다 가까울 때 1번째/3번째가 같은 단(tier)에 남아 다시 겹친다. 각 단에 마지막으로 배치한
+  // x와 비교해 안 겹치는 가장 낮은 단을 그리디로 찾는다(단이 부족하면 자동으로 새 단 추가).
+  // 단이 올라갈수록 수직선 길이 자체도 늘어나므로(TIER_STEP) 라벨뿐 아니라 선도 서로 구분된다.
+  // 단마다 "마지막으로 배치한 라벨의 오른쪽 끝"을 기록해두고, 다음 라벨의 왼쪽 끝이 거길
+  // 넘으면(글자폭 기준) 겹친다고 보고 다음 단으로 — 짧은 지수명과 긴 업종명이 섞여 있어 고정
+  // px 간격으로는 부족함.
+  const tierLastRight: number[] = [];
+  const pinPositioned = [
+    ...indexItems.map((it) => ({ ...it, kind: "index" as const })),
+    ...leaderItems.map((it) => ({ ...it, kind: "leader" as const })),
+  ]
     .sort((a, b) => a.rs - b.rs)
     .map((it) => ({ ...it, x: xOf(it.rs) }))
     .map((it) => {
+      const halfW = approxLabelHalfWidth(it.label);
       let tier = 0;
-      while (tierLastX[tier] !== undefined && it.x - tierLastX[tier] < LABEL_COLLIDE_PX) tier++;
-      tierLastX[tier] = it.x;
-      return { ...it, tier };
+      while (tierLastRight[tier] !== undefined && it.x - halfW < tierLastRight[tier]) tier++;
+      tierLastRight[tier] = it.x + halfW;
+      return { ...it, tier, pinHeight: BASE_PIN_H + tier * TIER_STEP };
     });
+
+  const maxPinTier = pinPositioned.reduce((m, it) => Math.max(m, it.tier), 0);
+  const BASELINE_Y = Math.max(MIN_BASELINE_Y, BASE_PIN_H + maxPinTier * TIER_STEP + TEXT_TOP_PAD);
+  const H = BASELINE_Y + BOTTOM_PAD;
+
   const gridTicks = [0, 25, 50, 75, 100].filter((t) => t <= maxRs);
-  const hoveredItem = [...industryPositioned, ...indexPositioned].find((it) => it.key === hovered);
-  const hoveredIndex = indexPositioned.find((it) => it.key === hovered);
-  // 어느 지수를 호버해도 툴팁은 항상 가장 높은 단(라벨이 제일 위로 어긋난 지수) 위에 뜨도록 —
-  // 낮은 단 지수의 툴팁이 위 단 지수 라벨과 겹치는 걸 방지
-  const maxIndexTier = indexPositioned.reduce((m, it) => Math.max(m, it.tier), 0);
-  const hoveredTopY = hoveredIndex
-    ? BASELINE_Y - PIN_H - 18 - maxIndexTier * LABEL_TIER_OFFSET
+  const hoveredItem = [...industryPositioned, ...pinPositioned].find((it) => it.key === hovered);
+  const hoveredPin = pinPositioned.find((it) => it.key === hovered);
+  // 어느 핀을 호버해도 툴팁은 항상 가장 높은 단(라벨이 제일 위로 어긋난 핀) 위에 뜨도록 —
+  // 낮은 단 핀의 툴팁이 위 단 라벨과 겹치는 걸 방지
+  const topmostPinHeight = BASE_PIN_H + maxPinTier * TIER_STEP;
+  const hoveredTopY = hoveredPin
+    ? BASELINE_Y - topmostPinHeight - LABEL_GAP - 14
     : BASELINE_Y - TICK_H - 6;
 
   return (
@@ -117,10 +155,14 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
         </div>
       ) : (
         <>
-          <div style={{ display: "flex", gap: 16, fontSize: 12, marginBottom: 4 }} className="ink-secondary">
+          <div style={{ display: "flex", gap: 16, fontSize: 12, marginBottom: 4, flexWrap: "wrap" }} className="ink-secondary">
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 2, height: 13, background: "var(--cat-5)", display: "inline-block" }} />
+              <span style={{ width: 2, height: 13, background: INDEX_COLOR, display: "inline-block" }} />
               지수
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 2, height: 13, background: LEADER_COLOR, display: "inline-block" }} />
+              지수 상회 업종
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span
@@ -162,30 +204,39 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
                 </g>
               ))}
 
-              {indexPositioned.map((it) => (
-                <g key={it.key} onMouseEnter={() => setHovered(it.key)} onMouseLeave={() => setHovered(null)} style={{ cursor: "pointer" }}>
-                  <rect x={it.x - 12} y={BASELINE_Y - PIN_H} width={24} height={PIN_H} fill="transparent" />
-                  <line
-                    x1={it.x}
-                    y1={BASELINE_Y}
-                    x2={it.x}
-                    y2={BASELINE_Y - PIN_H}
-                    stroke="var(--cat-5)"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    opacity={hovered && hovered !== it.key ? 0.5 : 1}
-                  />
-                  <text
-                    x={it.x}
-                    y={BASELINE_Y - PIN_H - 4 - it.tier * LABEL_TIER_OFFSET}
-                    textAnchor="middle"
-                    className="ink-primary label-sm"
-                    style={{ fontWeight: 600 }}
-                  >
-                    {it.label}
-                  </text>
-                </g>
-              ))}
+              {pinPositioned.map((it) => {
+                // 라벨이 캔버스 좌우 끝을 넘어가면(긴 업종명이 축 가장자리에 걸릴 때) 가운데
+                // 정렬 대신 안쪽으로 붙여서 잘리지 않게 함
+                const halfW = approxLabelHalfWidth(it.label);
+                const overflowsRight = it.x + halfW > VW - PAD_R;
+                const overflowsLeft = it.x - halfW < PAD_L;
+                const labelAnchor = overflowsRight ? "end" : overflowsLeft ? "start" : "middle";
+                const labelX = overflowsRight ? VW - PAD_R : overflowsLeft ? PAD_L : it.x;
+                return (
+                  <g key={it.key} onMouseEnter={() => setHovered(it.key)} onMouseLeave={() => setHovered(null)} style={{ cursor: "pointer" }}>
+                    <rect x={it.x - 12} y={BASELINE_Y - it.pinHeight} width={24} height={it.pinHeight} fill="transparent" />
+                    <line
+                      x1={it.x}
+                      y1={BASELINE_Y}
+                      x2={it.x}
+                      y2={BASELINE_Y - it.pinHeight}
+                      stroke={it.kind === "index" ? INDEX_COLOR : LEADER_COLOR}
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      opacity={hovered && hovered !== it.key ? 0.5 : 1}
+                    />
+                    <text
+                      x={labelX}
+                      y={BASELINE_Y - it.pinHeight - LABEL_GAP}
+                      textAnchor={labelAnchor}
+                      className="ink-primary label-sm"
+                      style={{ fontWeight: 600 }}
+                    >
+                      {it.label}
+                    </text>
+                  </g>
+                );
+              })}
             </svg>
 
             {hoveredItem && (
