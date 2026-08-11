@@ -11,7 +11,7 @@ export const STATUS_BADGE: Record<HoldingStatusCat, { cls: string; label: string
 
 export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
   return (
-    <Card title="현재 보유 종목">
+    <Card title={`현재 보유 종목 (${rows.length}종목)`}>
       {rows.length === 0 ? (
         <p className="ink-muted">현재 보유 종목 없음</p>
       ) : (
@@ -23,6 +23,7 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                 <th>진입가</th>
                 <th>현재가</th>
                 <th>수익률</th>
+                <th>투자금액</th>
                 <th>스탑</th>
                 <th>손절여유</th>
                 <th>상태</th>
@@ -58,6 +59,7 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
                       {arrow} {p.gainPct >= 0 ? "+" : ""}
                       {p.gainPct.toFixed(1)}%
                     </td>
+                    <td className="tabular ink-secondary">{p.entryValue != null ? `$${p.entryValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : "-"}</td>
                     <td className="tabular ink-secondary">
                       {p.currentStopPct >= 0 ? "+" : ""}
                       {p.currentStopPct.toFixed(0)}%

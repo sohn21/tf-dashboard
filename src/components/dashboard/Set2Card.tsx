@@ -127,6 +127,9 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
       </StatRow>
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--gridline)" }}>
+        <div className="label-sm ink-secondary" style={{ marginBottom: 8 }}>
+          보유 종목 ({data.holdings.length}종목)
+        </div>
         {data.holdings.length === 0 ? (
           <p className="ink-muted">현재 보유 종목 없음</p>
         ) : (
@@ -138,6 +141,7 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                   <th>진입가</th>
                   <th>현재가</th>
                   <th>수익률</th>
+                  <th>투자금액</th>
                   <th>스탑</th>
                   <th>손절여유</th>
                   <th>상태</th>
@@ -167,6 +171,7 @@ export function Set2Card({ data }: { data: Set2Data | null }) {
                         {arrow} {p.gainPct >= 0 ? "+" : ""}
                         {p.gainPct.toFixed(1)}%
                       </td>
+                      <td className="tabular ink-secondary">{p.entryValue != null ? `$${p.entryValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : "-"}</td>
                       <td className="tabular ink-secondary">
                         {p.currentStopPct >= 0 ? "+" : ""}
                         {p.currentStopPct.toFixed(0)}%

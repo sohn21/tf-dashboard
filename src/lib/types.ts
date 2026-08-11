@@ -195,6 +195,8 @@ export interface HoldingRow {
   statusCat?: HoldingStatusCat;
   lockTier?: number | null;
   isBe?: boolean;
+  // 옵셔널(2026-08-12, 같은 마이그레이션 이유): 진입 시점 투자금액(원가)
+  entryValue?: number;
 }
 
 export interface TradeRow {
@@ -219,6 +221,8 @@ export interface Set2HoldingRow {
   // 세트2엔 없음(LOCK_TIERS 없이 -8%→+8% 단일 락이라 개념이 안 맞음, SCHEMA.md 참고)
   stopDistPct?: number;
   statusCat?: HoldingStatusCat;
+  // 옵셔널(2026-08-12, 같은 마이그레이션 이유): 진입 시점 투자금액(원가)
+  entryValue?: number;
 }
 
 export interface Set2ExitReasonRow {
