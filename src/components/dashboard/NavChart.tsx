@@ -5,10 +5,12 @@ import type { NavPoint } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
-const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq", { label: string; color: string; dashed: boolean }> = {
+const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq" | "gld" | "btc-usd", { label: string; color: string; dashed: boolean }> = {
   spy: { label: "SPY", color: "#8a8a86", dashed: false },
   qqq: { label: "QQQ", color: "#2a78d6", dashed: false },
   tqqq: { label: "TQQQ", color: "#c07a3e", dashed: true },
+  gld: { label: "GLD", color: "#b8860b", dashed: false },
+  "btc-usd": { label: "BTC", color: "#8a5cf6", dashed: false },
 };
 
 export function NavChart({ data }: { data: NavPoint[] }) {

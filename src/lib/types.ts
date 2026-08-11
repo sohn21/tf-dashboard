@@ -32,6 +32,8 @@ export interface NavPoint {
   spy?: number;
   qqq?: number;
   tqqq?: number;
+  gld?: number;
+  "btc-usd"?: number;
 }
 
 export interface BenchmarkReturn {
