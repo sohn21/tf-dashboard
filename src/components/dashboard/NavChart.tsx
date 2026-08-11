@@ -5,12 +5,14 @@ import type { NavPoint } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
-const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq" | "gld" | "btc-usd", { label: string; color: string; dashed: boolean }> = {
-  spy: { label: "SPY", color: "#8a8a86", dashed: false },
-  qqq: { label: "QQQ", color: "#2a78d6", dashed: false },
-  tqqq: { label: "TQQQ", color: "#c07a3e", dashed: true },
-  gld: { label: "GLD", color: "#b8860b", dashed: false },
-  "btc-usd": { label: "BTC", color: "#8a5cf6", dashed: false },
+// 2026-08-11: 색상만으로는 구분이 잘 안 된다는 피드백 — 색+두께(1.4→2)에 더해 선마다 고유한
+// 대시 패턴(점선/파선/장파선/파점선)을 부여해 색맹이나 비슷한 색조에서도 패턴만으로 구분되게 함.
+const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq" | "gld" | "btc-usd", { label: string; color: string; dash: string }> = {
+  spy: { label: "SPY", color: "#8a8a86", dash: "" },
+  qqq: { label: "QQQ", color: "#2a78d6", dash: "1,3" },
+  tqqq: { label: "TQQQ", color: "#c07a3e", dash: "6,3" },
+  gld: { label: "GLD", color: "#b8860b", dash: "10,4" },
+  "btc-usd": { label: "BTC", color: "#8a5cf6", dash: "8,2,2,2" },
 };
 
 export function NavChart({ data }: { data: NavPoint[] }) {
@@ -112,9 +114,9 @@ export function NavChart({ data }: { data: NavPoint[] }) {
               d={d}
               fill="none"
               stroke={style.color}
-              strokeWidth={1.4}
-              strokeDasharray={style.dashed ? "5,3" : undefined}
-              opacity={0.85}
+              strokeWidth={2}
+              strokeDasharray={style.dash || undefined}
+              opacity={0.9}
             />
           );
         })}
@@ -145,14 +147,9 @@ export function NavChart({ data }: { data: NavPoint[] }) {
             const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
             return (
               <span key={key}>
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: 12,
-                    borderTop: `1.4px ${style.dashed ? "dashed" : "solid"} ${style.color}`,
-                    marginRight: 4,
-                  }}
-                />
+                <svg width="16" height="8" style={{ verticalAlign: "middle", marginRight: 4 }}>
+                  <line x1={0} y1={4} x2={16} y2={4} stroke={style.color} strokeWidth={2} strokeDasharray={style.dash || undefined} />
+                </svg>
                 {style.label} <b className="tabular">{returnPct(benchmarkSeries[key]!)}%</b>
               </span>
             );
@@ -173,9 +170,9 @@ export function NavChart({ data }: { data: NavPoint[] }) {
               d={d}
               fill="none"
               stroke={style.color}
-              strokeWidth={1.2}
-              strokeDasharray={style.dashed ? "5,3" : undefined}
-              opacity={0.75}
+              strokeWidth={1.6}
+              strokeDasharray={style.dash || undefined}
+              opacity={0.8}
             />
           );
         })}
