@@ -75,7 +75,7 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
               지수
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 14, height: 10, background: "var(--protect)", display: "inline-block", borderRadius: 2 }} />
+              <span style={{ width: 14, height: 10, background: "var(--text-secondary)", display: "inline-block", borderRadius: 2 }} />
               업종 평균 RS (종목수 2개 이상)
             </span>
           </div>
@@ -90,7 +90,7 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
                     className="hbar-fill"
                     style={{
                       width: `${Math.max((it.rs / maxRs) * 100, 1.5)}%`,
-                      background: it.isIndex ? "var(--series-1)" : "var(--protect)",
+                      background: it.isIndex ? "var(--series-1)" : "var(--text-secondary)",
                     }}
                   />
                 </div>
