@@ -137,25 +137,39 @@ export function NavChart({ data }: { data: NavPoint[] }) {
         </text>
       </svg>
 
-      {benchmarkKeys.length > 0 && (
-        <div className="label-sm ink-secondary" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 4 }}>
-          <span>
-            <span style={{ display: "inline-block", width: 12, borderTop: "1.4px solid var(--series-1)", marginRight: 4 }} />
-            NAV <b className="tabular">{returnPct(values)}%</b>
-          </span>
-          {benchmarkKeys.map((key) => {
-            const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
-            return (
+      {benchmarkKeys.length > 0 && (() => {
+        // 2026-08-11: 고정 순서(NAV 항상 맨 앞) 대신 수익률 내림차순 — 오늘 어떤 시리즈가
+        // 가장 앞서는지 한눈에 보이게.
+        const navItem = {
+          ret: Number(returnPct(values)),
+          node: (
+            <span key="nav">
+              <span style={{ display: "inline-block", width: 12, borderTop: "1.4px solid var(--series-1)", marginRight: 4 }} />
+              NAV <b className="tabular">{returnPct(values)}%</b>
+            </span>
+          ),
+        };
+        const benchItems = benchmarkKeys.map((key) => {
+          const style = BENCHMARK_STYLE[key as keyof typeof BENCHMARK_STYLE];
+          return {
+            ret: Number(returnPct(benchmarkSeries[key]!)),
+            node: (
               <span key={key}>
                 <svg width="16" height="8" style={{ verticalAlign: "middle", marginRight: 4 }}>
                   <line x1={0} y1={4} x2={16} y2={4} stroke={style.color} strokeWidth={2} strokeDasharray={style.dash || undefined} />
                 </svg>
                 {style.label} <b className="tabular">{returnPct(benchmarkSeries[key]!)}%</b>
               </span>
-            );
-          })}
-        </div>
-      )}
+            ),
+          };
+        });
+        const sorted = [navItem, ...benchItems].sort((a, b) => b.ret - a.ret);
+        return (
+          <div className="label-sm ink-secondary" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 4 }}>
+            {sorted.map((item) => item.node)}
+          </div>
+        );
+      })()}
 
       <div className="label-sm ink-muted" style={{ marginTop: 6, marginBottom: 2 }}>
         드로다운 (최고점 대비, 최대 {ddMin.toFixed(1)}%)
