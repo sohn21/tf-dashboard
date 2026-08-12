@@ -252,6 +252,7 @@ export interface LadderData {
   holdings: LadderHoldingRow[];
   recentTrades: TradeRow[];
   backtest: LadderBacktestSummary | null;
+  alphaDecay: AlphaDecay;
 }
 
 export interface AlphaDecay {

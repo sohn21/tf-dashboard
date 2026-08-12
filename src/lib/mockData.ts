@@ -176,5 +176,15 @@ export const mockData: DashboardData = {
         { reason: "final_100", count: 8, avgPnlPct: 101.7 },
       ],
     },
+    alphaDecay: {
+      reliable: false,
+      overallWinRate: null,
+      recentWinRate: null,
+      decayPp: null,
+      status: "데이터 없음",
+      nOverall: 0,
+      nRecent: 0,
+      profitFactor: null,
+    },
   },
 };
