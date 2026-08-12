@@ -36,6 +36,14 @@ export interface NavPoint {
   "btc-usd"?: number;
 }
 
+export interface CandlePoint {
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
 export interface BenchmarkReturn {
   label: string;
   returnPct: number;
@@ -262,6 +270,9 @@ export interface DashboardData {
   summary: Summary;
   regimeHistory: RegimeHistoryPoint[];
   navHistory: NavPoint[];
+  // 옵셔널(2026-08-12, generatedAt 마이그레이션 패턴과 동일): 이 필드가 추가되기 전에 쓰인
+  // KV blob엔 없을 수 있음
+  benchmarkCandles?: Record<string, CandlePoint[]>;
   breadth: MarketBreadth | null;
   sentiment: SentimentMetrics | null;
   distributionRally: DistributionRally | null;

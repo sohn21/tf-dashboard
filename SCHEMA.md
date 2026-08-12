@@ -183,6 +183,20 @@ precedent above, restated here after actually breaking a preview deployment this
 see private repo `WORKLOG.md` 2026-08-08). Any field added to an exported type from now on
 should default to optional unless there's a hard guarantee every already-live KV blob has it.
 
+## `benchmarkCandles` — 5-benchmark daily OHLC, 6 months (added 2026-08-12)
+
+`Record<string, CandlePoint[]>` keyed by ticker (`SPY`/`QQQ`/`TQQQ`/`GLD`/`BTC-USD`), each a
+list of `{date, open, high, low, close}`. Renders as a 3x2 grid of small-multiple candlestick
+charts directly under the NAV trend card. Window is a **calendar-date cutoff** (today minus 6
+months), not "last N rows" — BTC-USD trades 7 days/week so a row-count cutoff would give it a
+shorter actual window than the 5-day-a-week equity/ETF tickers; expect BTC-USD's array to have
+noticeably more points than the others for the same date range. Source: private repo's
+`data/price_cache/<ticker>.csv` (2-year rolling OHLCV cache already maintained daily for
+signal-computation purposes) — a different source than `NavPoint.spy`/etc. above, which only
+has close price; this needed full OHLC so it reads the raw per-ticker cache instead of
+`benchmark_history.csv`. A ticker's array is `[]` (never missing/undefined) if its cache file
+doesn't exist yet.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

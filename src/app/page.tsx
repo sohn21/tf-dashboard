@@ -2,6 +2,7 @@ import { mockData } from "@/lib/mockData";
 import { getDashboardData } from "@/lib/kv";
 import { SummaryCard } from "@/components/dashboard/SummaryCard";
 import { NavChart } from "@/components/dashboard/NavChart";
+import { BenchmarkCandlesGrid } from "@/components/dashboard/BenchmarkCandlesGrid";
 import { MarketBreadthCard } from "@/components/dashboard/MarketBreadthCard";
 import { NewHighsLowsTable } from "@/components/dashboard/NewHighsLowsTable";
 import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
@@ -35,6 +36,8 @@ export default async function Home() {
       <Card title="NAV 추이">
         <NavChart data={data.navHistory} />
       </Card>
+
+      <BenchmarkCandlesGrid candles={data.benchmarkCandles} />
 
       <MarketBreadthCard breadth={data.breadth} sentiment={data.sentiment} distributionRally={data.distributionRally} />
 
