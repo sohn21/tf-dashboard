@@ -14,7 +14,7 @@ import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
 import { PhaseTrendCard } from "@/components/dashboard/PhaseTrendCard";
 import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
-import { Set2Card } from "@/components/dashboard/Set2Card";
+import { LadderCard } from "@/components/dashboard/LadderCard";
 import { Card } from "@/components/dashboard/Card";
 
 export default async function Home() {
@@ -61,7 +61,7 @@ export default async function Home() {
 
       <AlphaDecayCard data={data.alphaDecay} />
 
-      <Set2Card data={data.set2} />
+      <LadderCard data={data.set2} />
     </div>
   );
 }

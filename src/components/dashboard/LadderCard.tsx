@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
 import { Sparkline } from "./Sparkline";
 import { STATUS_BADGE } from "./HoldingsTable";
-import type { Set2Data, Set2ExitReasonRow } from "@/lib/types";
+import type { LadderData, LadderExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
@@ -30,7 +30,7 @@ const REASON_COLOR: Record<string, string> = {
 };
 const REASON_ORDER = ["stop", "stop_locked8", "trim1_24pct", "trim2_50pct", "final_100"];
 
-function ExitReasonDonut({ rows }: { rows: Set2ExitReasonRow[] }) {
+function ExitReasonDonut({ rows }: { rows: LadderExitReasonRow[] }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const ordered = [...rows].sort((a, b) => REASON_ORDER.indexOf(a.reason) - REASON_ORDER.indexOf(b.reason));
   const total = ordered.reduce((s, r) => s + r.count, 0);
@@ -105,19 +105,19 @@ function ExitReasonDonut({ rows }: { rows: Set2ExitReasonRow[] }) {
   );
 }
 
-export function Set2Card({ data }: { data: Set2Data | null }) {
+export function LadderCard({ data }: { data: LadderData | null }) {
   if (!data) {
     return (
-      <Card title="세트2 — 스탑/트림 래더 (실험 계좌)">
+      <Card title="래더 (스탑/트림 실험 계좌)">
         <p className="ink-muted">아직 데이터 없음</p>
       </Card>
     );
   }
 
   return (
-    <Card title="세트2 — 스탑/트림 래더 (실험 계좌)">
+    <Card title="래더 (스탑/트림 실험 계좌)">
       <p className="ink-muted" style={{ marginTop: -4, marginBottom: 14 }}>
-        메인 계좌와 별도인 $10,000 계좌. 최대 4종목·종목당 25%, -8% 손절 → +24%에서 30% 매도 후
+        코어 계좌와 별도인 $10,000 계좌. 최대 4종목·종목당 25%, -8% 손절 → +24%에서 30% 매도 후
         스탑 +8% 고정 → +50%에서 잔량 절반 매도 → +100%에서 전량 매도.
       </p>
       <StatRow columns={3}>

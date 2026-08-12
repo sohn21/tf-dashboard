@@ -217,7 +217,8 @@ export interface TradeRow {
   reason: string;
 }
 
-export interface Set2HoldingRow {
+// 래더 계좌(구 "세트2") 타입 — KV 스키마 필드명("set2")은 하위호환을 위해 그대로 유지, 여기 타입명만 정리(2026-08-12)
+export interface LadderHoldingRow {
   ticker: string;
   entryPx: number;
   lastClose: number;
@@ -225,32 +226,32 @@ export interface Set2HoldingRow {
   currentStopPct: number;
   trimStage: number;
   spark: number[];
-  // 옵셔널(2026-08-08, main account HoldingRow와 같은 마이그레이션 이유) — lockTier/isBe는
-  // 세트2엔 없음(LOCK_TIERS 없이 -8%→+8% 단일 락이라 개념이 안 맞음, SCHEMA.md 참고)
+  // 옵셔널(2026-08-08, core account HoldingRow와 같은 마이그레이션 이유) — lockTier/isBe는
+  // 래더엔 없음(LOCK_TIERS 없이 -8%→+8% 단일 락이라 개념이 안 맞음, SCHEMA.md 참고)
   stopDistPct?: number;
   statusCat?: HoldingStatusCat;
   // 옵셔널(2026-08-12, 같은 마이그레이션 이유): 진입 시점 투자금액(원가)
   entryValue?: number;
 }
 
-export interface Set2ExitReasonRow {
+export interface LadderExitReasonRow {
   reason: string;
   count: number;
   avgPnlPct: number;
 }
 
-export interface Set2BacktestSummary extends BacktestSummary {
-  exitReasons: Set2ExitReasonRow[];
+export interface LadderBacktestSummary extends BacktestSummary {
+  exitReasons: LadderExitReasonRow[];
 }
 
-export interface Set2Data {
+export interface LadderData {
   nav: number;
   cash: number;
   nPositions: number;
   navHistory: NavPoint[];
-  holdings: Set2HoldingRow[];
+  holdings: LadderHoldingRow[];
   recentTrades: TradeRow[];
-  backtest: Set2BacktestSummary | null;
+  backtest: LadderBacktestSummary | null;
 }
 
 export interface AlphaDecay {
@@ -287,5 +288,5 @@ export interface DashboardData {
   holdings: HoldingRow[];
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
-  set2: Set2Data | null;
+  set2: LadderData | null; // 필드명은 KV 스키마 하위호환 유지, 타입만 LadderData로 정리
 }
