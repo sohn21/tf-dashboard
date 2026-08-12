@@ -61,7 +61,7 @@ export default async function Home() {
 
       <AlphaDecayCard data={data.alphaDecay} />
 
-      <LadderCard data={data.set2} />
+      <LadderCard data={data.ladder} />
     </div>
   );
 }

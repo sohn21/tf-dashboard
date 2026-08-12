@@ -148,7 +148,7 @@ export const mockData: DashboardData = {
     nRecent: 22,
     profitFactor: 1.35,
   },
-  set2: {
+  ladder: {
     nav: 9998.75,
     cash: 7500,
     nPositions: 1,

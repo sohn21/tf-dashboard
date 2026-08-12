@@ -217,7 +217,7 @@ export interface TradeRow {
   reason: string;
 }
 
-// 래더 계좌(구 "세트2") 타입 — KV 스키마 필드명("set2")은 하위호환을 위해 그대로 유지, 여기 타입명만 정리(2026-08-12)
+// 래더 계좌(구 "세트2") 타입 — 2026-08-12: 타입명 + KV 스키마 필드명("set2"→"ladder") 모두 정리
 export interface LadderHoldingRow {
   ticker: string;
   entryPx: number;
@@ -288,5 +288,5 @@ export interface DashboardData {
   holdings: HoldingRow[];
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
-  set2: LadderData | null; // 필드명은 KV 스키마 하위호환 유지, 타입만 LadderData로 정리
+  ladder: LadderData | null;
 }
