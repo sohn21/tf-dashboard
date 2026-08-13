@@ -7,12 +7,17 @@ const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractio
 
 // 2026-08-11: 색상만으로는 구분이 잘 안 된다는 피드백 — 색+두께(1.4→2)에 더해 선마다 고유한
 // 대시 패턴(점선/파선/장파선/파점선)을 부여해 색맹이나 비슷한 색조에서도 패턴만으로 구분되게 함.
-const BENCHMARK_STYLE: Record<"spy" | "qqq" | "tqqq" | "gld" | "btc-usd", { label: string; color: string; dash: string }> = {
+const BENCHMARK_STYLE: Record<
+  "spy" | "qqq" | "tqqq" | "gld" | "btc-usd" | "samsung" | "skhynix",
+  { label: string; color: string; dash: string }
+> = {
   spy: { label: "SPY", color: "#8a8a86", dash: "" },
   qqq: { label: "QQQ", color: "#2a78d6", dash: "1,3" },
   tqqq: { label: "TQQQ", color: "#c07a3e", dash: "6,3" },
   gld: { label: "GLD", color: "#b8860b", dash: "10,4" },
   "btc-usd": { label: "BTC", color: "#8a5cf6", dash: "8,2,2,2" },
+  samsung: { label: "삼성전자", color: "#1631a3", dash: "4,2" },
+  skhynix: { label: "SK하이닉스", color: "#e2231a", dash: "2,2,6,2" },
 };
 
 export function NavChart({ data }: { data: NavPoint[] }) {

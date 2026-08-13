@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Card } from "./Card";
 import type { CandlePoint } from "@/lib/types";
 
-const TICKER_ORDER = ["SPY", "QQQ", "TQQQ", "GLD", "BTC-USD"];
+const TICKER_ORDER = ["SPY", "QQQ", "TQQQ", "GLD", "BTC-USD", "005930.KS", "000660.KS"];
 const TICKER_LABEL: Record<string, string> = {
   SPY: "SPY", QQQ: "QQQ", TQQQ: "TQQQ", GLD: "GLD", "BTC-USD": "BTC-USD",
+  "005930.KS": "삼성전자", "000660.KS": "SK하이닉스",
 };
 
 function MiniCandlestick({ ticker, points }: { ticker: string; points: CandlePoint[] }) {

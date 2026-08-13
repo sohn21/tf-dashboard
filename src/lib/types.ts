@@ -34,6 +34,8 @@ export interface NavPoint {
   tqqq?: number;
   gld?: number;
   "btc-usd"?: number;
+  samsung?: number;
+  skhynix?: number;
 }
 
 export interface CandlePoint {
