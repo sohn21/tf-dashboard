@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
+import { OverviewCards } from "./OverviewCards";
 import { Sparkline } from "./Sparkline";
 import { STATUS_BADGE } from "./HoldingsTable";
 import type { AlphaDecay, LadderData, LadderExitReasonRow } from "@/lib/types";
@@ -240,6 +241,7 @@ export function LadderCard({ data }: { data: LadderData | null }) {
             </table>
           </div>
         )}
+        <OverviewCards rows={data.holdings} />
       </div>
 
       {data.recentTrades.length > 0 && (

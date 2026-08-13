@@ -225,6 +225,12 @@ by both `CandidatesTable.tsx` and `HoldingsTable.tsx`) also appears under the ho
 currently-held positions rather than today's candidates. `sector`/`industry` are looked up from
 the same day's signals row when the ticker is present there; `null` otherwise.
 
+**`LadderHoldingRow.overview`/`.sector`/`.industry` (added 2026-08-13, same day/shape)**: same
+addition, this time to the ladder account's holdings (`LadderCard.tsx`) — same `_company_overview()`
+helper in `export_public.py`, same `OverviewCards.tsx` component, so a ticker held in both the
+core and ladder accounts on the same day makes exactly one `fundamentals.get_company_overview()`
+cache read (no duplicate network calls, `fetch_company_overview_raw()` only runs on a cache miss).
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

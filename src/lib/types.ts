@@ -254,6 +254,10 @@ export interface LadderHoldingRow {
   statusCat?: HoldingStatusCat;
   // 옵셔널(2026-08-12, 같은 마이그레이션 이유): 진입 시점 투자금액(원가)
   entryValue?: number;
+  // 옵셔널(2026-08-13, HoldingRow와 동일 마이그레이션 이유/형태)
+  sector?: string | null;
+  industry?: string | null;
+  overview?: CompanyOverview | null;
 }
 
 export interface LadderExitReasonRow {
