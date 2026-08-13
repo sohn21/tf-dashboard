@@ -222,6 +222,11 @@ export interface HoldingRow {
   isBe?: boolean;
   // 옵셔널(2026-08-12, 같은 마이그레이션 이유): 진입 시점 투자금액(원가)
   entryValue?: number;
+  // 옵셔널(2026-08-13, 같은 마이그레이션 이유): CandidateRow.overview와 동일 소스/형태 —
+  // 보유종목 표 아래에도 같은 기업개요/재무 요약 카드를 보여주기 위해 추가
+  sector?: string | null;
+  industry?: string | null;
+  overview?: CompanyOverview | null;
 }
 
 export interface TradeRow {

@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { OverviewCards } from "./OverviewCards";
 import { Sparkline } from "./Sparkline";
 import type { HoldingRow, HoldingStatusCat } from "@/lib/types";
 
@@ -81,6 +82,7 @@ export function HoldingsTable({ rows }: { rows: HoldingRow[] }) {
           </table>
         </div>
       )}
+      <OverviewCards rows={rows} />
     </Card>
   );
 }

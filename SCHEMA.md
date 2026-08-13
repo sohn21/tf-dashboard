@@ -214,6 +214,17 @@ only" design rule above — all fields are reference/valuation data, not scoring
 `.info` coverage). Renders as collapsible `<details>` cards under the candidates table
 (`CandidatesTable.tsx`), display-only — not wired into any gate or score.
 
+`businessSummary` is machine-translated to Korean at fetch time (private repo's
+`fundamentals._translate_to_korean`, `deep-translator`'s free Google Translate frontend, no API
+key) — the cached value is Korean, not the raw yfinance English text. Falls back to English on
+translation failure (best-effort).
+
+**`HoldingRow.overview`/`.sector`/`.industry` (added 2026-08-13, same day/shape)**: the same
+`CompanyOverview` shape and rendering (`OverviewCards.tsx`, extracted as a shared component used
+by both `CandidatesTable.tsx` and `HoldingsTable.tsx`) also appears under the holdings table, for
+currently-held positions rather than today's candidates. `sector`/`industry` are looked up from
+the same day's signals row when the ticker is present there; `null` otherwise.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the
