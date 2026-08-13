@@ -10,10 +10,11 @@ const TICKER_LABEL: Record<string, string> = {
   "005930.KS": "삼성전자", "000660.KS": "SK하이닉스",
 };
 
+const fmtAxis = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: v >= 1000 ? 0 : 1 });
+
 function MiniCandlestick({ ticker, points }: { ticker: string; points: CandlePoint[] }) {
   const [hover, setHover] = useState<number | null>(null);
-  const w = 260, h = 150, padL = 40, padR = 8, padT = 10, padB = 18;
-  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const w = 260, h = 150, padR = 8, padT = 10, padB = 18;
   const n = points.length;
 
   if (n === 0) {
@@ -32,6 +33,14 @@ function MiniCandlestick({ ticker, points }: { ticker: string; points: CandlePoi
   const pad = (vMax - vMin) * 0.06 || vMax * 0.02;
   const vLo = vMin - pad, vHi = vMax + pad;
 
+  const yTicks = [vLo + (vHi - vLo) * 0.25, vLo + (vHi - vLo) * 0.75];
+  // 2026-08-13: padL 고정 40px일 때 원화 표기("2,507,150")처럼 자릿수 많은 라벨이
+  // text-anchor="end"로 왼쪽으로 뻗어나가다 SVG viewBox 밖(x<0)으로 잘리는 버그 발견
+  // (SK하이닉스 y축이 "507,150"처럼 앞자리 잘린 값으로 보임) — 라벨 폭에 맞춰 동적 계산.
+  const maxLabelLen = Math.max(...yTicks.map((v) => fmtAxis(v).length));
+  const padL = Math.max(40, 10 + maxLabelLen * 7);
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+
   const xOf = (i: number) => (n === 1 ? padL + plotW / 2 : padL + (plotW * i) / (n - 1));
   const yOf = (v: number) => padT + plotH * (1 - (v - vLo) / (vHi - vLo));
   const bodyW = Math.max((plotW / n) * 0.6, 1.2);
@@ -40,8 +49,6 @@ function MiniCandlestick({ ticker, points }: { ticker: string; points: CandlePoi
   const first = points[0];
   const retPct = ((last.close / first.close - 1) * 100);
   const retCls = retPct >= 0 ? "delta-good" : "delta-critical";
-
-  const yTicks = [vLo + (vHi - vLo) * 0.25, vLo + (vHi - vLo) * 0.75];
 
   const handleMove: React.MouseEventHandler<SVGRectElement> = (e) => {
     const rect = e.currentTarget.ownerSVGElement!.getBoundingClientRect();
@@ -70,7 +77,7 @@ function MiniCandlestick({ ticker, points }: { ticker: string; points: CandlePoi
             <g key={v}>
               <line x1={padL} y1={yOf(v)} x2={w - padR} y2={yOf(v)} className="grid-line" />
               <text x={padL - 6} y={yOf(v) + 3} textAnchor="end" className="ink-muted label-sm">
-                {v.toLocaleString(undefined, { maximumFractionDigits: v >= 1000 ? 0 : 1 })}
+                {fmtAxis(v)}
               </text>
             </g>
           ))}
