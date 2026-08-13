@@ -490,3 +490,20 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 5px;
 }
+
+.overview-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--gridline);
+}
+.overview-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.overview-stat-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  margin-top: 2px;
+}

@@ -197,6 +197,23 @@ has close price; this needed full OHLC so it reads the raw per-ticker cache inst
 `benchmark_history.csv`. A ticker's array is `[]` (never missing/undefined) if its cache file
 doesn't exist yet.
 
+## `CandidateRow.overview` — company overview & fundamentals (added 2026-08-13)
+
+`CompanyOverview | null`, optional field. Source: private repo's `paper_trader/fundamentals.py`
+`get_company_overview()` (yfinance `Ticker.info`, 7-day cache, scoped to the ~15 tickers actually
+shown in the candidates table — not the full universe). Contains `businessSummary` (yfinance
+`longBusinessSummary`, untruncated here — UI truncates for display), `trailingPE`/`forwardPE`,
+`debtToEquityPct`/`dividendYieldPct` (yfinance already returns these two as %-scale numbers, e.g.
+`1.05` means 1.05% — do **not** multiply by 100 a second time, that produced a real 105%-dividend-
+yield display bug caught and fixed in the private dashboard the same day), `totalRevenue`,
+`grossMarginsPct` (this one *is* a 0–1 fraction from yfinance, converted to % in the export step),
+`freeCashflow`, and `compRating` (the existing display-only Comp Rating proxy, just carried along
+here per-candidate rather than only living on the signals CSV). Consistent with the "outcomes
+only" design rule above — all fields are reference/valuation data, not scoring/gating internals.
+`null` when yfinance returned nothing for that ticker (best-effort, not all tickers have full
+`.info` coverage). Renders as collapsible `<details>` cards under the candidates table
+(`CandidatesTable.tsx`), display-only — not wired into any gate or score.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

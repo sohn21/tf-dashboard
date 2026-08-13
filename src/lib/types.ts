@@ -153,6 +153,18 @@ export interface GateFunnelRow {
 export const GATE_KEYS = ["G0", "G1", "G2", "G3", "G4"] as const;
 export type GateKey = (typeof GATE_KEYS)[number];
 
+export interface CompanyOverview {
+  businessSummary: string | null;
+  trailingPE: number | null;
+  forwardPE: number | null;
+  debtToEquityPct: number | null;
+  dividendYieldPct: number | null;
+  totalRevenue: number | null;
+  grossMarginsPct: number | null;
+  freeCashflow: number | null;
+  compRating: number | null;
+}
+
 export interface CandidateRow {
   ticker: string;
   sector: string;
@@ -170,6 +182,9 @@ export interface CandidateRow {
   passed: boolean;
   newHigh52w: boolean;
   high52w: number | null;
+  // 옵셔널(2026-08-13, generatedAt 마이그레이션 패턴과 동일): 이 필드가 추가되기 전에 쓰인
+  // KV blob엔 없을 수 있음. display-only 참고자료(게이트/스코어 미반영)
+  overview?: CompanyOverview | null;
 }
 
 export interface SectorRow {
