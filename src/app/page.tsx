@@ -33,7 +33,13 @@ export default async function Home() {
 
       <SummaryCard summary={data.summary} regimeHistory={data.regimeHistory} />
 
-      <Card title="NAV 추이">
+      <Card
+        title={
+          data.navHistory.length > 0
+            ? `NAV 추이 (${data.navHistory[0].date} ~ ${data.navHistory[data.navHistory.length - 1].date} 수익률)`
+            : "NAV 추이"
+        }
+      >
         <NavChart data={data.navHistory} />
       </Card>
 
