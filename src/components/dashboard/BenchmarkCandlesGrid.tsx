@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Card } from "./Card";
 import type { CandlePoint } from "@/lib/types";
 
-const TICKER_ORDER = ["SPY", "QQQ", "TQQQ", "GLD", "BTC-USD", "005930.KS", "000660.KS"];
+const TICKER_ORDER = ["SPY", "QQQ", "TQQQ", "GLD", "BTC-USD", "005930.KS", "000660.KS", "119850.KQ"];
 const TICKER_LABEL: Record<string, string> = {
   SPY: "SPY", QQQ: "QQQ", TQQQ: "TQQQ", GLD: "GLD", "BTC-USD": "BTC-USD",
-  "005930.KS": "삼성전자", "000660.KS": "SK하이닉스",
+  "005930.KS": "삼성전자", "000660.KS": "SK하이닉스", "119850.KQ": "지엔씨에너지",
 };
 
 const fmtAxis = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: v >= 1000 ? 0 : 1 });

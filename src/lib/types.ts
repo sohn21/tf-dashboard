@@ -36,6 +36,7 @@ export interface NavPoint {
   "btc-usd"?: number;
   samsung?: number;
   skhynix?: number;
+  gncenergy?: number;
 }
 
 export interface CandlePoint {
