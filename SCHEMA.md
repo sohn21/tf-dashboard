@@ -231,6 +231,34 @@ helper in `export_public.py`, same `OverviewCards.tsx` component, so a ticker he
 core and ladder accounts on the same day makes exactly one `fundamentals.get_company_overview()`
 cache read (no duplicate network calls, `fetch_company_overview_raw()` only runs on a cache miss).
 
+## `ratchet` — third live account (added 2026-08-20)
+
+A completely separate $10,000 paper account (`data/paper_portfolio_ratchet.json` in the private
+repo), §14-C "Lock 래칫" — the private repo's third live account alongside the main account and
+`ladder`. Candidate selection and sizing are identical to `ladder` (same G0-G5 gates/guards, max 4
+positions, 25% NAV cap per position, no §1-F exposure cap/pyramiding/switching) — only the exit
+rule differs: no partial sells (unlike `ladder`'s trim ladder). Initial stop -7%; at +15% max-gain
+the stop moves to breakeven; from +25% onward the stop ratchets up through a fixed schedule
+(+25%→+10%, +35%→+20%, +50%→+25%, +70%→+35%, +100%→+60%, +200%→+150%, ... +100pp-spaced above
++600%) and never loosens. Positions that have ever reached +100% max-gain ("runners") don't exit
+on a stop breach alone while price is still above the 50-day EMA — only a simultaneous 50-EMA
+breach closes them. `null` until the account has run at least once.
+
+`RatchetData` mirrors `LadderData`'s shape (`nav`/`cash`/`nPositions`/`navHistory`/`holdings`/
+`recentTrades`/`backtest`/`alphaDecay`), with two differences on `RatchetHoldingRow`: no
+`trimStage` (ratchet never partially sells), and instead `maxGainPct` (best closed-price gain
+seen so far, drives the lock level) plus `isRunner` (`maxGainPct >= 100`, the 50-EMA-mercy flag).
+`RatchetBacktestSummary.exitReasons`' `reason` key is either `"stop"` (initial -7% floor) or a
+dynamically-generated `"stop_lock{N}"` (N = the locked stop % at exit) — not a fixed small set
+like `ladder`'s, so `RatchetCard.tsx` renders reasons by count rather than a hardcoded order/color
+map. Source: `backtest.run_backtest_ratchet()` (private repo,
+`data/backtest_{nav_history,trade_log,summary}_ratchet.csv/json`) — first iwb runs 2026-08-20, 5y
++245.98%/-29.12% MDD (34 trades) and 20y +856.57%/-38.45% MDD (112 trades), both beating `ladder`
+on return but with meaningfully worse MDD (the tradeoff: ratchet earns bull-market convexity by
+giving up early-bear-market defense — confirmed by a 19-year walk-forward split, ratchet wins
+9/19 one-year windows concentrated in strong-recovery years, ladder wins the initial-decline years
+including 2021-22 by -29pp).
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

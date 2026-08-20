@@ -282,6 +282,46 @@ export interface LadderData {
   alphaDecay: AlphaDecay;
 }
 
+// 래칫 계좌(§14-C Lock 래칫, 2026-08-20 추가) — 코어·래더와 별도인 세 번째 라이브 계좌.
+// 래더와 달리 부분매도가 없어 trimStage 대신 maxGainPct/isRunner를 노출한다.
+export interface RatchetHoldingRow {
+  ticker: string;
+  entryPx: number;
+  lastClose: number;
+  gainPct: number;
+  currentStopPct: number;
+  maxGainPct: number;
+  isRunner: boolean;
+  spark: number[];
+  stopDistPct?: number;
+  statusCat?: HoldingStatusCat;
+  entryValue?: number;
+  sector?: string | null;
+  industry?: string | null;
+  overview?: CompanyOverview | null;
+}
+
+export interface RatchetExitReasonRow {
+  reason: string;
+  count: number;
+  avgPnlPct: number;
+}
+
+export interface RatchetBacktestSummary extends BacktestSummary {
+  exitReasons: RatchetExitReasonRow[];
+}
+
+export interface RatchetData {
+  nav: number;
+  cash: number;
+  nPositions: number;
+  navHistory: NavPoint[];
+  holdings: RatchetHoldingRow[];
+  recentTrades: TradeRow[];
+  backtest: RatchetBacktestSummary | null;
+  alphaDecay: AlphaDecay;
+}
+
 export interface AlphaDecay {
   reliable: boolean;
   overallWinRate: number | null;
@@ -317,4 +357,5 @@ export interface DashboardData {
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
   ladder: LadderData | null;
+  ratchet: RatchetData | null;
 }

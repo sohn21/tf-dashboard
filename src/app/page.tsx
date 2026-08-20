@@ -15,6 +15,7 @@ import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
 import { PhaseTrendCard } from "@/components/dashboard/PhaseTrendCard";
 import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { LadderCard } from "@/components/dashboard/LadderCard";
+import { RatchetCard } from "@/components/dashboard/RatchetCard";
 import { Card } from "@/components/dashboard/Card";
 
 export default async function Home() {
@@ -68,6 +69,8 @@ export default async function Home() {
       <AlphaDecayCard data={data.alphaDecay} />
 
       <LadderCard data={data.ladder} />
+
+      <RatchetCard data={data.ratchet} />
     </div>
   );
 }
