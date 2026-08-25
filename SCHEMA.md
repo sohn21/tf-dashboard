@@ -259,6 +259,20 @@ giving up early-bear-market defense — confirmed by a 19-year walk-forward spli
 9/19 one-year windows concentrated in strong-recovery years, ladder wins the initial-decline years
 including 2021-22 by -29pp).
 
+## `rsLeading` — RS Line 선행 신호 (added 2026-08-25)
+
+`RsLeadingRow[]` — tickers where the RS Line hit a 252-trading-day high (`rs_new_high` in
+`signals.py`) but the price itself hasn't yet made a 52-week high (`price_new_high_52w` is
+false), i.e. `signals.py`'s `rs_leading = rs_new_high AND NOT price_new_high_52w`. Concept from
+the private repo's `tfbook/추세추종_투자전략_리포트.pdf` §5.2, which calls this the strongest
+pre-breakout entry signal (relative strength confirms before price does) — these names never
+show up in `newHighsLows` since price hasn't broken out, so this is a separate discovery list.
+Fields: `ticker`/`sector`/`industry`/`close`/`rsRating`/`mtrState` — deliberately **excludes**
+`dist_pivot_pct` even though it would be a natural addition (how close to the G2 pivot window),
+per the "Explicitly excluded" rule above (it's a raw G2 threshold input). `CandidateRow.rsLeading`
+is the same boolean surfaced per-candidate for the ⭐ badge in `CandidatesTable.tsx` (next to the
+existing 🔺 new-high badge). Both fields optional per the standard migration pattern.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

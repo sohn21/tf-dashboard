@@ -52,6 +52,7 @@ export function CandidatesTable({ rows, topN = 15 }: { rows: CandidateRow[]; top
                     <td className="ink-primary">
                       {r.ticker}
                       {r.newHigh52w && <span className="delta-good"> 🔺</span>}
+                      {r.rsLeading && <span className="delta-good" title="RS Leading — RS라인이 주가보다 먼저 신고가"> ⭐</span>}
                     </td>
                     <td className="ink-secondary">{r.sector}</td>
                     <td className="ink-secondary">{r.industry}</td>

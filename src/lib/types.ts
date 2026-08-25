@@ -134,6 +134,18 @@ export interface ThemeLeadership {
   bandHi: number;
 }
 
+// RS 라인이 252일 신고가를 갱신했지만 주가 자체는 아직 52주 신고가가 아닌 종목(added
+// 2026-08-25) — NewHighLowRow에는 안 잡히는 조기 후보군. tfbook/추세추종_투자전략_리포트.pdf
+// §5.2의 "RS Leading" 개념.
+export interface RsLeadingRow {
+  ticker: string;
+  sector: string;
+  industry: string;
+  close: number;
+  rsRating: number;
+  mtrState: number | null;
+}
+
 export interface NewHighLowRow {
   kind: "신고가" | "신저가";
   ticker: string;
@@ -182,6 +194,9 @@ export interface CandidateRow {
   gates: Record<GateKey, boolean>;
   passed: boolean;
   newHigh52w: boolean;
+  // 옵셔널(2026-08-25, generatedAt 마이그레이션 패턴과 동일): RS Leading — 이 필드가
+  // 추가되기 전에 쓰인 KV blob엔 없을 수 있음
+  rsLeading?: boolean;
   high52w: number | null;
   // 옵셔널(2026-08-13, generatedAt 마이그레이션 패턴과 동일): 이 필드가 추가되기 전에 쓰인
   // KV blob엔 없을 수 있음. display-only 참고자료(게이트/스코어 미반영)
@@ -349,6 +364,9 @@ export interface DashboardData {
   phaseTrend: PhaseTrend | null;
   themeLeadership: ThemeLeadership | null;
   newHighsLows: NewHighLowRow[];
+  // 옵셔널(2026-08-25, generatedAt 마이그레이션 패턴과 동일): 이 필드가 추가되기 전에 쓰인
+  // KV blob엔 없을 수 있음
+  rsLeading?: RsLeadingRow[];
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];
   sectorBreakdown: SectorRow[];

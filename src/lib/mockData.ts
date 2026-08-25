@@ -90,6 +90,9 @@ export const mockData: DashboardData = {
     { kind: "신고가", ticker: "PLTR", sector: "Technology", industry: "Software", close: 38.92, rsRating: 95, extensionPct200sma: 68 },
     { kind: "신저가", ticker: "SMCI", sector: "Technology", industry: "Hardware", close: 21.04, rsRating: 12, extensionPct200sma: -31 },
   ],
+  rsLeading: [
+    { ticker: "AVGO", sector: "Technology", industry: "Semiconductors", close: 168.4, rsRating: 91, mtrState: 7 },
+  ],
   gateFunnel: [
     { key: "G0", label: "G0", count: 487, total: 500 },
     { key: "G1", label: "G1", count: 210, total: 500 },

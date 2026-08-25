@@ -5,6 +5,7 @@ import { NavChart } from "@/components/dashboard/NavChart";
 import { BenchmarkCandlesGrid } from "@/components/dashboard/BenchmarkCandlesGrid";
 import { MarketBreadthCard } from "@/components/dashboard/MarketBreadthCard";
 import { NewHighsLowsTable } from "@/components/dashboard/NewHighsLowsTable";
+import { RsLeadingTable } from "@/components/dashboard/RsLeadingTable";
 import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
 import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
@@ -53,6 +54,8 @@ export default async function Home() {
       <PhaseTrendCard data={data.phaseTrend} />
 
       <NewHighsLowsTable rows={data.newHighsLows} />
+
+      <RsLeadingTable rows={data.rsLeading ?? []} />
 
       <GateFunnelCard rows={data.gateFunnel} />
 
