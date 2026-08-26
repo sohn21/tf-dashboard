@@ -146,6 +146,51 @@ export interface RsLeadingRow {
   mtrState: number | null;
 }
 
+// 다음 리더 추적(Stalking, added 2026-08-26) — G0-G4 게이트와 무관한 사전추적 스코어러.
+// RS 70~89(아직 리더 아님) 구간에서 stalkingScore(RS_norm 35%+AD 25%+Passes 20%+
+// EarlyZone 20%)로 채점, 등급 S/A/B/C. 서브지표 자체는 SCHEMA.md 설계원칙에 따라 미노출.
+export type StalkingGrade = "S" | "A" | "B" | "C";
+
+export interface StalkingRow {
+  ticker: string;
+  sector: string;
+  industry: string;
+  close: number;
+  rsRating: number;
+  stalkingScore: number;
+  stalkingGrade: StalkingGrade;
+}
+
+// 오늘의 발화 테마(Catalyst + Sustain, added 2026-08-26) — 일간 테마 점화/소멸 상태머신.
+// theme_leading(지속형 다일 플래그)과 무관한 별개 지표. 발화 = 당일 industry 평균등락률
+// 상위 8개 중 floor(평균≥1.0% 또는 lead≥8%) 통과분. sustain은 전일 대비 상태전이.
+export interface CatalystTopMember {
+  ticker: string;
+  returnPct: number;
+}
+
+export interface CatalystIgnitedRow {
+  industry: string;
+  sector: string;
+  avgReturnPct: number;
+  leadTicker: string;
+  leadReturnPct: number;
+  leadRs: number;
+  memberCount: number;
+  upCount: number;
+  cascade: boolean;
+  streak: number;
+  badge: string;
+  reIgnited: boolean;
+  topMembers: CatalystTopMember[];
+}
+
+export interface CatalystData {
+  date: string;
+  ignited: CatalystIgnitedRow[];
+  weakened: string[];
+}
+
 export interface NewHighLowRow {
   kind: "신고가" | "신저가";
   ticker: string;
@@ -367,6 +412,8 @@ export interface DashboardData {
   // 옵셔널(2026-08-25, generatedAt 마이그레이션 패턴과 동일): 이 필드가 추가되기 전에 쓰인
   // KV blob엔 없을 수 있음
   rsLeading?: RsLeadingRow[];
+  stalking?: StalkingRow[];
+  catalyst?: CatalystData | null;
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];
   sectorBreakdown: SectorRow[];

@@ -273,6 +273,53 @@ per the "Explicitly excluded" rule above (it's a raw G2 threshold input). `Candi
 is the same boolean surfaced per-candidate for the ⭐ badge in `CandidatesTable.tsx` (next to the
 existing 🔺 new-high badge). Both fields optional per the standard migration pattern.
 
+## `stalking` — 다음 리더 추적 (Stalking, added 2026-08-26)
+
+`StalkingRow[]`, top 30 by `stalkingScore` descending. Ported from the private repo's original
+"전략실" dashboard ⑨ panel (a pre-entry candidate scorer, completely separate from the G0-G4
+gate funnel and from `rsLeading`) — scans the RS 70~89 band (not yet a leader, but close) for
+names likely to become the *next* leader. Source: `paper_trader/stalking.py`, `signals.py`'s
+`stalking_score`/`stalking_grade` columns (`stalking_score_row()` already applies the eligibility
+filter — this list only contains names that passed it).
+
+Fields exported: `ticker`/`sector`/`industry`/`close`/`rsRating`/`stalkingScore`/`stalkingGrade`
+("S"/"A"/"B"/"C", S=75+/A=60~74/B=45~59/C=<45). Deliberately **excludes** the four sub-scores
+that sum to `stalkingScore` (RS_norm/AD/Passes/EarlyZone) and the filter thresholds
+(`rs∈[70,89]`, `trend_pass≥6`, `ad_score≥45`) — same "outcomes only" rule as everywhere else, and
+`trend_pass` specifically is already on the excluded-raw-column list above. Note for context (not
+enforced by the schema): the private repo's `AD`/`EarlyZone` sub-scores are themselves
+approximations of the original friend-side system (whose exact formula isn't available), so
+`stalkingScore` numbers won't byte-match the original tool even before this schema's exclusions.
+
+## `catalyst` — 오늘의 발화 테마 (Catalyst + Sustain, added 2026-08-26)
+
+`CatalystData | null` — ported from the private repo's original "전략실" dashboard ⑦ panel, a
+**daily** theme-ignition/decay state machine (distinct from `themeLeadership`, which tracks a
+persistent multi-day flag). Source: `paper_trader/catalyst.py`, backed by
+`data/catalyst_history.csv` (private repo, not exported directly — only the latest day's rows).
+
+`CatalystData.ignited: CatalystIgnitedRow[]` — that day's top-8 "ignited" industry clusters:
+avg same-day return in the top 8 across all industries AND clearing a floor (avg ≥1.0% or the
+single best mover in the cluster ≥8%). `CatalystData.weakened: string[]` — industry names that
+were ignited the prior trading day but dropped out of today's top-8 (this repo's own conservative
+choice: unlike `ignited`, this is not itself a scoring threshold, just today-vs-yesterday set
+difference, so it's fine to expose as a plain list per the "outcomes only" rule).
+
+`CatalystIgnitedRow.badge` is the sustain streak label: `"new"` (day 1) → `"D+1"` → `"D+2"` →
+`"D+3+ ★★★"` (4+ consecutive days = promoted to a "main theme" per the original panel's own
+language). `reIgnited` is true when a cluster ignites again after a gap (streak resets to 1
+either way, this flag is the only way to tell "brand new" from "back after a break"). `cascade`
+is true when ≥50% of the cluster's members were up that day (broad participation, i.e. sector
+rotation rather than one stock). `topMembers` is the top 5 members by same-day return within the
+cluster.
+
+Unlike `stalking`, every field here is an **exact** reproduction of the original panel's
+algorithm — the tooltip text on the original spelled out the full formula, so there was no
+approximation to make (the private repo's own addition on top of the original: same-industry
+clusters need ≥2 members to count, otherwise a single stock could dominate as its own "cluster").
+The one deliberately unported piece is `catalyst_tracker.py`'s optional live web-search news
+tagging (`--with-catalyst` flag) — out of scope, this dashboard has no news-search capability.
+
 ## Source of truth
 
 `src/lib/types.ts` — `DashboardData` and its nested types are the

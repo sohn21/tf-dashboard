@@ -6,6 +6,8 @@ import { BenchmarkCandlesGrid } from "@/components/dashboard/BenchmarkCandlesGri
 import { MarketBreadthCard } from "@/components/dashboard/MarketBreadthCard";
 import { NewHighsLowsTable } from "@/components/dashboard/NewHighsLowsTable";
 import { RsLeadingTable } from "@/components/dashboard/RsLeadingTable";
+import { CatalystCard } from "@/components/dashboard/CatalystCard";
+import { StalkingTable } from "@/components/dashboard/StalkingTable";
 import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
 import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
@@ -56,6 +58,10 @@ export default async function Home() {
       <NewHighsLowsTable rows={data.newHighsLows} />
 
       <RsLeadingTable rows={data.rsLeading ?? []} />
+
+      <CatalystCard data={data.catalyst} />
+
+      <StalkingTable rows={data.stalking ?? []} />
 
       <GateFunnelCard rows={data.gateFunnel} />
 

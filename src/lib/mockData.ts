@@ -93,6 +93,36 @@ export const mockData: DashboardData = {
   rsLeading: [
     { ticker: "AVGO", sector: "Technology", industry: "Semiconductors", close: 168.4, rsRating: 91, mtrState: 7 },
   ],
+  stalking: [
+    { ticker: "FISI", sector: "Financial Services", industry: "Banks - Regional", close: 41.56, rsRating: 88, stalkingScore: 94.8, stalkingGrade: "S" },
+    { ticker: "CPAY", sector: "Technology", industry: "Software - Infrastructure", close: 407.62, rsRating: 87, stalkingScore: 92.9, stalkingGrade: "S" },
+    { ticker: "TGT", sector: "Consumer Defensive", industry: "Discount Stores", close: 151.01, rsRating: 86, stalkingScore: 92.1, stalkingGrade: "S" },
+  ],
+  catalyst: {
+    date: "2026-08-26",
+    ignited: [
+      {
+        industry: "Semiconductor Equipment & Materials", sector: "Technology", avgReturnPct: 4.14,
+        leadTicker: "AXTI", leadReturnPct: 17.55, leadRs: 73, memberCount: 15, upCount: 12,
+        cascade: true, streak: 3, badge: "D+2", reIgnited: true,
+        topMembers: [
+          { ticker: "AXTI", returnPct: 17.55 },
+          { ticker: "ACMR", returnPct: 6.49 },
+          { ticker: "ONTO", returnPct: 5.86 },
+        ],
+      },
+      {
+        industry: "Copper", sector: "Basic Materials", avgReturnPct: 3.34,
+        leadTicker: "TGB", leadReturnPct: 5.03, leadRs: 90, memberCount: 6, upCount: 6,
+        cascade: true, streak: 1, badge: "new", reIgnited: false,
+        topMembers: [
+          { ticker: "TGB", returnPct: 5.03 },
+          { ticker: "SCCO", returnPct: 4.02 },
+        ],
+      },
+    ],
+    weakened: ["Aerospace & Defense", "Gold"],
+  },
   gateFunnel: [
     { key: "G0", label: "G0", count: 487, total: 500 },
     { key: "G1", label: "G1", count: 210, total: 500 },
