@@ -3,19 +3,28 @@ import { getDashboardData } from "@/lib/kv";
 import { Card } from "@/components/dashboard/Card";
 import { NavChart } from "@/components/dashboard/NavChart";
 import { PhaseTrendCard } from "@/components/dashboard/PhaseTrendCard";
-import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
+import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
+import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
+import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
+import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { ExposureCard } from "@/components/briefing/ExposureCard";
+import { StrongSectorsCard } from "@/components/briefing/StrongSectorsCard";
+import { RiskStatsCard } from "@/components/briefing/RiskStatsCard";
+import { MddChart } from "@/components/briefing/MddChart";
 import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
 import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
 import { TermButton } from "@/components/briefing/TermTrigger";
 
 // 친구쪽 전략실 브리핑 룩앤필을 우리 데이터로 재구현한 공개 리포트 라우트.
-// [[project_briefing_html_clone]] 2026-08-26 — 로컬 정적 버전(private repo tf_project의
-// paper_trader/briefing_html.py)과 동일 섹션 구성/문구, React로 재구현. 이미 메인
-// 대시보드에서 쓰던 필드(regime/phaseTrend/gateFunnel/navHistory/alphaDecay)는 기존
-// 컴포넌트를 그대로 재사용 — 새로 그리지 않음. exposure/protectionRules 만 이 라우트 전용
-// 신규 필드(둘 다 optional, 이전 KV blob엔 없을 수 있음).
+// [[project_briefing_html_clone]] 2026-08-26 — 원본이 11개 섹션(01 시장상태 ~ 11 테마로테이션)
+// 이라는 걸 사용자가 지적한 뒤 전체 번호/제목을 원본에서 직접 대조해 채웠다(로컬 정적 버전
+// paper_trader/briefing_html.py 와 동일 매핑). 이미 메인 대시보드에 있던 컴포넌트
+// (PhaseTrendCard/SectorBreakdownTable/CandidatesTable/HoldingsTable/ThemeLeadershipCard/
+// NavChart/AlphaDecayCard)는 그대로 재사용 — 새로 그리지 않음. 신규는 03(StrongSectorsCard)/
+// 07(RiskStatsCard, Sharpe·연변동성·기간수익률·현금비중 새 계산)/08(MddChart, 낙폭추이
+// 라인차트, 기존엔 스탯 숫자 하나뿐이었음)/11(RotationRibbon, 이전 세션에 이미 구현)뿐.
+// 보호룰(BE·LOCK·8주룰)은 원본 11개 섹션에 없는 이 저장소 자체 추가라 번호 없이 맨 끝에 붙인다.
 export default async function Briefing() {
   const live = await getDashboardData();
   const data = live ?? mockData;
@@ -36,23 +45,78 @@ export default async function Briefing() {
       </div>
       <ExposureCard regime={data.summary.regime} regimeStatus={data.summary.regimeStatus} exposure={data.exposure} />
 
+      <div className="shead">
+        <span className="snum">02</span>
+        <h2 className="stitle">베이스 분포도</h2>
+      </div>
       <PhaseTrendCard data={data.phaseTrend} />
 
-      <RotationSectionHeader />
-      <RotationRibbon rotation={data.rotation} />
+      <div className="shead">
+        <span className="snum">03</span>
+        <h2 className="stitle">강세 섹터</h2>
+        <TermButton termKey="strongsectors" />
+      </div>
+      <StrongSectorsCard rotation={data.rotation} />
 
-      <GateFunnelCard rows={data.gateFunnel} />
+      <div className="shead">
+        <span className="snum">04</span>
+        <h2 className="stitle">세부 업종 상위</h2>
+        <TermButton termKey="sectordetail" />
+      </div>
+      <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} />
 
       <div className="shead">
         <span className="snum">05</span>
-        <h2 className="stitle">포트폴리오 NAV / MDD</h2>
+        <h2 className="stitle">전략실 게이트 상위종목</h2>
+        <TermButton termKey="candidates" />
+      </div>
+      <CandidatesTable rows={data.candidates} topN={15} />
+
+      <div className="shead">
+        <span className="snum">06</span>
+        <h2 className="stitle">전략실 NAV 곡선</h2>
+        <TermButton termKey="navcurve" />
       </div>
       <Card>
         <NavChart data={data.navHistory} />
       </Card>
 
       <div className="shead">
-        <span className="snum">06</span>
+        <span className="snum">07</span>
+        <h2 className="stitle">수익 · 위험 통계</h2>
+        <TermButton termKey="riskstats" />
+      </div>
+      <RiskStatsCard navHistory={data.navHistory} cash={data.summary.cash} nav={data.summary.nav} />
+      <AlphaDecayCard data={data.alphaDecay} />
+
+      <div className="shead">
+        <span className="snum">08</span>
+        <h2 className="stitle">MDD 차트</h2>
+        <TermButton termKey="mddchart" />
+      </div>
+      <MddChart navHistory={data.navHistory} />
+
+      <div className="shead">
+        <span className="snum">09</span>
+        <h2 className="stitle">현재 보유종목 상황</h2>
+        <TermButton termKey="holdings" />
+      </div>
+      <HoldingsTable rows={data.holdings} />
+
+      <div className="shead">
+        <span className="snum">10</span>
+        <h2 className="stitle">Leading Theme Count</h2>
+        <TermButton termKey="leadingcount" />
+      </div>
+      <ThemeLeadershipCard data={data.themeLeadership} />
+
+      <RotationSectionHeader />
+      <RotationRibbon rotation={data.rotation} />
+
+      <div className="shead" style={{ marginTop: 36, borderTop: "1px dashed var(--border)", paddingTop: 20 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          +
+        </span>
         <h2 className="stitle">보호 룰 (BE · LOCK · 8주룰)</h2>
         <TermButton termKey="protection" />
       </div>
@@ -63,8 +127,6 @@ export default async function Briefing() {
         <span className="corner br" />
         <ProtectionRulesCard rules={data.protectionRules} />
       </div>
-
-      <AlphaDecayCard data={data.alphaDecay} />
     </div>
   );
 }

@@ -224,6 +224,8 @@ export const mockData: DashboardData = {
     ],
     themeStrongThreshold: 60,
     themeConcernThreshold: 48,
+    sectorStrongThreshold: 53,
+    sectorConcernThreshold: 45,
   },
   ladder: {
     nav: 9998.75,

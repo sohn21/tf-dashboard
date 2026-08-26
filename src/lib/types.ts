@@ -438,6 +438,8 @@ export interface Rotation {
   sectors: RotationSectorRow[];
   themeStrongThreshold: number;
   themeConcernThreshold: number;
+  sectorStrongThreshold: number;
+  sectorConcernThreshold: number;
 }
 
 export interface AlphaDecay {
