@@ -1,0 +1,44 @@
+name: Alias tf21.vercel.app to latest production deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  alias:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: team_KRhoTuacuN9OgOEGkkJqsyRr
+      VERCEL_PROJECT_ID: prj_U9dZT3kAVH2WfR0mQfTIQhcx0zAp
+    steps:
+      - name: Wait for the matching production deployment to be READY
+        id: find
+        run: |
+          SHA="${{ github.sha }}"
+          URL=""
+          for i in $(seq 1 40); do
+            URL=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&teamId=$VERCEL_ORG_ID&limit=10" \
+              | jq -r --arg sha "$SHA" \
+                '.deployments[] | select(.meta.githubCommitSha == $sha and .state == "READY" and .target == "production") | .url' \
+              | head -1)
+            if [ -n "$URL" ]; then
+              echo "Found ready deployment: $URL"
+              break
+            fi
+            echo "Deployment for $SHA not READY yet (attempt $i/40), waiting 15s..."
+            sleep 15
+          done
+          if [ -z "$URL" ]; then
+            echo "::error::Timed out waiting for a READY production deployment for $SHA"
+            exit 1
+          fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Point tf21.vercel.app at it
+        run: |
+          npm i -g vercel@latest
+          vercel alias set "${{ steps.find.outputs.url }}" tf21.vercel.app \
+            --token="$VERCEL_TOKEN" --scope="$VERCEL_ORG_ID"
