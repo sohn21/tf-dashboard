@@ -442,6 +442,34 @@ export interface Rotation {
   sectorConcernThreshold: number;
 }
 
+// StockEasy(국내주식 모멘텀 사이드 프로젝트, added 2026-08-26, /briefing 12번 섹션 전용) —
+// tf_project와 별개 저장소(/Users/sohn/work/stockeasy, non-git)의 KR 래더+스크리너 데이터.
+// 원본 11개 섹션엔 없는 이 저장소 자체 추가.
+export interface StockEasyPosition {
+  code: string;
+  name: string | null;
+  market: string | null;
+  sector: string | null;
+  entryPx: number | null;
+  lastClose: number | null;
+  gainPct: number | null;
+  currentStopPct: number | null;
+}
+
+export interface StockEasyCandidate {
+  rank: number | null;
+  name: string | null;
+  sector: string | null;
+  status: string | null;
+  pctToHigh: number | null;
+}
+
+export interface StockEasy {
+  benchmark: Record<string, number>;
+  positions: StockEasyPosition[];
+  candidates: StockEasyCandidate[];
+}
+
 export interface AlphaDecay {
   reliable: boolean;
   overallWinRate: number | null;
@@ -486,6 +514,7 @@ export interface DashboardData {
   exposure?: Exposure | null;
   protectionRules?: ProtectionRules | null;
   rotation?: Rotation | null;
+  stockeasy?: StockEasy | null;
   ladder: LadderData | null;
   ratchet: RatchetData | null;
 }

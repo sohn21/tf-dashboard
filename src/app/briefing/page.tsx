@@ -14,6 +14,7 @@ import { RiskStatsCard } from "@/components/briefing/RiskStatsCard";
 import { MddChart } from "@/components/briefing/MddChart";
 import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
 import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
+import { StockEasyCard } from "@/components/briefing/StockEasyCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
 
 // 친구쪽 전략실 브리핑 룩앤필을 우리 데이터로 재구현한 공개 리포트 라우트.
@@ -112,6 +113,13 @@ export default async function Briefing() {
 
       <RotationSectionHeader />
       <RotationRibbon rotation={data.rotation} />
+
+      <div className="shead">
+        <span className="snum">12</span>
+        <h2 className="stitle">StockEasy (국내 주식)</h2>
+        <TermButton termKey="stockeasy" />
+      </div>
+      <StockEasyCard stockeasy={data.stockeasy} />
 
       <div className="shead" style={{ marginTop: 36, borderTop: "1px dashed var(--border)", paddingTop: 20 }}>
         <span className="snum" style={{ color: "var(--text-muted)" }}>

@@ -227,6 +227,17 @@ export const mockData: DashboardData = {
     sectorStrongThreshold: 53,
     sectorConcernThreshold: 45,
   },
+  stockeasy: {
+    benchmark: { KOSPI: 85, KOSDAQ: 49 },
+    positions: [
+      { code: "003010", name: "혜인", market: "KOSPI", sector: "산업기계", entryPx: 9690, lastClose: 11660, gainPct: 20.3, currentStopPct: -8 },
+      { code: "098120", name: "마이크로컨텍솔", market: "KOSDAQ", sector: "테스트소켓", entryPx: 41450, lastClose: 41900, gainPct: 1.1, currentStopPct: -8 },
+    ],
+    candidates: [
+      { rank: 1, name: "롯데웰푸드", sector: "음식료", status: "돌파성공", pctToHigh: 2.5 },
+      { rank: 2, name: "제닉", sector: "화장품", status: "돌파성공", pctToHigh: 0.58 },
+    ],
+  },
   ladder: {
     nav: 9998.75,
     cash: 7500,

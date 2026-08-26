@@ -112,6 +112,14 @@ export const TERMS: Record<string, GlossaryTerm> = {
     t: "Phase 6/7 — 후반피로 / 분배의심",
     ps: ["6=Stage2 고점 풀백(시장 노화), 7=지속 하락·RS 다이버전스(분배 의심). 급증 시 방어 전환 신호."],
   },
+  stockeasy: {
+    t: "StockEasy (국내 주식)",
+    ps: [
+      "tf_project와 별개인 사이드 프로젝트 — 국내(KR) RS 모멘텀 스크리너 + 래더 트래커.",
+      "래더 보유종목 = 실시간 포지션. 스크리너 후보 = 당일 KOSPI/KOSDAQ RS 상위 순위표(엄격 필터를 통과 못하면 전체 후보 목록으로 대체 표시).",
+      "원본 11개 섹션엔 없는 이 저장소 자체 추가.",
+    ],
+  },
   protection: {
     t: "보호 룰 (BE · LOCK · 8주룰)",
     ps: [
