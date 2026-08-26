@@ -395,6 +395,30 @@ export interface RatchetData {
   alphaDecay: AlphaDecay;
 }
 
+// 3층 노출도(added 2026-08-26, /briefing 전용) — 우리 시스템은 원본처럼 lo~hi 밴드가 아니라
+// REGIME_TABLE 기준 단일 상한값. L1(레짐) → 섹터가드 → 테마가드 순으로 깎은 최종값.
+export interface Exposure {
+  l1MaxPct: number;
+  finalMaxPct: number;
+  cutPct: number;
+  sectorOk: boolean;
+  themeOk: boolean;
+}
+
+// 보호 룰(BE·LOCK 래칫 + O'Neill 8주룰, added 2026-08-26) — portfolio.py 상수 그대로 노출
+// (계산 아님, 값 자체가 바뀌면 프론트도 자동 반영되게 하드코딩하지 않음).
+export interface LockTier {
+  gainPct: number;
+  lockPct: number;
+}
+
+export interface ProtectionRules {
+  lockTiers: LockTier[];
+  oneillTriggerBdays: number;
+  oneillThresholdPct: number;
+  oneillHoldBdays: number;
+}
+
 export interface AlphaDecay {
   reliable: boolean;
   overallWinRate: number | null;
@@ -435,6 +459,9 @@ export interface DashboardData {
   holdings: HoldingRow[];
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
+  // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
+  exposure?: Exposure | null;
+  protectionRules?: ProtectionRules | null;
   ladder: LadderData | null;
   ratchet: RatchetData | null;
 }

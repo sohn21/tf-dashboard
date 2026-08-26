@@ -187,6 +187,28 @@ export const mockData: DashboardData = {
     nRecent: 22,
     profitFactor: 1.35,
   },
+  exposure: {
+    l1MaxPct: 50,
+    finalMaxPct: 50,
+    cutPct: 0,
+    sectorOk: true,
+    themeOk: true,
+  },
+  protectionRules: {
+    lockTiers: [
+      { gainPct: 15, lockPct: 0 },
+      { gainPct: 25, lockPct: 10 },
+      { gainPct: 50, lockPct: 25 },
+      { gainPct: 100, lockPct: 70 },
+      { gainPct: 200, lockPct: 150 },
+      { gainPct: 300, lockPct: 250 },
+      { gainPct: 400, lockPct: 350 },
+      { gainPct: 500, lockPct: 400 },
+    ],
+    oneillTriggerBdays: 15,
+    oneillThresholdPct: 20,
+    oneillHoldBdays: 40,
+  },
   ladder: {
     nav: 9998.75,
     cash: 7500,
