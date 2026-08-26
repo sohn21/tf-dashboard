@@ -419,6 +419,27 @@ export interface ProtectionRules {
   oneillHoldBdays: number;
 }
 
+// 섹터/테마 로테이션 리본(added 2026-08-26, /briefing 전용) — exposure.py:sector_theme_scores()
+// 가 매일 쌓는 히스토리. dates가 짧을수록(2026-08-26부터 축적 시작) 초반엔 얇은 띠 1~2칸뿐 —
+// 프론트는 dates 길이에 맞춰서만 그리고, 데이터가 느는 대로 자동으로 넓어진다.
+export interface RotationThemeRow {
+  name: string;
+  scores: (number | null)[]; // dates와 같은 길이, 인덱스로 매칭
+}
+
+export interface RotationSectorRow {
+  name: string;
+  score: number;
+}
+
+export interface Rotation {
+  dates: string[];
+  themes: RotationThemeRow[];
+  sectors: RotationSectorRow[];
+  themeStrongThreshold: number;
+  themeConcernThreshold: number;
+}
+
 export interface AlphaDecay {
   reliable: boolean;
   overallWinRate: number | null;
@@ -462,6 +483,7 @@ export interface DashboardData {
   // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
   exposure?: Exposure | null;
   protectionRules?: ProtectionRules | null;
+  rotation?: Rotation | null;
   ladder: LadderData | null;
   ratchet: RatchetData | null;
 }

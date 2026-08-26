@@ -7,6 +7,7 @@ import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { ExposureCard } from "@/components/briefing/ExposureCard";
 import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
+import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
 import { TermButton } from "@/components/briefing/TermTrigger";
 
 // 친구쪽 전략실 브리핑 룩앤필을 우리 데이터로 재구현한 공개 리포트 라우트.
@@ -37,20 +38,8 @@ export default async function Briefing() {
 
       <PhaseTrendCard data={data.phaseTrend} />
 
-      <div className="shead">
-        <span className="snum">03</span>
-        <h2 className="stitle">섹터/테마 로테이션</h2>
-      </div>
-      <div className="blueprint" style={{ padding: 16 }}>
-        <span className="corner tl" />
-        <span className="corner tr" />
-        <span className="corner bl" />
-        <span className="corner br" />
-        <p className="ink-muted">
-          섹터/테마 로테이션 히트맵은 일별 히스토리 축적이 필요한 섹션입니다 — 2026-08-26부터 매일 쌓기 시작했습니다. 2주 이상 쌓이면 이
-          자리에 60거래일 로테이션 리본 히트맵을 채웁니다.
-        </p>
-      </div>
+      <RotationSectionHeader />
+      <RotationRibbon rotation={data.rotation} />
 
       <GateFunnelCard rows={data.gateFunnel} />
 

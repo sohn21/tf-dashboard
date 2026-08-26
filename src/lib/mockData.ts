@@ -209,6 +209,22 @@ export const mockData: DashboardData = {
     oneillThresholdPct: 20,
     oneillHoldBdays: 40,
   },
+  rotation: {
+    dates: ["2026-08-24", "2026-08-25", "2026-08-26"],
+    themes: [
+      { name: "Copper", scores: [88.1, 91.4, 95.7] },
+      { name: "Gold", scores: [72.3, 68.9, 61.2] },
+      { name: "Semiconductor Equipment & Materials", scores: [54.0, 58.7, 62.4] },
+      { name: "Software - Infrastructure", scores: [49.1, 47.8, 44.2] },
+    ],
+    sectors: [
+      { name: "Basic Materials", score: 63.2 },
+      { name: "Technology", score: 55.4 },
+      { name: "Energy", score: 41.7 },
+    ],
+    themeStrongThreshold: 60,
+    themeConcernThreshold: 48,
+  },
   ladder: {
     nav: 9998.75,
     cash: 7500,
