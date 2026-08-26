@@ -291,6 +291,24 @@ enforced by the schema): the private repo's `AD`/`EarlyZone` sub-scores are them
 approximations of the original friend-side system (whose exact formula isn't available), so
 `stalkingScore` numbers won't byte-match the original tool even before this schema's exclusions.
 
+## `stalkingGraduated` — Stalking 졸업/리더 등극 (added 2026-08-26)
+
+`StalkingGraduatedRow[]`, most recent `graduatedDate` first, last 30 days only. Not part of the
+original ported panel — this repo's own addition on top of `stalking`, requested to answer "did
+any Stalking candidate actually become a leader?" without a push notification (dashboard badge
+only, checked once a day by the live cron). A ticker "graduates" when its `rsRating` crosses 90+
+(the private repo's `RS_LEADER_MIN`) after having appeared at least once in the Stalking pool
+(RS 70~89) on some earlier date — source: `paper_trader/stalking.py`'s `check_graduations()`,
+backed by `data/stalking_history.csv` (every day's pool, deduped by date) and
+`data/stalking_graduated.csv` (one row per graduation event, append-only). Re-graduation is
+allowed if the ticker drops back into the pool and gets tracked again before crossing 90+ a second
+time — a ticker sitting above 90 continuously does not get re-flagged every day.
+
+Fields: `ticker`/`graduatedDate`/`graduatedRs` (today's crossing), `firstTrackedDate`/
+`lastTrackedDate`/`daysTracked` (the tracking window before graduation), `peakGrade` (best
+Stalking grade seen during that window), `trackedRsEntry` (RS Rating on `firstTrackedDate`).
+Display-only, same as `stalking` — not wired into any gate or score.
+
 ## `catalyst` — 오늘의 발화 테마 (Catalyst + Sustain, added 2026-08-26)
 
 `CatalystData | null` — ported from the private repo's original "전략실" dashboard ⑦ panel, a

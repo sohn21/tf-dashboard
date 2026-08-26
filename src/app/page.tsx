@@ -8,6 +8,7 @@ import { NewHighsLowsTable } from "@/components/dashboard/NewHighsLowsTable";
 import { RsLeadingTable } from "@/components/dashboard/RsLeadingTable";
 import { CatalystCard } from "@/components/dashboard/CatalystCard";
 import { StalkingTable } from "@/components/dashboard/StalkingTable";
+import { StalkingGraduatedTable } from "@/components/dashboard/StalkingGraduatedTable";
 import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
 import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
@@ -62,6 +63,8 @@ export default async function Home() {
       <CatalystCard data={data.catalyst} />
 
       <StalkingTable rows={data.stalking ?? []} />
+
+      <StalkingGraduatedTable rows={data.stalkingGraduated ?? []} />
 
       <GateFunnelCard rows={data.gateFunnel} />
 

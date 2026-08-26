@@ -161,6 +161,19 @@ export interface StalkingRow {
   stalkingGrade: StalkingGrade;
 }
 
+// Stalking 졸업(리더 등극, added 2026-08-26) — 과거 Stalking 후보풀(RS 70~89)에 있던
+// 종목이 RS Rating 90+ 로 올라오면 기록. 매수 게이트/스코어와 무관한 참고용 배지.
+export interface StalkingGraduatedRow {
+  ticker: string;
+  firstTrackedDate: string;
+  lastTrackedDate: string;
+  peakGrade: StalkingGrade;
+  trackedRsEntry: number;
+  graduatedDate: string;
+  graduatedRs: number;
+  daysTracked: number;
+}
+
 // 오늘의 발화 테마(Catalyst + Sustain, added 2026-08-26) — 일간 테마 점화/소멸 상태머신.
 // theme_leading(지속형 다일 플래그)과 무관한 별개 지표. 발화 = 당일 industry 평균등락률
 // 상위 8개 중 floor(평균≥1.0% 또는 lead≥8%) 통과분. sustain은 전일 대비 상태전이.
@@ -413,6 +426,7 @@ export interface DashboardData {
   // KV blob엔 없을 수 있음
   rsLeading?: RsLeadingRow[];
   stalking?: StalkingRow[];
+  stalkingGraduated?: StalkingGraduatedRow[];
   catalyst?: CatalystData | null;
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];

@@ -98,6 +98,12 @@ export const mockData: DashboardData = {
     { ticker: "CPAY", sector: "Technology", industry: "Software - Infrastructure", close: 407.62, rsRating: 87, stalkingScore: 92.9, stalkingGrade: "S" },
     { ticker: "TGT", sector: "Consumer Defensive", industry: "Discount Stores", close: 151.01, rsRating: 86, stalkingScore: 92.1, stalkingGrade: "S" },
   ],
+  stalkingGraduated: [
+    {
+      ticker: "NVDA", firstTrackedDate: "2026-08-10", lastTrackedDate: "2026-08-18",
+      peakGrade: "S", trackedRsEntry: 82.0, graduatedDate: "2026-08-22", graduatedRs: 91.5, daysTracked: 6,
+    },
+  ],
   catalyst: {
     date: "2026-08-26",
     ignited: [
