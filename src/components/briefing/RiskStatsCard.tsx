@@ -1,24 +1,74 @@
 import type { NavPoint } from "@/lib/types";
 
-function fmtOptPct(v: number | null): string {
-  return v === null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(1)}%`;
+type Stats = {
+  w1: number | null;
+  m1: number | null;
+  m3: number | null;
+  inc: number | null;
+  mdd: number;
+  vol: number | null;
+  sharpe: number | null;
+};
+
+function seriesStats(vals: (number | null | undefined)[]): Stats | null {
+  const p = vals.filter((v): v is number => v != null);
+  if (p.length < 2) return null;
+  const rets: number[] = [];
+  for (let i = 1; i < p.length; i++) rets.push(p[i] / p[i - 1] - 1);
+  const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+  const varr = rets.reduce((a, b) => a + (b - mean) ** 2, 0) / (rets.length - 1 || 1);
+  const std = Math.sqrt(varr);
+  const pr = (bd: number) => (p.length > bd ? (p[p.length - 1] / p[p.length - 1 - bd] - 1) * 100 : null);
+  let peak = p[0];
+  let mdd = 0;
+  for (const v of p) {
+    peak = Math.max(peak, v);
+    mdd = Math.min(mdd, (v / peak - 1) * 100);
+  }
+  return {
+    w1: pr(5),
+    m1: pr(21),
+    m3: pr(63),
+    inc: (p[p.length - 1] / p[0] - 1) * 100,
+    mdd,
+    vol: std ? std * Math.sqrt(252) * 100 : null,
+    sharpe: std ? (mean / std) * Math.sqrt(252) : null,
+  };
 }
 
-function periodReturn(nav: NavPoint[], bdays: number): number | null {
-  if (nav.length <= bdays) return null;
-  const last = nav[nav.length - 1].nav;
-  const prior = nav[nav.length - 1 - bdays].nav;
-  return ((last / prior - 1) * 100);
-}
-
-function Stat({ label, val, color }: { label: string; val: string; color?: string }) {
+function Cell({ v, pct = true, color = false }: { v: number | null; pct?: boolean; color?: boolean }) {
+  if (v == null) return <td className="tabular ink-muted">—</td>;
+  const s = pct ? `${v >= 0 ? "+" : ""}${v.toFixed(1)}%` : v.toFixed(2);
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: 6, padding: "8px 12px", minWidth: 90 }}>
-      <div style={{ fontSize: 10.5, color: "var(--text-muted)" }}>{label}</div>
-      <div style={{ fontSize: 16, fontWeight: 700, color: color ?? "var(--text-primary)" }} className="tabular">
-        {val}
-      </div>
-    </div>
+    <td className="tabular" style={color ? { color: v >= 0 ? "var(--good)" : "var(--critical)" } : undefined}>
+      {s}
+    </td>
+  );
+}
+
+function Row({ label, st }: { label: string; st: Stats | null }) {
+  if (!st)
+    return (
+      <tr>
+        <td className="ink-primary">{label}</td>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <td key={i} className="ink-muted">
+            —
+          </td>
+        ))}
+      </tr>
+    );
+  return (
+    <tr>
+      <td className="ink-primary">{label}</td>
+      <Cell v={st.w1} color />
+      <Cell v={st.m1} color />
+      <Cell v={st.m3} color />
+      <Cell v={st.inc} color />
+      <Cell v={st.mdd} />
+      <Cell v={st.vol} />
+      <Cell v={st.sharpe} pct={false} />
+    </tr>
   );
 }
 
@@ -35,19 +85,9 @@ export function RiskStatsCard({ navHistory, cash, nav }: { navHistory: NavPoint[
     );
   }
 
-  const returns: number[] = [];
-  for (let i = 1; i < navHistory.length; i++) {
-    returns.push(navHistory[i].nav / navHistory[i - 1].nav - 1);
-  }
-  const mean = returns.reduce((a, b) => a + b, 0) / returns.length;
-  const variance = returns.reduce((a, b) => a + (b - mean) ** 2, 0) / (returns.length - 1 || 1);
-  const std = Math.sqrt(variance);
-  const annVol = std ? std * Math.sqrt(252) * 100 : null;
-  const sharpe = std ? (mean / std) * Math.sqrt(252) : null;
-
-  const ret1w = periodReturn(navHistory, 5);
-  const ret1m = periodReturn(navHistory, 21);
-  const ret3m = periodReturn(navHistory, 63);
+  const navSt = seriesStats(navHistory.map((p) => p.nav));
+  const spySt = seriesStats(navHistory.map((p) => p.spy));
+  const qqqSt = seriesStats(navHistory.map((p) => p.qqq));
   const cashPct = nav ? (cash / nav) * 100 : null;
 
   return (
@@ -56,14 +96,32 @@ export function RiskStatsCard({ navHistory, cash, nav }: { navHistory: NavPoint[
       <span className="corner tr" />
       <span className="corner bl" />
       <span className="corner br" />
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <Stat label="1주 수익률" val={fmtOptPct(ret1w)} color={ret1w !== null ? (ret1w >= 0 ? "var(--good)" : "var(--critical)") : undefined} />
-        <Stat label="1개월 수익률" val={fmtOptPct(ret1m)} color={ret1m !== null ? (ret1m >= 0 ? "var(--good)" : "var(--critical)") : undefined} />
-        <Stat label="3개월 수익률" val={fmtOptPct(ret3m)} color={ret3m !== null ? (ret3m >= 0 ? "var(--good)" : "var(--critical)") : undefined} />
-        <Stat label="연변동성" val={annVol !== null ? `${annVol.toFixed(1)}%` : "—"} />
-        <Stat label="Sharpe" val={sharpe !== null ? sharpe.toFixed(2) : "—"} color={sharpe !== null && sharpe >= 1 ? "var(--good)" : undefined} />
-        <Stat label="현금비중" val={cashPct !== null ? `${cashPct.toFixed(0)}%` : "—"} />
+      <div className="table-scroll">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>1주</th>
+              <th>1개월</th>
+              <th>3개월</th>
+              <th>시작이후</th>
+              <th>MDD</th>
+              <th>연변동성</th>
+              <th>Sharpe</th>
+            </tr>
+          </thead>
+          <tbody>
+            <Row label="전략실 NAV" st={navSt} />
+            <Row label="SPY" st={spySt} />
+            <Row label="QQQ" st={qqqSt} />
+          </tbody>
+        </table>
       </div>
+      {cashPct != null && (
+        <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8 }}>
+          현금비중 <b>{cashPct.toFixed(0)}%</b>
+        </div>
+      )}
     </div>
   );
 }

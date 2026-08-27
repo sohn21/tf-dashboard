@@ -583,6 +583,9 @@ export interface AlphaDecay {
   nOverall: number;
   nRecent: number;
   profitFactor: number | null;
+  avgPnlPct?: number | null;
+  avgWinPct?: number | null;
+  avgLossPct?: number | null;
 }
 
 export interface DashboardData {
