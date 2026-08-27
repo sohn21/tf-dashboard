@@ -50,7 +50,7 @@ export default async function Briefing() {
         <span className="snum">01</span>
         <h2 className="stitle">오늘의 시장 상태</h2>
       </div>
-      <ExposureCard regime={data.summary.regime} regimeStatus={data.summary.regimeStatus} exposure={data.exposure} ftd={data.ftd} />
+      <ExposureCard regime={data.summary.regime} regimeStatus={data.summary.regimeStatus} exposure={data.exposure} ftd={data.ftd} marketMetrics={data.marketMetrics} />
 
       <div className="shead">
         <span className="snum">02</span>

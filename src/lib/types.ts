@@ -411,6 +411,15 @@ export interface Ftd {
   daysAgo: number | null;
 }
 
+// §01 지수·자산 카드 — S&P/나스닥/러셀(분배일) + 비트코인/금/환율. 전일종가 대비 당일 등락률.
+export interface MarketMetric {
+  label: string;
+  chgPct: number | null;
+  level: number | null;
+  levelPrefix: string;
+  dd: number | null;
+}
+
 // 보호 룰(BE·LOCK 래칫 + O'Neill 8주룰, added 2026-08-26) — portfolio.py 상수 그대로 노출
 // (계산 아님, 값 자체가 바뀌면 프론트도 자동 반영되게 하드코딩하지 않음).
 export interface LockTier {
@@ -585,6 +594,7 @@ export interface DashboardData {
   // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
   exposure?: Exposure | null;
   ftd?: Ftd | null;
+  marketMetrics?: MarketMetric[] | null;
   protectionRules?: ProtectionRules | null;
   rotation?: Rotation | null;
   stockeasy?: StockEasy | null;

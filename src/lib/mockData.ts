@@ -195,6 +195,14 @@ export const mockData: DashboardData = {
     themeOk: true,
   },
   ftd: { valid: true, daysAgo: 16 },
+  marketMetrics: [
+    { label: "S&P 500", chgPct: -0.02, level: 7675.7, levelPrefix: "", dd: 4 },
+    { label: "NASDAQ", chgPct: -0.08, level: 26130.2, levelPrefix: "", dd: 5 },
+    { label: "Russell 2000", chgPct: -0.14, level: 3005.9, levelPrefix: "", dd: 4 },
+    { label: "비트코인", chgPct: -0.18, level: 78724.82, levelPrefix: "", dd: null },
+    { label: "금 (GLD)", chgPct: -1.58, level: 421.32, levelPrefix: "", dd: null },
+    { label: "환율 USD/KRW", chgPct: -0.15, level: 1379.48, levelPrefix: "₩", dd: null },
+  ],
   protectionRules: {
     lockTiers: [
       { gainPct: 15, lockPct: 0 },

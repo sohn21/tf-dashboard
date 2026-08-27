@@ -1,4 +1,4 @@
-import type { Exposure, Ftd, Regime, RegimeStatus } from "@/lib/types";
+import type { Exposure, Ftd, MarketMetric, Regime, RegimeStatus } from "@/lib/types";
 import { TermTrigger } from "./TermTrigger";
 
 const STATUS_COLOR: Record<RegimeStatus, string> = {
@@ -8,16 +8,46 @@ const STATUS_COLOR: Record<RegimeStatus, string> = {
   critical: "var(--critical)",
 };
 
+function MetricCard({ m }: { m: MarketMetric }) {
+  const chgColor = (m.chgPct ?? 0) >= 0 ? "var(--good)" : "var(--critical)";
+  let sub = "";
+  let subColor = "var(--text-muted)";
+  if (m.dd != null) {
+    sub = `DD ${m.dd}`;
+    subColor = m.dd >= 6 ? "var(--critical)" : m.dd >= 4 ? "var(--warning)" : "var(--text-muted)";
+  } else if (m.level != null) {
+    sub = `${m.levelPrefix}${m.level >= 100 ? Math.round(m.level).toLocaleString() : m.level.toFixed(2)}`;
+  }
+  return (
+    <div
+      style={{
+        border: "1px solid var(--border)",
+        background: "var(--surface-2)",
+        padding: "8px 6px",
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 10, color: "var(--text-muted)" }}>{m.label}</div>
+      <div style={{ fontSize: 15, fontWeight: 700, color: chgColor }}>
+        {m.chgPct != null ? `${m.chgPct >= 0 ? "+" : ""}${m.chgPct.toFixed(2)}%` : "—"}
+      </div>
+      <div style={{ fontSize: 9.5, color: subColor }}>{sub}</div>
+    </div>
+  );
+}
+
 export function ExposureCard({
   regime,
   regimeStatus,
   exposure,
   ftd,
+  marketMetrics,
 }: {
   regime: Regime;
   regimeStatus: RegimeStatus;
   exposure: Exposure | null | undefined;
   ftd?: Ftd | null;
+  marketMetrics?: MarketMetric[] | null;
 }) {
   const rgColor = STATUS_COLOR[regimeStatus];
   const guards: string[] = [];
@@ -62,6 +92,20 @@ export function ExposureCard({
             <b>없음</b>
           )}{" "}
           <span style={{ color: "var(--text-muted)" }}>(레짐 판정엔 미반영 — 표시 전용)</span>
+        </div>
+      )}
+      {marketMetrics && marketMetrics.length > 0 && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, minmax(78px, 1fr))",
+            gap: 6,
+            marginTop: 12,
+          }}
+        >
+          {marketMetrics.map((m) => (
+            <MetricCard key={m.label} m={m} />
+          ))}
         </div>
       )}
     </div>
