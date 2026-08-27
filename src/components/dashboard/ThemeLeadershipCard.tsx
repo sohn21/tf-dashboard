@@ -87,16 +87,32 @@ function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPo
 }
 
 export function ThemeLeadershipCard({ data }: { data: ThemeLeadership | null }) {
+  const today = data && data.points.length ? data.points[data.points.length - 1] : null;
+  let interp = "";
+  if (today && data) {
+    const v = today.nLeading;
+    if (v >= data.bandHi) interp = `Leading 테마 ${v}개 — 밴드 상단 이상 · 폭 넓은 주도(broad leadership)`;
+    else if (v >= data.bandLo) interp = `Leading 테마 ${v}개 — 정상 범위(25~75 pct) 안 · 보통`;
+    else interp = `Leading 테마 ${v}개 — 밴드 하단 이하 · 주도 폭 좁음, 취약한 상승`;
+  }
   return (
     <Card title="리딩 테마 개수 추이 (3개월)">
       {!data || data.points.length === 0 ? (
         <p className="ink-muted">데이터 없음</p>
       ) : (
         <>
-          <div className="label-sm ink-muted" style={{ marginBottom: 8 }}>
+          <div className="label-sm ink-muted" style={{ marginBottom: 4 }}>
             업종 평균 점수 ≥60(강세 컷) 넘는 업종 수 — 점선/음영은 최근 3개월 25~75퍼센타일 대역
             ({data.bandLo}~{data.bandHi}개)
           </div>
+          {interp && (
+            <div
+              style={{ fontSize: 12, marginBottom: 8 }}
+              className={today && today.nLeading >= data.bandLo ? "ink-secondary" : "delta-critical"}
+            >
+              {interp}
+            </div>
+          )}
           <LeadershipChart points={data.points} bandLo={data.bandLo} bandHi={data.bandHi} />
         </>
       )}
