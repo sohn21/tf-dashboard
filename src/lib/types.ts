@@ -253,6 +253,8 @@ export interface CandidateRow {
   patternName: string | null;
   gates: Record<GateKey, boolean>;
   passed: boolean;
+  held?: boolean; // §05: 코어/래더/래칫 중 보유 중
+  nPass?: number; // 통과한 게이트 수 (gates 정렬용)
   newHigh52w: boolean;
   // 옵셔널(2026-08-25, generatedAt 마이그레이션 패턴과 동일): RS Leading — 이 필드가
   // 추가되기 전에 쓰인 KV blob엔 없을 수 있음

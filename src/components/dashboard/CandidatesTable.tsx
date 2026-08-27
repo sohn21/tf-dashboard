@@ -4,10 +4,39 @@ import { GATE_KEYS, type CandidateRow } from "@/lib/types";
 
 const fmtCap = (x: number | null) => (x == null ? "-" : `$${(x / 1e9).toLocaleString(undefined, { maximumFractionDigits: 1 })}B`);
 
-export function CandidatesTable({ rows, topN = 15 }: { rows: CandidateRow[]; topN?: number }) {
-  const top = rows.slice(0, topN);
+export function CandidatesTable({
+  rows,
+  topN = 15,
+  sortBy = "score",
+  nSignals,
+}: {
+  rows: CandidateRow[];
+  topN?: number;
+  sortBy?: "score" | "gates";
+  nSignals?: number;
+}) {
+  const nPassOf = (r: CandidateRow) => r.nPass ?? Object.values(r.gates).filter(Boolean).length;
+  const ranked =
+    sortBy === "gates"
+      ? [...rows].sort(
+          (a, b) => nPassOf(b) - nPassOf(a) || Number(b.gates.G3) - Number(a.gates.G3) || b.score - a.score,
+        )
+      : rows;
+  const top = ranked.slice(0, topN);
   return (
-    <Card title={`오늘 후보 상위 ${Math.min(topN, rows.length)}종목 (점수 기준)`}>
+    <Card
+      title={
+        sortBy === "gates"
+          ? `전략실 게이트 상위 ${Math.min(topN, rows.length)}종목 (게이트수 → G3 → 점수)`
+          : `오늘 후보 상위 ${Math.min(topN, rows.length)}종목 (점수 기준)`
+      }
+    >
+      {sortBy === "gates" && nSignals != null && (
+        <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
+          오늘 매수 가능(5게이트 전부 통과){" "}
+          <b style={{ color: nSignals > 0 ? "var(--good)" : "var(--text-muted)" }}>{nSignals}</b>건
+        </div>
+      )}
       {top.length === 0 ? (
         <p className="ink-muted">신호 데이터 없음</p>
       ) : (
@@ -51,6 +80,20 @@ export function CandidatesTable({ rows, topN = 15 }: { rows: CandidateRow[]; top
                   <tr key={r.ticker}>
                     <td className="ink-primary">
                       {r.ticker}
+                      {r.held && (
+                        <span
+                          style={{
+                            fontSize: 10,
+                            color: "#5980a6",
+                            border: "1px solid #5980a6",
+                            borderRadius: 3,
+                            padding: "0 4px",
+                            marginLeft: 3,
+                          }}
+                        >
+                          보유
+                        </span>
+                      )}
                       {r.newHigh52w && <span className="delta-good"> 🔺</span>}
                       {r.rsLeading && <span className="delta-good" title="RS Leading — RS라인이 주가보다 먼저 신고가"> ⭐</span>}
                     </td>
