@@ -33,6 +33,28 @@ export function StockEasyCard({ stockeasy }: { stockeasy: StockEasy | null | und
               </b>
             </>
           )}
+          {stockeasy.nPositions != null && (
+            <>
+              {" · 보유 "}
+              <b>{stockeasy.nPositions}</b>종목
+            </>
+          )}
+          {stockeasy.nClosed ? (
+            <>
+              {" · 청산 "}
+              <b>{stockeasy.nClosed}</b>건 (승률 {stockeasy.closedWinRatePct ?? 0}%
+              {stockeasy.closedAvgPnlPct != null && (
+                <>
+                  {" · 평균 "}
+                  <b style={{ color: stockeasy.closedAvgPnlPct >= 0 ? "var(--good)" : "var(--critical)" }}>
+                    {stockeasy.closedAvgPnlPct >= 0 ? "+" : ""}
+                    {stockeasy.closedAvgPnlPct.toFixed(1)}%
+                  </b>
+                </>
+              )}
+              )
+            </>
+          ) : null}
         </div>
       )}
       <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 10 }}>

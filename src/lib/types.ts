@@ -490,6 +490,10 @@ export interface StockEasyUs {
   cash: number | null;
   nav: number | null;
   returnPct: number | null;
+  nPositions?: number;
+  nClosed?: number;
+  closedWinRatePct?: number | null;
+  closedAvgPnlPct?: number | null;
   benchmarkIndex: string;
   benchmark: Record<string, number>;
   positions: StockEasyUsPosition[];
@@ -501,6 +505,10 @@ export interface StockEasy {
   cash?: number | null;
   nav?: number | null;
   returnPct?: number | null;
+  nPositions?: number;
+  nClosed?: number;
+  closedWinRatePct?: number | null;
+  closedAvgPnlPct?: number | null;
   benchmark: Record<string, number>;
   positions: StockEasyPosition[];
   candidates: StockEasyCandidate[];
