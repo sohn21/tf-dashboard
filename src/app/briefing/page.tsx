@@ -119,6 +119,45 @@ export default async function Briefing() {
       </div>
       <Card>
         <NavChart data={data.navHistory} />
+        {(() => {
+          const h = data.navHistory;
+          if (!h || h.length < 2) return null;
+          const navRet = (h[h.length - 1].nav / h[0].nav - 1) * 100;
+          const s0 = h[0].spy;
+          const s1 = h[h.length - 1].spy;
+          const spyRet = s0 != null && s1 != null ? (s1 / s0 - 1) * 100 : null;
+          const alpha = spyRet != null ? navRet - spyRet : null;
+          const cashPct = data.summary.nav ? (data.summary.cash / data.summary.nav) * 100 : null;
+          return (
+            <div style={{ marginTop: 10, fontSize: 13 }} className="ink-secondary">
+              누적 수익률{" "}
+              <b style={{ color: navRet >= 0 ? "var(--good)" : "var(--critical)" }}>
+                {navRet >= 0 ? "+" : ""}
+                {navRet.toFixed(1)}%
+              </b>
+              {spyRet != null && (
+                <>
+                  {" · SPY "}
+                  <b>
+                    {spyRet >= 0 ? "+" : ""}
+                    {spyRet.toFixed(1)}%
+                  </b>
+                  {" · α "}
+                  <b style={{ color: (alpha ?? 0) >= 0 ? "var(--good)" : "var(--critical)" }}>
+                    {(alpha ?? 0) >= 0 ? "+" : ""}
+                    {alpha!.toFixed(1)}%p
+                  </b>
+                </>
+              )}
+              {cashPct != null && (
+                <>
+                  {" · 현금 "}
+                  <b>{cashPct.toFixed(0)}%</b>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </Card>
 
       <div className="shead">
