@@ -83,11 +83,12 @@ function StackedChart({ points }: { points: PhasePoint[] }) {
   const xTickCount = Math.min(6, n);
   const xTicks = Array.from({ length: xTickCount }, (_, k) => Math.round((k / (xTickCount - 1)) * (n - 1)));
 
-  // §02 오버레이 — 레짐 배경 밴드(#3) + 브레쓰 선(#2). 둘 다 있는 날만(2026-07-22부터).
-  const half = n > 1 ? plotW / (n - 1) / 2 : plotW / 2;
-  const regimeBands = points
+  // §02 오버레이 — 레짐(#3) + 브레쓰 선(#2). 둘 다 있는 날만(2026-07-22부터, 매일 늘어남).
+  // 레짐 표시(#3) — 스택이 100% 꽉 차 배경 밴드가 안 보이므로 차트 아래 색깔 점으로.
+  const regimeDotY = padT + plotH + 8;
+  const regimeDots = points
     .map((p, i) => ({ p, i }))
-    .filter(({ p }) => p.regime && REGIME_COLOR[p.regime]);
+    .filter(({ p }) => p.regime && REGIME_COLOR[p.regime as string]);
   const breadthPts = points
     .map((p, i) => (p.breadthPct != null ? ([xOf(i), yOf(p.breadthPct)] as const) : null))
     .filter((v): v is readonly [number, number] => v !== null);
@@ -106,21 +107,6 @@ function StackedChart({ points }: { points: PhasePoint[] }) {
   return (
     <div style={{ position: "relative" }}>
       <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} role="img" aria-label="베이스 Phase 분포 추이">
-        {regimeBands.map(({ p, i }) => {
-          const x0 = Math.max(padL, xOf(i) - half);
-          const x1 = Math.min(w - padR, xOf(i) + half);
-          return (
-            <rect
-              key={`rg-${p.date}`}
-              x={x0}
-              y={padT}
-              width={x1 - x0}
-              height={plotH}
-              fill={REGIME_COLOR[p.regime as string]}
-              fillOpacity={0.11}
-            />
-          );
-        })}
         {[0, 25, 50, 75, 100].map((v) => (
           <g key={v}>
             <line x1={padL} y1={yOf(v)} x2={w - padR} y2={yOf(v)} className="grid-line" />
@@ -138,6 +124,9 @@ function StackedChart({ points }: { points: PhasePoint[] }) {
           <path key={b.key} d={b.d} fill={PHASE_COLOR[b.key as PhaseKey]} />
         ))}
         {breadthPath && <path d={breadthPath} fill="none" stroke="#42566B" strokeWidth={1.8} />}
+        {regimeDots.map(({ p, i }) => (
+          <circle key={`rg-${p.date}`} cx={xOf(i)} cy={regimeDotY} r={2.4} fill={REGIME_COLOR[p.regime as string]} />
+        ))}
         {hover !== null && (
           <line x1={xOf(hover)} y1={padT} x2={xOf(hover)} y2={padT + plotH} stroke="var(--text-primary)" strokeWidth={1} strokeDasharray="3 3" opacity={0.5} />
         )}
@@ -200,15 +189,26 @@ export function PhaseTrendCard({ data }: { data: PhaseTrend | null }) {
 
           <StackedChart points={data.points} />
 
-          <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: "6px 14px", fontSize: 11 }} className="ink-secondary">
+          <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: "6px 12px", fontSize: 11 }} className="ink-secondary">
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <span style={{ width: 14, borderTop: "2px solid #42566B", display: "inline-block" }} />
               브레쓰(50MA 위)
             </span>
-            <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ width: 10, height: 10, background: "#98989b", opacity: 0.3, display: "inline-block" }} />
-              배경 = 그날 레짐색 (2026-07-22~, 매일 늘어남)
-            </span>
+            <span className="ink-muted">차트 아래 점 = 그날 레짐:</span>
+            {(
+              [
+                ["컨펌", "Confirmed Uptrend"],
+                ["리줌", "Uptrend Resumed"],
+                ["프레셔", "Uptrend Under Pressure"],
+                ["랠리시도", "Rally Attempt"],
+                ["조정", "Correction"],
+              ] as const
+            ).map(([label, key]) => (
+              <span key={key} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 99, background: REGIME_COLOR[key], display: "inline-block" }} />
+                {label}
+              </span>
+            ))}
           </div>
 
           <div className="label-sm ink-muted" style={{ marginTop: 6 }}>
