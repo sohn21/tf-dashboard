@@ -228,6 +228,10 @@ export const mockData: DashboardData = {
     sectorConcernThreshold: 45,
   },
   stockeasy: {
+    seed: 50_000_000,
+    cash: 12_538_560,
+    nav: 52_779_150,
+    returnPct: 5.6,
     benchmark: { KOSPI: 85, KOSDAQ: 49 },
     positions: [
       { code: "003010", name: "혜인", market: "KOSPI", sector: "산업기계", entryPx: 9690, lastClose: 11660, gainPct: 20.3, currentStopPct: -8 },
@@ -237,6 +241,19 @@ export const mockData: DashboardData = {
       { rank: 1, name: "롯데웰푸드", sector: "음식료", status: "돌파성공", pctToHigh: 2.5 },
       { rank: 2, name: "제닉", sector: "화장품", status: "돌파성공", pctToHigh: 0.58 },
     ],
+    us: {
+      seed: 10_000,
+      cash: 10_000,
+      nav: 10_000,
+      returnPct: 0,
+      benchmarkIndex: "S&P 500",
+      benchmark: { rs: 53, rs1m: 58, rs3m: 52, rs6m: 64 },
+      positions: [],
+      candidates: [
+        { ticker: "ARGX", name: "argenx SE", sector: "Health Care · Biotechnology", rs: 83, price: 1047.1, signals: ["신규돌파", "ATH"], pass: false },
+        { ticker: "DT", name: "Dynatrace, Inc.", sector: "Technology · Software", rs: 70, price: 51.6, signals: ["신규돌파"], pass: false },
+      ],
+    },
   },
   ladder: {
     nav: 9998.75,

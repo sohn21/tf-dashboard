@@ -15,6 +15,7 @@ import { MddChart } from "@/components/briefing/MddChart";
 import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
 import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
 import { StockEasyCard } from "@/components/briefing/StockEasyCard";
+import { StockEasyUsCard } from "@/components/briefing/StockEasyUsCard";
 import { LadderCard } from "@/components/dashboard/LadderCard";
 import { RatchetCard } from "@/components/dashboard/RatchetCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
@@ -140,6 +141,17 @@ export default async function Briefing() {
         <TermButton termKey="stockeasy" />
       </div>
       <StockEasyCard stockeasy={data.stockeasy} />
+
+      {/* StockEasy 미국주식 — 2026-08-27 stockeasy 저장소에 US 파이프라인 추가. 번호 없이 국내 바로 뒤. */}
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">
+          StockEasy (미국 주식) <span className="ssub">모의투자 시드 $10,000 · 미국 래더·스크리너·S&amp;P500 RS</span>
+        </h2>
+      </div>
+      <StockEasyUsCard us={data.stockeasy?.us} />
 
       <div className="shead" style={{ marginTop: 36, borderTop: "1px dashed var(--border)", paddingTop: 20 }}>
         <span className="snum" style={{ color: "var(--text-muted)" }}>

@@ -464,10 +464,47 @@ export interface StockEasyCandidate {
   pctToHigh: number | null;
 }
 
+// StockEasy 미국주식 — 2026-08-27 stockeasy 저장소에 추가된 US 파이프라인(시드 $10,000/4종목 균등).
+export interface StockEasyUsPosition {
+  ticker: string | null;
+  name: string | null;
+  sector: string | null;
+  entryPx: number | null;
+  lastClose: number | null;
+  gainPct: number | null;
+  currentStopPct: number | null;
+}
+
+export interface StockEasyUsCandidate {
+  ticker: string | null;
+  name: string | null;
+  sector: string | null;
+  rs: number | null;
+  price: number | null;
+  signals: string[];
+  pass: boolean;
+}
+
+export interface StockEasyUs {
+  seed: number;
+  cash: number | null;
+  nav: number | null;
+  returnPct: number | null;
+  benchmarkIndex: string;
+  benchmark: Record<string, number>;
+  positions: StockEasyUsPosition[];
+  candidates: StockEasyUsCandidate[];
+}
+
 export interface StockEasy {
+  seed?: number;
+  cash?: number | null;
+  nav?: number | null;
+  returnPct?: number | null;
   benchmark: Record<string, number>;
   positions: StockEasyPosition[];
   candidates: StockEasyCandidate[];
+  us?: StockEasyUs | null;
 }
 
 export interface AlphaDecay {
