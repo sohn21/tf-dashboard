@@ -114,6 +114,8 @@ export interface PhasePoint {
   date: string;
   universe: number;
   counts: PhaseCounts;
+  regime?: string | null; // §02 차트 배경 밴드용(있는 날만, 2026-07-22부터)
+  breadthPct?: number | null; // §02 브레쓰 오버레이 선용
 }
 
 export interface PhaseTrend {
