@@ -120,6 +120,41 @@
   font-weight: 400;
 }
 
+/* 평소 접힘, ▸ 클릭해서 펼치는 섹션 (발화/스토킹 등) */
+.briefing-wrap details.csec {
+  margin-top: 28px;
+}
+.briefing-wrap details.csec > summary {
+  cursor: pointer;
+  list-style: none;
+  margin-top: 0;
+}
+.briefing-wrap details.csec > summary::-webkit-details-marker {
+  display: none;
+}
+.briefing-wrap details.csec .caret {
+  display: inline-block;
+  transition: transform 0.15s;
+  color: var(--text-muted);
+}
+.briefing-wrap details.csec[open] .caret {
+  transform: rotate(90deg);
+}
+.briefing-wrap details.csec[open] > summary {
+  margin-bottom: 10px;
+}
+/* CandidatesTable 안의 기업개요 접기 */
+details.overview-collapse > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 6px 0;
+}
+details.overview-collapse > summary::-webkit-details-marker {
+  display: none;
+}
+
 .term-pop {
   position: fixed;
   bottom: 16px;

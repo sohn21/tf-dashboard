@@ -124,7 +124,10 @@ export function CandidatesTable({
           </table>
         </div>
       )}
-      <OverviewCards rows={top} title="기업개요 & 재무 요약 (매수 전 참고자료 — display-only, 게이트/스코어 미반영)" />
+      <details className="overview-collapse" style={{ marginTop: 8 }}>
+        <summary>▸ 기업개요 & 재무 요약 (매수 전 참고자료 — 클릭해서 펼치기)</summary>
+        <OverviewCards rows={top} title="" />
+      </details>
     </Card>
   );
 }

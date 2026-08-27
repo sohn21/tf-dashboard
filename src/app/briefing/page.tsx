@@ -72,14 +72,17 @@ export default async function Briefing() {
       </div>
       <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} bandCounts={data.sectorBandCounts} />
 
-      {/* 오늘의 발화 테마 (Catalyst) — 04번과 같은 오늘자 업종 강도 블록, 번호 없이. */}
-      <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
-        <h2 className="stitle">오늘의 발화 테마 (Catalyst)</h2>
-      </div>
-      <CatalystCard data={data.catalyst} />
+      {/* 오늘의 발화 테마 (Catalyst) — 04번과 같은 오늘자 업종 강도 블록, 길어서 기본 접힘. */}
+      <details className="csec">
+        <summary className="shead">
+          <span className="snum caret" style={{ color: "var(--text-muted)" }}>
+            ▸
+          </span>
+          <h2 className="stitle">오늘의 발화 테마 (Catalyst)</h2>
+          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>클릭해서 펼치기</span>
+        </summary>
+        <CatalystCard data={data.catalyst} />
+      </details>
 
       <div className="shead">
         <span className="snum">05</span>
@@ -88,14 +91,17 @@ export default async function Briefing() {
       </div>
       <CandidatesTable rows={data.candidates} topN={15} sortBy="gates" nSignals={data.summary.candidatesPassed} />
 
-      {/* 다음 리더 추적 (Stalking) — G0~G4 통과 전 준후보 스코어러, 05번 바로 아래, 번호 없이. */}
-      <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
-        <h2 className="stitle">다음 리더 추적 (Stalking)</h2>
-      </div>
-      <StalkingTable rows={data.stalking ?? []} />
+      {/* 다음 리더 추적 (Stalking) — G0~G4 통과 전 준후보 스코어러, 길어서 기본 접힘. */}
+      <details className="csec">
+        <summary className="shead">
+          <span className="snum caret" style={{ color: "var(--text-muted)" }}>
+            ▸
+          </span>
+          <h2 className="stitle">다음 리더 추적 (Stalking)</h2>
+          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>클릭해서 펼치기</span>
+        </summary>
+        <StalkingTable rows={data.stalking ?? []} />
+      </details>
 
       {/* 교차검증 — StockEasy 미국 스크리너 vs 전략실. 05번 바로 아래, 번호 없이. */}
       <div className="shead" style={{ marginTop: 28 }}>

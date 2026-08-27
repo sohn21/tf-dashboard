@@ -507,3 +507,15 @@ h1 {
   color: var(--text-primary);
   margin-top: 2px;
 }
+
+/* CandidatesTable 안 기업개요 접기 (메인 대시보드 + /briefing 공용) */
+details.overview-collapse > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-secondary, #666);
+  padding: 6px 0;
+}
+details.overview-collapse > summary::-webkit-details-marker {
+  display: none;
+}
