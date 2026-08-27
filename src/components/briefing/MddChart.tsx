@@ -14,16 +14,30 @@ export function MddChart({ navHistory }: { navHistory: NavPoint[] }) {
     );
   }
 
-  let runningMax = navHistory[0].nav;
-  const dd = navHistory.map((p) => {
-    runningMax = Math.max(runningMax, p.nav);
-    return ((p.nav / runningMax - 1) * 100);
-  });
+  const ddOf = (getter: (p: NavPoint) => number | null | undefined): (number | null)[] => {
+    let peak = -Infinity;
+    return navHistory.map((p) => {
+      const v = getter(p);
+      if (v == null) return null;
+      peak = Math.max(peak, v);
+      return (v / peak - 1) * 100;
+    });
+  };
+  const dd = ddOf((p) => p.nav) as number[];
+  const benchDD = (
+    [
+      { label: "SPY", color: "#8a8a86", getter: (p: NavPoint) => p.spy },
+      { label: "QQQ", color: "#5980a6", getter: (p: NavPoint) => p.qqq },
+    ] as const
+  )
+    .map((b) => ({ label: b.label, color: b.color, dd: ddOf(b.getter) }))
+    .filter((b) => b.dd.filter((v) => v != null).length >= 2);
+
   const dates = navHistory.map((p) => p.date);
   const n = dd.length;
   const w = 700, h = 180, padL = 42, padR = 12, padT = 10, padB = 24;
   const plotW = w - padL - padR, plotH = h - padT - padB;
-  const vmin = Math.min(...dd, -1);
+  const vmin = Math.min(...dd, ...benchDD.flatMap((b) => b.dd.filter((v): v is number => v != null)), -1);
 
   const xOf = (i: number) => (n === 1 ? padL : padL + (plotW * i) / (n - 1));
   const yOf = (v: number) => padT + (plotH * (0 - v)) / (0 - vmin);
@@ -50,6 +64,23 @@ export function MddChart({ navHistory }: { navHistory: NavPoint[] }) {
       <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: "auto" }}>
         <line x1={padL} y1={zeroY} x2={w - padR} y2={zeroY} stroke="var(--border)" />
         <path d={areaD} fill="var(--critical)" fillOpacity={0.12} />
+        {benchDD.map((b) => {
+          const bpts = b.dd
+            .map((v, i) => (v != null ? ([xOf(i), yOf(v)] as const) : null))
+            .filter((p): p is readonly [number, number] => p !== null);
+          if (bpts.length < 2) return null;
+          return (
+            <path
+              key={b.label}
+              d={"M " + bpts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" L ")}
+              fill="none"
+              stroke={b.color}
+              strokeWidth={1.3}
+              strokeDasharray="4 3"
+              opacity={0.9}
+            />
+          );
+        })}
         <path d={pathD} fill="none" stroke="var(--critical)" strokeWidth={2} />
         <circle cx={pts[mddIdx][0]} cy={pts[mddIdx][1]} r={3.5} fill="var(--critical)" />
         <text x={padL - 6} y={zeroY + 3} textAnchor="end" fontSize={9.5} fill="var(--text-muted)">
@@ -64,6 +95,17 @@ export function MddChart({ navHistory }: { navHistory: NavPoint[] }) {
           </text>
         ))}
       </svg>
+      {benchDD.length > 0 && (
+        <div style={{ fontSize: 10.5, color: "var(--text-secondary)", marginTop: 4 }}>
+          <b style={{ color: "var(--critical)" }}>■</b> NAV
+          {benchDD.map((b) => (
+            <span key={b.label} style={{ color: b.color }}>
+              {" "}
+              <b>┅</b> {b.label}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
