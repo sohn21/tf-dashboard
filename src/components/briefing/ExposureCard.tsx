@@ -42,12 +42,14 @@ export function ExposureCard({
   exposure,
   ftd,
   marketMetrics,
+  breadthPct,
 }: {
   regime: Regime;
   regimeStatus: RegimeStatus;
   exposure: Exposure | null | undefined;
   ftd?: Ftd | null;
   marketMetrics?: MarketMetric[] | null;
+  breadthPct?: number | null;
 }) {
   const rgColor = STATUS_COLOR[regimeStatus];
   const guards: string[] = [];
@@ -81,17 +83,25 @@ export function ExposureCard({
           "—"
         )}
       </div>
-      {ftd && ftd.valid != null && (
-        <div style={{ fontSize: 12, marginTop: 6, color: "var(--text-secondary)" }}>
-          FTD{" "}
-          {ftd.valid ? (
-            <b style={{ color: "var(--good)" }}>
-              {ftd.daysAgo}거래일 전 · 유효
-            </b>
-          ) : (
-            <b>없음</b>
-          )}{" "}
-          <span style={{ color: "var(--text-muted)" }}>(레짐 판정엔 미반영 — 표시 전용)</span>
+      {(breadthPct != null || (ftd && ftd.valid != null)) && (
+        <div style={{ fontSize: 12, marginTop: 6, color: "var(--text-secondary)", display: "flex", gap: 14, flexWrap: "wrap" }}>
+          {breadthPct != null && (
+            <span>
+              브레스(50MA 위){" "}
+              <b style={{ color: breadthPct >= 55 ? "var(--good)" : "var(--critical)" }}>{breadthPct.toFixed(0)}%</b>
+            </span>
+          )}
+          {ftd && ftd.valid != null && (
+            <span>
+              FTD{" "}
+              {ftd.valid ? (
+                <b style={{ color: "var(--good)" }}>{ftd.daysAgo}거래일 전 · 유효</b>
+              ) : (
+                <b>없음</b>
+              )}{" "}
+              <span style={{ color: "var(--text-muted)" }}>(레짐 판정엔 미반영 — 표시 전용)</span>
+            </span>
+          )}
         </div>
       )}
       {marketMetrics && marketMetrics.length > 0 && (
