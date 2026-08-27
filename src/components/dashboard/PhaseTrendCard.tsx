@@ -197,11 +197,11 @@ export function PhaseTrendCard({ data }: { data: PhaseTrend | null }) {
             <span className="ink-muted">차트 아래 점 = 그날 레짐:</span>
             {(
               [
-                ["컨펌", "Confirmed Uptrend"],
-                ["리줌", "Uptrend Resumed"],
-                ["프레셔", "Uptrend Under Pressure"],
-                ["랠리시도", "Rally Attempt"],
-                ["조정", "Correction"],
+                ["Confirmed", "Confirmed Uptrend"],
+                ["Resumed", "Uptrend Resumed"],
+                ["Under Pressure", "Uptrend Under Pressure"],
+                ["Rally Attempt", "Rally Attempt"],
+                ["Correction", "Correction"],
               ] as const
             ).map(([label, key]) => (
               <span key={key} style={{ display: "flex", alignItems: "center", gap: 4 }}>
