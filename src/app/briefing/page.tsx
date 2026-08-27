@@ -180,7 +180,7 @@ export default async function Briefing() {
         <h2 className="stitle">현재 보유종목 상황</h2>
         <TermButton termKey="holdings" />
       </div>
-      <HoldingsTable rows={data.holdings} />
+      <HoldingsTable rows={data.holdings} counts={data.holdingsCounts} />
 
       <div className="shead">
         <span className="snum">10</span>

@@ -324,6 +324,17 @@ export interface HoldingRow {
   sector?: string | null;
   industry?: string | null;
   overview?: CompanyOverview | null;
+  // 옵셔널(2026-08-27, §09 확장): 보유일수 / 비중% / 사유 텍스트
+  daysHeld?: number | null;
+  weightPct?: number | null;
+  reason?: string;
+}
+
+export interface HoldingsCounts {
+  critical: number;
+  review: number;
+  protect: number;
+  normal: number;
 }
 
 export interface TradeRow {
@@ -616,6 +627,7 @@ export interface DashboardData {
   sectorBandCounts?: SectorBandCounts | null;
   indexRs: IndexRsRow[];
   holdings: HoldingRow[];
+  holdingsCounts?: HoldingsCounts | null;
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
   // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
