@@ -16,6 +16,7 @@ import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
 import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
 import { StockEasyCard } from "@/components/briefing/StockEasyCard";
 import { StockEasyUsCard } from "@/components/briefing/StockEasyUsCard";
+import { StockEasyCrossCheckCard } from "@/components/briefing/StockEasyCrossCheckCard";
 import { LadderCard } from "@/components/dashboard/LadderCard";
 import { RatchetCard } from "@/components/dashboard/RatchetCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
@@ -75,6 +76,15 @@ export default async function Briefing() {
         <TermButton termKey="candidates" />
       </div>
       <CandidatesTable rows={data.candidates} topN={15} />
+
+      {/* 교차검증 — StockEasy 미국 스크리너 vs 전략실. 05번 바로 아래, 번호 없이. */}
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">교차검증 — StockEasy 미국 스크리너 vs 전략실</h2>
+      </div>
+      <StockEasyCrossCheckCard data={data.stockeasy?.usCrossCheck} />
 
       <div className="shead">
         <span className="snum">06</span>

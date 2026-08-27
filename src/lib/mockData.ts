@@ -245,6 +245,15 @@ export const mockData: DashboardData = {
       { rank: 1, name: "롯데웰푸드", sector: "음식료", status: "돌파성공", pctToHigh: 2.5 },
       { rank: 2, name: "제닉", sector: "화장품", status: "돌파성공", pctToHigh: 0.58 },
     ],
+    usCrossCheck: {
+      stockeasyDate: "2026-08-27",
+      tfDate: "2026-08-27",
+      overlapTickers: [],
+      rows: [
+        { ticker: "ARGX", name: "argenx SE", sector: "Health Care · Biotechnology", rs: 83, status: { kind: "untracked", label: "전략실 유니버스 밖 (미추적)", detail: null } },
+        { ticker: "SJM", name: "The J. M. Smucker Company", sector: "Consumer Staples · Food Products", rs: 73, status: { kind: "failed", label: "게이트 탈락", detail: "G3 False·G4 True · RS 77.8 · 점수 86.18" } },
+      ],
+    },
     us: {
       seed: 10_000,
       cash: 10_000,

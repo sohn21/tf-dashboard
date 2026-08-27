@@ -500,6 +500,26 @@ export interface StockEasyUs {
   candidates: StockEasyUsCandidate[];
 }
 
+// 교차검증 — StockEasy 미국 스크리너 후보 vs 전략실(코어) 픽. /briefing 05번 아래 표 전용.
+export interface StockEasyCrossCheckRow {
+  ticker: string | null;
+  name: string | null;
+  sector: string | null;
+  rs: number | null;
+  status: {
+    kind: "passed" | "held" | "failed" | "untracked" | "none";
+    label: string;
+    detail: string | null;
+  };
+}
+
+export interface StockEasyCrossCheck {
+  stockeasyDate: string | null;
+  tfDate: string | null;
+  overlapTickers: string[];
+  rows: StockEasyCrossCheckRow[];
+}
+
 export interface StockEasy {
   seed?: number;
   cash?: number | null;
@@ -513,6 +533,7 @@ export interface StockEasy {
   positions: StockEasyPosition[];
   candidates: StockEasyCandidate[];
   us?: StockEasyUs | null;
+  usCrossCheck?: StockEasyCrossCheck | null;
 }
 
 export interface AlphaDecay {
