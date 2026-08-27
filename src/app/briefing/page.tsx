@@ -17,6 +17,8 @@ import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/Rot
 import { StockEasyCard } from "@/components/briefing/StockEasyCard";
 import { StockEasyUsCard } from "@/components/briefing/StockEasyUsCard";
 import { StockEasyCrossCheckCard } from "@/components/briefing/StockEasyCrossCheckCard";
+import { CatalystCard } from "@/components/dashboard/CatalystCard";
+import { StalkingTable } from "@/components/dashboard/StalkingTable";
 import { LadderCard } from "@/components/dashboard/LadderCard";
 import { RatchetCard } from "@/components/dashboard/RatchetCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
@@ -70,12 +72,30 @@ export default async function Briefing() {
       </div>
       <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} />
 
+      {/* 오늘의 발화 테마 (Catalyst) — 04번과 같은 오늘자 업종 강도 블록, 번호 없이. */}
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">오늘의 발화 테마 (Catalyst)</h2>
+      </div>
+      <CatalystCard data={data.catalyst} />
+
       <div className="shead">
         <span className="snum">05</span>
         <h2 className="stitle">전략실 게이트 상위종목</h2>
         <TermButton termKey="candidates" />
       </div>
       <CandidatesTable rows={data.candidates} topN={15} />
+
+      {/* 다음 리더 추적 (Stalking) — G0~G4 통과 전 준후보 스코어러, 05번 바로 아래, 번호 없이. */}
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">다음 리더 추적 (Stalking)</h2>
+      </div>
+      <StalkingTable rows={data.stalking ?? []} />
 
       {/* 교차검증 — StockEasy 미국 스크리너 vs 전략실. 05번 바로 아래, 번호 없이. */}
       <div className="shead" style={{ marginTop: 28 }}>
