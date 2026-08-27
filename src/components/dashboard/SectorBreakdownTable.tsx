@@ -2,13 +2,33 @@
 
 import { useState } from "react";
 import { Card } from "./Card";
-import type { SectorRow, IndexRsRow } from "@/lib/types";
+import type { SectorRow, IndexRsRow, SectorBandCounts } from "@/lib/types";
 
 type BarItem = { key: string; label: string; rs: number; isIndex: boolean; sub?: string };
 
-export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; indexRs: IndexRsRow[] }) {
+const PHASE_EMOJI: Record<string, string> = {
+  "4+": "🟢", "4": "🟢", "5+": "🟩", "5": "🟩", "3": "🟨", "2": "🟨", "1": "⬜", "6": "🟧", "7": "🟥", "0": "⬜",
+};
+
+function scoreColor(score: number, b: SectorBandCounts): string {
+  if (score >= b.strongThreshold) return "var(--good)";
+  if (score >= b.concernThreshold) return "var(--warning)";
+  if (score < b.weakThreshold) return "var(--critical)";
+  return "var(--text-muted)";
+}
+
+export function SectorBreakdownTable({
+  rows,
+  indexRs,
+  bandCounts,
+}: {
+  rows: SectorRow[];
+  indexRs: IndexRsRow[];
+  bandCounts?: SectorBandCounts | null;
+}) {
   const [showTable, setShowTable] = useState(false);
   const hasData = rows.length > 0 || indexRs.length > 0;
+  const chipRows = rows.filter((r) => r.chips && r.chips.length > 0);
 
   const items: BarItem[] = [
     ...indexRs.map((r) => ({ key: `idx-${r.label}`, label: r.label, rs: r.rs, isIndex: true })),
@@ -19,6 +39,55 @@ export function SectorBreakdownTable({ rows, indexRs }: { rows: SectorRow[]; ind
 
   return (
     <Card title="업종/테마별 집계 (평균RS 기준, 종목수 2개 이상)">
+      {bandCounts && (
+        <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
+          강세(≥{bandCounts.strongThreshold}) <b style={{ color: "var(--good)" }}>{bandCounts.strong}</b> · 관심(
+          {bandCounts.concernThreshold}~{bandCounts.strongThreshold}){" "}
+          <b style={{ color: "var(--warning)" }}>{bandCounts.watch}</b> · 중립 <b>{bandCounts.mid}</b> · 약세(&lt;
+          {bandCounts.weakThreshold}) <b style={{ color: "var(--critical)" }}>{bandCounts.weak}</b>
+        </div>
+      )}
+
+      {bandCounts && chipRows.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <div className="ink-muted" style={{ fontSize: 11, margin: "2px 0 4px" }}>
+            RS 상위 {chipRows.length}개 업종 · 칩 = 구성종목 (P=phase, ▲=RS가속)
+          </div>
+          {chipRows.map((r, i) => (
+            <div
+              key={i}
+              style={{ padding: "6px 0", borderBottom: "1px dashed var(--border)" }}
+            >
+              <div style={{ fontSize: 12.5, marginBottom: 3 }}>
+                <b>{r.industry}</b>{" "}
+                <span className="ink-muted">
+                  {r.sector} · {r.count}종목 · 평균RS {r.avgRs.toFixed(0)} · 점수{" "}
+                  <span style={{ color: scoreColor(r.avgScore, bandCounts) }}>{r.avgScore.toFixed(1)}</span>
+                </span>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                {r.chips!.map((c) => (
+                  <span
+                    key={c.sym}
+                    style={{
+                      border: "1px solid var(--border)",
+                      borderRadius: 5,
+                      padding: "2px 7px",
+                      fontSize: 11.5,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {PHASE_EMOJI[c.phase] ?? ""}
+                    {c.sym} <span className="ink-muted">P{c.phase} RS{c.rs.toFixed(0)}{c.accel ? " ▲" : ""}</span>
+                  </span>
+                ))}
+                {r.chipsMore ? <span className="ink-muted" style={{ fontSize: 11 }}>+{r.chipsMore}개</span> : null}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <button className="view-toggle-btn" onClick={() => setShowTable((v) => !v)}>
           {showTable ? "차트로 보기" : "표로 보기"}

@@ -263,6 +263,13 @@ export interface CandidateRow {
   overview?: CompanyOverview | null;
 }
 
+export interface SectorChip {
+  sym: string;
+  phase: string;
+  rs: number;
+  accel: boolean;
+}
+
 export interface SectorRow {
   sector: string;
   industry: string;
@@ -271,6 +278,18 @@ export interface SectorRow {
   avgScore: number;
   leading: boolean;
   passed: number;
+  chips?: SectorChip[] | null; // §04 개별 종목 칩 (RS 상위 ~12개 업종만)
+  chipsMore?: number;
+}
+
+export interface SectorBandCounts {
+  strong: number;
+  watch: number;
+  mid: number;
+  weak: number;
+  strongThreshold: number;
+  concernThreshold: number;
+  weakThreshold: number;
 }
 
 export interface IndexRsRow {
@@ -589,6 +608,7 @@ export interface DashboardData {
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];
   sectorBreakdown: SectorRow[];
+  sectorBandCounts?: SectorBandCounts | null;
   indexRs: IndexRsRow[];
   holdings: HoldingRow[];
   recentTrades: TradeRow[];

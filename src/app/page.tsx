@@ -70,7 +70,7 @@ export default async function Home() {
 
       <CandidatesTable rows={data.candidates} />
 
-      <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} />
+      <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} bandCounts={data.sectorBandCounts} />
 
       <ThemeLeadershipCard data={data.themeLeadership} />
 

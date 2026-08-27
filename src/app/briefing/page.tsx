@@ -70,7 +70,7 @@ export default async function Briefing() {
         <h2 className="stitle">세부 업종 상위</h2>
         <TermButton termKey="sectordetail" />
       </div>
-      <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} />
+      <SectorBreakdownTable rows={data.sectorBreakdown} indexRs={data.indexRs} bandCounts={data.sectorBandCounts} />
 
       {/* 오늘의 발화 테마 (Catalyst) — 04번과 같은 오늘자 업종 강도 블록, 번호 없이. */}
       <div className="shead" style={{ marginTop: 28 }}>
