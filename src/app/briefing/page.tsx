@@ -15,6 +15,8 @@ import { MddChart } from "@/components/briefing/MddChart";
 import { ProtectionRulesCard } from "@/components/briefing/ProtectionRulesCard";
 import { RotationRibbon, RotationSectionHeader } from "@/components/briefing/RotationRibbon";
 import { StockEasyCard } from "@/components/briefing/StockEasyCard";
+import { LadderCard } from "@/components/dashboard/LadderCard";
+import { RatchetCard } from "@/components/dashboard/RatchetCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
 
 // 친구쪽 전략실 브리핑 룩앤필을 우리 데이터로 재구현한 공개 리포트 라우트.
@@ -113,6 +115,24 @@ export default async function Briefing() {
 
       <RotationSectionHeader />
       <RotationRibbon rotation={data.rotation} />
+
+      {/* 래더/래칫 보조 계좌 — 코어 전용인 06~10번과 달리 각자 카드가 없어 브리핑에서 안 보였다.
+          메인 대시보드의 LadderCard/RatchetCard 를 그대로 재사용. 원본 11개에 없는 자체 추가라 번호 없이. */}
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">래더 계좌 (미국 주식)</h2>
+      </div>
+      <LadderCard data={data.ladder} />
+
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">래칫 계좌 (미국 주식)</h2>
+      </div>
+      <RatchetCard data={data.ratchet} />
 
       <div className="shead">
         <span className="snum">12</span>
