@@ -1,4 +1,4 @@
-import type { Exposure, Regime, RegimeStatus } from "@/lib/types";
+import type { Exposure, Ftd, Regime, RegimeStatus } from "@/lib/types";
 import { TermTrigger } from "./TermTrigger";
 
 const STATUS_COLOR: Record<RegimeStatus, string> = {
@@ -12,10 +12,12 @@ export function ExposureCard({
   regime,
   regimeStatus,
   exposure,
+  ftd,
 }: {
   regime: Regime;
   regimeStatus: RegimeStatus;
   exposure: Exposure | null | undefined;
+  ftd?: Ftd | null;
 }) {
   const rgColor = STATUS_COLOR[regimeStatus];
   const guards: string[] = [];
@@ -49,6 +51,19 @@ export function ExposureCard({
           "—"
         )}
       </div>
+      {ftd && ftd.valid != null && (
+        <div style={{ fontSize: 12, marginTop: 6, color: "var(--text-secondary)" }}>
+          FTD{" "}
+          {ftd.valid ? (
+            <b style={{ color: "var(--good)" }}>
+              {ftd.daysAgo}거래일 전 · 유효
+            </b>
+          ) : (
+            <b>없음</b>
+          )}{" "}
+          <span style={{ color: "var(--text-muted)" }}>(레짐 판정엔 미반영 — 표시 전용)</span>
+        </div>
+      )}
     </div>
   );
 }

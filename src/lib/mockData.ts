@@ -194,6 +194,7 @@ export const mockData: DashboardData = {
     sectorOk: true,
     themeOk: true,
   },
+  ftd: { valid: true, daysAgo: 16 },
   protectionRules: {
     lockTiers: [
       { gainPct: 15, lockPct: 0 },

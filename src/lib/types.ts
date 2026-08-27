@@ -405,6 +405,12 @@ export interface Exposure {
   themeOk: boolean;
 }
 
+// FTD(팔로우스루데이) — §01 표시 전용, 레짐 판정엔 미반영(§12-G 백테스트에서 승격 기각).
+export interface Ftd {
+  valid: boolean | null;
+  daysAgo: number | null;
+}
+
 // 보호 룰(BE·LOCK 래칫 + O'Neill 8주룰, added 2026-08-26) — portfolio.py 상수 그대로 노출
 // (계산 아님, 값 자체가 바뀌면 프론트도 자동 반영되게 하드코딩하지 않음).
 export interface LockTier {
@@ -578,6 +584,7 @@ export interface DashboardData {
   alphaDecay: AlphaDecay;
   // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
   exposure?: Exposure | null;
+  ftd?: Ftd | null;
   protectionRules?: ProtectionRules | null;
   rotation?: Rotation | null;
   stockeasy?: StockEasy | null;
