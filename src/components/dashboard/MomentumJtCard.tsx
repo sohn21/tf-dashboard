@@ -1,7 +1,65 @@
 import { Card } from "./Card";
-import type { MomentumJt } from "@/lib/types";
+import type { MomentumJt, MomentumJtLive } from "@/lib/types";
 
 const money = (x: number) => (x >= 1e6 ? `$${(x / 1e6).toFixed(1)}M` : `$${Math.round(x).toLocaleString()}`);
+
+const LIVE_LABEL: Record<string, string> = { sp500: "S&P500", nasdaq100: "NASDAQ100", iwb: "전체(IWB)" };
+
+function LiveBlock({ live }: { live: MomentumJtLive }) {
+  const seed = live.seed;
+  const started = !!live.lastRebalance;
+  return (
+    <div>
+      <div style={{ fontSize: 11.5, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>
+        라이브 페이퍼 계좌{" "}
+        <span style={{ fontWeight: 400, color: "var(--text-muted)" }}>
+          (시드 ${seed.toLocaleString()}씩 · {live.startDate} 시작 ·{" "}
+          {started ? `마지막 리밸 ${live.lastRebalance}` : "시작 전"})
+        </span>
+      </div>
+      {!started ? (
+        <div style={{ fontSize: 11.5, color: "var(--text-muted)", marginBottom: 6 }}>
+          아직 시작 전 — 매월 첫 거래일에 상위 10종목으로 리밸런스됩니다.
+        </div>
+      ) : (
+        <div className="table-scroll">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>계좌</th>
+                <th>시드</th>
+                <th>현재 NAV</th>
+                <th>수익률</th>
+                <th>보유(10종목)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {["sp500", "nasdaq100", "iwb"].map((k) => {
+                const a = live.accounts.find((x) => x.key === k);
+                if (!a) return null;
+                const cls = a.returnPct >= 0 ? "delta-good" : "delta-critical";
+                return (
+                  <tr key={k}>
+                    <td className="ink-primary">{LIVE_LABEL[k] ?? k}</td>
+                    <td className="tabular ink-secondary">${seed.toLocaleString()}</td>
+                    <td className={`tabular ${cls}`}>{money(a.nav)}</td>
+                    <td className={`tabular ${cls}`}>
+                      {a.returnPct >= 0 ? "+" : ""}
+                      {a.returnPct.toFixed(1)}%
+                    </td>
+                    <td className="ink-secondary" style={{ fontSize: 11 }}>
+                      {a.holdings.join(" · ")}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const SERIES: { key: string; label: string; color: string; dash?: boolean }[] = [
   { key: "iwb", label: "전체(IWB)", color: "var(--series-1, #2a78d6)" },
@@ -80,12 +138,28 @@ export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }
   return (
     <Card title="momentum_jt (Jegadeesh & Titman)">
       <p className="ink-muted" style={{ marginTop: -4, marginBottom: 12, lineHeight: 1.6, fontSize: 12.5 }}>
-        <b style={{ color: "var(--text-primary)" }}>Jegadeesh &amp; Titman (1993)</b> 모멘텀 재현 백테스트. 최근{" "}
+        <b style={{ color: "var(--text-primary)" }}>Jegadeesh &amp; Titman (1993)</b> 모멘텀. 최근{" "}
         <b style={{ color: "var(--text-primary)" }}>6개월 수익률 상위 10종목</b> 동일가중 매수,{" "}
         <b style={{ color: "var(--text-primary)" }}>매달</b> 새 상위 종목으로 교체한다 (롱온리 · 편도 {data.costBpsOneWay}bp). 세
         유니버스(S&amp;P500 / NASDAQ100 / 전체 IWB) 각각 시드{" "}
-        <b style={{ color: "var(--text-primary)" }}>${seed.toLocaleString()}</b>. {pr.start}~{pr.end} · {pr.months}개월 · 라이브 계좌 아님(과거 시뮬레이션).
+        <b style={{ color: "var(--text-primary)" }}>${seed.toLocaleString()}</b>.
       </p>
+
+      {data.live && <LiveBlock live={data.live} />}
+
+      <div
+        style={{
+          fontSize: 11.5,
+          fontWeight: 600,
+          color: "var(--text-secondary)",
+          margin: "14px 0 4px",
+        }}
+      >
+        재현 백테스트{" "}
+        <span style={{ fontWeight: 400, color: "var(--text-muted)" }}>
+          ({pr.start}~{pr.end} · {pr.months}개월 · 라이브 아님)
+        </span>
+      </div>
 
       <EquityChart curve={data.equityCurveYearly} />
 
@@ -134,14 +208,42 @@ export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }
         </table>
       </div>
 
-      <div style={{ marginTop: 8 }}>
-        {data.portfolios.map((p) => (
-          <div key={p.key} style={{ fontSize: 11.5, color: "var(--text-secondary)", marginTop: 3 }}>
-            <b style={{ color: "var(--text-primary)" }}>{p.label}</b> 최근 픽 ({p.lastRebalance}):{" "}
-            <span className="ink-secondary">{p.lastPicks.join(" · ")}</span>
+      {(() => {
+        const cnt: Record<string, number> = {};
+        for (const p of data.portfolios) for (const t of p.lastPicks) cnt[t] = (cnt[t] ?? 0) + 1;
+        const nShared = Object.values(cnt).filter((n) => n >= 2).length;
+        const chip = (t: string) => {
+          const n = cnt[t] ?? 0;
+          if (n < 2) return <span key={t}>{t}</span>;
+          const style =
+            n >= 3
+              ? { background: "color-mix(in srgb, var(--accent, #2a78d6) 24%, transparent)", border: "1px solid var(--accent, #2a78d6)", fontWeight: 600 }
+              : { background: "var(--accent-wash, rgba(42,120,214,0.10))", border: "1px solid var(--accent, #2a78d6)" };
+          return (
+            <span key={t} style={{ ...style, borderRadius: 4, padding: "0 4px" }}>
+              {t}
+            </span>
+          );
+        };
+        return (
+          <div style={{ marginTop: 8 }}>
+            <div style={{ fontSize: 10.5, color: "var(--text-muted)" }}>
+              박스 = 2개 이상 유니버스 공통 픽 · 진한 박스 = 3개 모두 (오늘 {nShared}종목 겹침)
+            </div>
+            {data.portfolios.map((p) => (
+              <div key={p.key} style={{ fontSize: 11.5, color: "var(--text-secondary)", marginTop: 3 }}>
+                <b style={{ color: "var(--text-primary)" }}>{p.label}</b> 최근 픽 ({p.lastRebalance}):{" "}
+                {p.lastPicks.map((t, i) => (
+                  <span key={i}>
+                    {i > 0 ? " · " : ""}
+                    {chip(t)}
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        );
+      })()}
 
       <div
         style={{

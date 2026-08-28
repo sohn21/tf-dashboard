@@ -474,6 +474,23 @@ export interface MomentumJtBenchmark {
   mddPct: number;
 }
 
+export interface MomentumJtLiveAccount {
+  key: string;
+  nav: number;
+  returnPct: number;
+  nPositions: number;
+  holdings: string[];
+  navHistory: Array<{ date: string; nav: number }>;
+}
+
+export interface MomentumJtLive {
+  startDate: string | null;
+  seed: number;
+  lastRebalance: string | null;
+  asOf: string | null;
+  accounts: MomentumJtLiveAccount[];
+}
+
 export interface MomentumJt {
   generatedAt: string;
   period: { start: string; end: string; months: number; years: number };
@@ -486,6 +503,8 @@ export interface MomentumJt {
   portfolios: MomentumJtPortfolio[];
   benchmarks: MomentumJtBenchmark[];
   equityCurveYearly: Array<Record<string, number | string>>;
+  // 옵셔널(2026-08-28): 라이브 페이퍼 계좌(2026-09-01~)
+  live?: MomentumJtLive | null;
 }
 
 // 3층 노출도(added 2026-08-26, /briefing 전용) — 우리 시스템은 원본처럼 lo~hi 밴드가 아니라

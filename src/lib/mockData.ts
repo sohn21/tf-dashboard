@@ -385,5 +385,16 @@ export const mockData: DashboardData = {
       { date: "2016-12", sp500: 900000, nasdaq100: 500000, iwb: 700000, poolEwSp500: 40000, poolEwNasdaq100: 55000, poolEwIwb: 42000, spy: 22000, qqq: 30000 },
       { date: "2026-06", sp500: 7956433, nasdaq100: 4202050, iwb: 17914581, poolEwSp500: 165049, poolEwNasdaq100: 422050, poolEwIwb: 231000, spy: 74280, qqq: 195074 },
     ],
+    live: {
+      startDate: "2026-09-01",
+      seed: 10000,
+      lastRebalance: null,
+      asOf: null,
+      accounts: [
+        { key: "sp500", nav: 10000, returnPct: 0, nPositions: 0, holdings: [], navHistory: [] },
+        { key: "nasdaq100", nav: 10000, returnPct: 0, nPositions: 0, holdings: [], navHistory: [] },
+        { key: "iwb", nav: 10000, returnPct: 0, nPositions: 0, holdings: [], navHistory: [] },
+      ],
+    },
   },
 };
