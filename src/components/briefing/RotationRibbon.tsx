@@ -4,6 +4,7 @@ import { TermButton } from "./TermTrigger";
 const ROW_H = 15;
 const COL_W = 8;
 const LABEL_W = 150;
+const AXIS_H = 15;
 
 function bandColor(score: number, strong: number, concern: number): string {
   if (score >= strong) return "var(--good)";
@@ -27,9 +28,14 @@ export function RotationRibbon({ rotation }: { rotation: Rotation | null | undef
   const { dates, themes, sectors, themeStrongThreshold: strong, themeConcernThreshold: concern } = rotation;
   const latestDate = dates[dates.length - 1];
   const w = LABEL_W + dates.length * COL_W + 8;
-  const h = themes.length * ROW_H;
+  const h = themes.length * ROW_H + AXIS_H;
   const daysNote =
-    dates.length >= 14 ? `${dates.length}거래일` : `${dates.length}거래일 — 축적 초반, 매일 자동으로 넓어짐`;
+    dates.length >= 14 ? `${dates.length}거래일` : `${dates.length}거래일 — 축적 초반, 매일 오른쪽으로 넓어짐`;
+  // 하단 날짜축 — 일주일(5거래일) 단위로만. 데이터가 얇을 땐 시작일만.
+  const axisY = themes.length * ROW_H + 11;
+  const ticks: number[] = [];
+  for (let i = 0; i < dates.length; i += 5) ticks.push(i);
+  if (ticks.length > 0 && dates.length - 1 - ticks[ticks.length - 1] >= 4) ticks.push(dates.length - 1);
 
   return (
     <div className="blueprint" style={{ padding: "16px 18px" }}>
@@ -38,9 +44,10 @@ export function RotationRibbon({ rotation }: { rotation: Rotation | null | undef
       <span className="corner bl" />
       <span className="corner br" />
       <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
-        테마 상위 {themes.length}개 · {daysNote} · 오늘({latestDate}) 기준 정렬
+        테마 상위 {themes.length}개 · {daysNote} · 오늘({latestDate}) 점수 기준 정렬 · 하단축 주 단위 날짜
       </div>
-      <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height: "auto", maxHeight: 340 }}>
+      <div style={{ overflowX: "auto" }}>
+      <svg viewBox={`0 0 ${w} ${h}`} width={w} style={{ maxWidth: "100%", height: "auto", display: "block" }}>
         {themes.map((row, ri) => {
           const y = ri * ROW_H;
           return (
@@ -71,7 +78,20 @@ export function RotationRibbon({ rotation }: { rotation: Rotation | null | undef
             </g>
           );
         })}
+        {ticks.map((ci) => (
+          <text
+            key={`ax-${ci}`}
+            x={LABEL_W + ci * COL_W + COL_W / 2}
+            y={axisY}
+            textAnchor="middle"
+            fontSize={9}
+            fill="var(--text-secondary)"
+          >
+            {dates[ci].slice(5)}
+          </text>
+        ))}
       </svg>
+      </div>
       <div style={{ marginTop: 8, display: "flex", gap: 10, flexWrap: "wrap" }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10.5, color: "var(--text-secondary)" }}>
           <span style={{ width: 9, height: 9, background: "var(--good)", display: "inline-block" }} />
