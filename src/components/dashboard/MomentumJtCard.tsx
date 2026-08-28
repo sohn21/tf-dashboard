@@ -129,14 +129,14 @@ function EquityChart({ curve }: { curve: Array<Record<string, number | string>> 
 export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }) {
   if (!data) {
     return (
-      <Card title="momentum_jt (Jegadeesh & Titman)">
+      <Card>
         <p className="ink-muted">아직 데이터 없음 — research/momentum_jt/backtest.py 실행 필요</p>
       </Card>
     );
   }
   const { seed, period: pr } = data;
   return (
-    <Card title="momentum_jt (Jegadeesh & Titman)">
+    <Card>
       <p className="ink-muted" style={{ marginTop: -4, marginBottom: 12, lineHeight: 1.6, fontSize: 12.5 }}>
         <b style={{ color: "var(--text-primary)" }}>Jegadeesh &amp; Titman (1993)</b> 모멘텀. 최근{" "}
         <b style={{ color: "var(--text-primary)" }}>6개월 수익률 상위 10종목</b> 동일가중 매수,{" "}

@@ -211,6 +211,12 @@ export default async function Briefing() {
       </div>
       <RatchetCard data={data.ratchet} />
 
+      <div className="shead" style={{ marginTop: 28 }}>
+        <span className="snum" style={{ color: "var(--text-muted)" }}>
+          ·
+        </span>
+        <h2 className="stitle">momentum_jt (Jegadeesh &amp; Titman)</h2>
+      </div>
       <MomentumJtCard data={data.momentumJt} />
 
       <div className="shead">
