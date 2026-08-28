@@ -362,4 +362,28 @@ export const mockData: DashboardData = {
       profitFactor: null,
     },
   },
+  momentumJt: {
+    generatedAt: "2026-08-28 10:56 KST",
+    period: { start: "2007-02", end: "2026-06", months: 233, years: 19.4 },
+    seed: 10000,
+    costBpsOneWay: 25,
+    lookbackMonths: 6,
+    topN: 10,
+    holdMonths: 1,
+    note: "생존편향 + 10종목 집중 → 절대수익 과대. 같은 풀 EW 대비 초과분만 신뢰.",
+    portfolios: [
+      { key: "sp500", label: "S&P500", endValue: 7956433, cagrPct: 41.1, mddPct: -58.6, sharpe: 1.31, annVolPct: 29.8, winMonthPct: 67.0, poolEwCagrPct: 15.5, poolEwEndValue: 165049, lastRebalance: "2026-06-30", lastPicks: ["SNDK", "MU", "WDC", "STX", "DELL", "INTC", "CIEN", "LITE", "FLEX", "AMD"] },
+      { key: "nasdaq100", label: "NASDAQ100", endValue: 4202050, cagrPct: 36.5, mddPct: -46.8, sharpe: 1.39, annVolPct: 24.9, winMonthPct: 67.4, poolEwCagrPct: 21.3, poolEwEndValue: 422050, lastRebalance: "2026-06-30", lastPicks: ["MU", "INTC", "MRVL", "AMAT", "AMD", "LRCX", "TER", "KLAC", "ON", "TXN"] },
+      { key: "iwb", label: "전체(IWB)", endValue: 17914581, cagrPct: 47.1, mddPct: -48.5, sharpe: 0.92, annVolPct: 54.1, winMonthPct: 67.0, poolEwCagrPct: 17.8, poolEwEndValue: 231000, lastRebalance: "2026-06-30", lastPicks: ["SNDK", "AAOI", "PL", "MU", "VICR", "DOCN", "WDC", "RKLB", "DELL", "INTC"] },
+    ],
+    benchmarks: [
+      { key: "spy", label: "S&P500 (SPY)", endValue: 74280, cagrPct: 10.9, mddPct: -50.8 },
+      { key: "qqq", label: "NASDAQ (QQQ)", endValue: 195074, cagrPct: 16.5, mddPct: -49.7 },
+    ],
+    equityCurveYearly: [
+      { date: "2007-12", sp500: 17963, nasdaq100: 15339, iwb: 16068, poolEwSp500: 10777, poolEwNasdaq100: 11241, poolEwIwb: 10523, spy: 10359, qqq: 11657 },
+      { date: "2016-12", sp500: 900000, nasdaq100: 500000, iwb: 700000, poolEwSp500: 40000, poolEwNasdaq100: 55000, poolEwIwb: 42000, spy: 22000, qqq: 30000 },
+      { date: "2026-06", sp500: 7956433, nasdaq100: 4202050, iwb: 17914581, poolEwSp500: 165049, poolEwNasdaq100: 422050, poolEwIwb: 231000, spy: 74280, qqq: 195074 },
+    ],
+  },
 };

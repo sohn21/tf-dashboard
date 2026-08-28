@@ -21,6 +21,7 @@ import { CatalystCard } from "@/components/dashboard/CatalystCard";
 import { StalkingTable } from "@/components/dashboard/StalkingTable";
 import { LadderCard } from "@/components/dashboard/LadderCard";
 import { RatchetCard } from "@/components/dashboard/RatchetCard";
+import { MomentumJtCard } from "@/components/dashboard/MomentumJtCard";
 import { TermButton } from "@/components/briefing/TermTrigger";
 
 // 친구쪽 전략실 브리핑 룩앤필을 우리 데이터로 재구현한 공개 리포트 라우트.
@@ -209,6 +210,8 @@ export default async function Briefing() {
         <h2 className="stitle">래칫 계좌 (미국 주식)</h2>
       </div>
       <RatchetCard data={data.ratchet} />
+
+      <MomentumJtCard data={data.momentumJt} />
 
       <div className="shead">
         <span className="snum">12</span>

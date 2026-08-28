@@ -449,6 +449,45 @@ export interface RatchetData {
   alphaDecay: AlphaDecay;
 }
 
+// momentum_jt (Jegadeesh & Titman 1993) 재현 백테스트 — 2026-08-28. 라이브 계좌 아님.
+// research/momentum_jt/backtest.py 가 만든 results/summary.json 을 그대로 전달.
+export interface MomentumJtPortfolio {
+  key: string;
+  label: string;
+  endValue: number;
+  cagrPct: number;
+  mddPct: number;
+  sharpe: number;
+  annVolPct: number;
+  winMonthPct: number;
+  poolEwCagrPct: number;
+  poolEwEndValue: number;
+  lastRebalance: string;
+  lastPicks: string[];
+}
+
+export interface MomentumJtBenchmark {
+  key: string;
+  label: string;
+  endValue: number;
+  cagrPct: number;
+  mddPct: number;
+}
+
+export interface MomentumJt {
+  generatedAt: string;
+  period: { start: string; end: string; months: number; years: number };
+  seed: number;
+  costBpsOneWay: number;
+  lookbackMonths: number;
+  topN: number;
+  holdMonths: number;
+  note: string;
+  portfolios: MomentumJtPortfolio[];
+  benchmarks: MomentumJtBenchmark[];
+  equityCurveYearly: Array<Record<string, number | string>>;
+}
+
 // 3층 노출도(added 2026-08-26, /briefing 전용) — 우리 시스템은 원본처럼 lo~hi 밴드가 아니라
 // REGIME_TABLE 기준 단일 상한값. L1(레짐) → 섹터가드 → 테마가드 순으로 깎은 최종값.
 export interface Exposure {
@@ -661,4 +700,6 @@ export interface DashboardData {
   stockeasy?: StockEasy | null;
   ladder: LadderData | null;
   ratchet: RatchetData | null;
+  // 옵셔널(2026-08-28): J&T 1993 재현 백테스트(라이브 아님)
+  momentumJt?: MomentumJt | null;
 }
