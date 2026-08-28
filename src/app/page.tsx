@@ -74,7 +74,7 @@ export default async function Home() {
 
       <ThemeLeadershipCard data={data.themeLeadership} />
 
-      <HoldingsTable rows={data.holdings} />
+      <HoldingsTable rows={data.holdings} exits={data.holdingsExits} />
 
       <RecentTradesTable rows={data.recentTrades} />
 

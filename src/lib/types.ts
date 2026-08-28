@@ -328,6 +328,18 @@ export interface HoldingRow {
   daysHeld?: number | null;
   weightPct?: number | null;
   reason?: string;
+  // 옵셔널(2026-08-28, §09 확장): 이번 실행(run_date)에 신규 편입된 종목이면 true
+  isNewEntry?: boolean;
+}
+
+// §09 이번 실행 청산 종목 — 보유 표엔 없는 종목이라 표 아래에 별도로 표시(2026-08-28)
+export interface HoldingsExitRow {
+  ticker: string;
+  exitDate: string;
+  entryPx: number;
+  exitPx: number;
+  pnlPct: number | null;
+  reason: string;
 }
 
 export interface HoldingsCounts {
@@ -628,6 +640,8 @@ export interface DashboardData {
   indexRs: IndexRsRow[];
   holdings: HoldingRow[];
   holdingsCounts?: HoldingsCounts | null;
+  // 옵셔널(2026-08-28): 이번 실행 청산 종목 리스트
+  holdingsExits?: HoldingsExitRow[] | null;
   recentTrades: TradeRow[];
   alphaDecay: AlphaDecay;
   // 옵셔널(2026-08-26, /briefing 전용 필드): 이전 KV blob엔 없을 수 있음
