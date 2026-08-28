@@ -76,7 +76,8 @@ export default async function Briefing() {
       {/* 오늘의 발화 테마 (Catalyst) — 04번과 같은 오늘자 업종 강도 블록, 길어서 기본 접힘. */}
       <details className="csec">
         <summary className="shead">
-          <span className="snum caret" style={{ color: "var(--text-muted)" }}>
+          <span className="snum">05</span>
+          <span className="caret" style={{ color: "var(--text-muted)", marginLeft: 4, fontSize: 10 }}>
             ▸
           </span>
           <h2 className="stitle">오늘의 발화 테마 (Catalyst)</h2>
@@ -86,7 +87,7 @@ export default async function Briefing() {
       </details>
 
       <div className="shead">
-        <span className="snum">05</span>
+        <span className="snum">06</span>
         <h2 className="stitle">전략실 게이트 상위종목</h2>
         <TermButton termKey="candidates" />
       </div>
@@ -95,7 +96,8 @@ export default async function Briefing() {
       {/* 다음 리더 추적 (Stalking) — G0~G4 통과 전 준후보 스코어러, 길어서 기본 접힘. */}
       <details className="csec">
         <summary className="shead">
-          <span className="snum caret" style={{ color: "var(--text-muted)" }}>
+          <span className="snum">07</span>
+          <span className="caret" style={{ color: "var(--text-muted)", marginLeft: 4, fontSize: 10 }}>
             ▸
           </span>
           <h2 className="stitle">다음 리더 추적 (Stalking)</h2>
@@ -106,15 +108,13 @@ export default async function Briefing() {
 
       {/* 교차검증 — StockEasy 미국 스크리너 vs 전략실. 05번 바로 아래, 번호 없이. */}
       <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
+        <span className="snum">08</span>
         <h2 className="stitle">교차검증 — StockEasy 미국 스크리너 vs 전략실</h2>
       </div>
       <StockEasyCrossCheckCard data={data.stockeasy?.usCrossCheck} />
 
       <div className="shead">
-        <span className="snum">06</span>
+        <span className="snum">09</span>
         <h2 className="stitle">전략실 NAV 곡선</h2>
         <TermButton termKey="navcurve" />
       </div>
@@ -162,7 +162,7 @@ export default async function Briefing() {
       </Card>
 
       <div className="shead">
-        <span className="snum">07</span>
+        <span className="snum">10</span>
         <h2 className="stitle">수익 · 위험 통계</h2>
         <TermButton termKey="riskstats" />
       </div>
@@ -170,21 +170,21 @@ export default async function Briefing() {
       <AlphaDecayCard data={data.alphaDecay} />
 
       <div className="shead">
-        <span className="snum">08</span>
+        <span className="snum">11</span>
         <h2 className="stitle">MDD 차트</h2>
         <TermButton termKey="mddchart" />
       </div>
       <MddChart navHistory={data.navHistory} />
 
       <div className="shead">
-        <span className="snum">09</span>
+        <span className="snum">12</span>
         <h2 className="stitle">현재 보유종목 상황</h2>
         <TermButton termKey="holdings" />
       </div>
       <HoldingsTable rows={data.holdings} counts={data.holdingsCounts} exits={data.holdingsExits} />
 
       <div className="shead">
-        <span className="snum">10</span>
+        <span className="snum">13</span>
         <h2 className="stitle">Leading Theme Count</h2>
         <TermButton termKey="leadingcount" />
       </div>
@@ -196,31 +196,25 @@ export default async function Briefing() {
       {/* 래더/래칫 보조 계좌 — 코어 전용인 06~10번과 달리 각자 카드가 없어 브리핑에서 안 보였다.
           메인 대시보드의 LadderCard/RatchetCard 를 그대로 재사용. 원본 11개에 없는 자체 추가라 번호 없이. */}
       <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
+        <span className="snum">15</span>
         <h2 className="stitle">래더 계좌 (미국 주식)</h2>
       </div>
       <LadderCard data={data.ladder} />
 
       <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
+        <span className="snum">16</span>
         <h2 className="stitle">래칫 계좌 (미국 주식)</h2>
       </div>
       <RatchetCard data={data.ratchet} />
 
       <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
+        <span className="snum">17</span>
         <h2 className="stitle">momentum_jt (Jegadeesh &amp; Titman)</h2>
       </div>
       <MomentumJtCard data={data.momentumJt} />
 
       <div className="shead">
-        <span className="snum">12</span>
+        <span className="snum">18</span>
         <h2 className="stitle">StockEasy (국내 주식)</h2>
         <TermButton termKey="stockeasy" />
       </div>
@@ -228,9 +222,7 @@ export default async function Briefing() {
 
       {/* StockEasy 미국주식 — 2026-08-27 stockeasy 저장소에 US 파이프라인 추가. 번호 없이 국내 바로 뒤. */}
       <div className="shead" style={{ marginTop: 28 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          ·
-        </span>
+        <span className="snum">19</span>
         <h2 className="stitle">
           StockEasy (미국 주식) <span className="ssub">모의투자 시드 $10,000 · 미국 래더·스크리너·S&amp;P500 RS</span>
         </h2>
@@ -238,9 +230,7 @@ export default async function Briefing() {
       <StockEasyUsCard us={data.stockeasy?.us} />
 
       <div className="shead" style={{ marginTop: 36, borderTop: "1px dashed var(--border)", paddingTop: 20 }}>
-        <span className="snum" style={{ color: "var(--text-muted)" }}>
-          +
-        </span>
+        <span className="snum">20</span>
         <h2 className="stitle">보호 룰 (BE · LOCK · 8주룰)</h2>
         <TermButton termKey="protection" />
       </div>

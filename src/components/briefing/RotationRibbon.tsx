@@ -143,7 +143,7 @@ export function RotationRibbon({ rotation }: { rotation: Rotation | null | undef
 export function RotationSectionHeader() {
   return (
     <div className="shead">
-      <span className="snum">11</span>
+      <span className="snum">14</span>
       <h2 className="stitle">테마 로테이션 Ribbon</h2>
       <TermButton termKey="rotation" />
     </div>
