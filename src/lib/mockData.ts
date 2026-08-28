@@ -290,7 +290,10 @@ export const mockData: DashboardData = {
     nPositions: 1,
     navHistory: [{ date: "2026-08-05", nav: 9998.75 }],
     holdings: [
-      { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0, spark: [190.46, 188.2, 186.9, 189.5, 186.6], stopDistPct: 8.0, statusCat: "normal" },
+      { ticker: "NTAP", entryPx: 190.46, lastClose: 190.46, gainPct: 0, currentStopPct: -8, trimStage: 0, spark: [190.46, 188.2, 186.9, 189.5, 186.6], stopDistPct: 8.0, statusCat: "normal", isNewEntry: true },
+    ],
+    holdingsExits: [
+      { ticker: "LLY", exitDate: "2026-08-05", entryPx: 1280.34, exitPx: 1176.1, pnlPct: -8.1, reason: "stop" },
     ],
     recentTrades: [],
     backtest: {
@@ -329,6 +332,7 @@ export const mockData: DashboardData = {
     nPositions: 0,
     navHistory: [{ date: "2026-08-20", nav: 10000 }],
     holdings: [],
+    holdingsExits: [],
     recentTrades: [],
     backtest: {
       startDate: "2021-07-28",

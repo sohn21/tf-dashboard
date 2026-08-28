@@ -10,8 +10,8 @@ export const STATUS_BADGE: Record<HoldingStatusCat, { cls: string; label: string
   normal: { cls: "badge-good", label: "순항" },
 };
 
-// 청산 사유(trade_log.reason) → 한글. paper_trader/portfolio._close_position() 이 내보내는 값 전체.
-const EXIT_REASON_LABEL: Record<string, string> = {
+// 청산 사유(trade_log.reason) → 한글. 코어 portfolio._close_position() + 래더/래칫 계좌 값 전부.
+export const EXIT_REASON_LABEL: Record<string, string> = {
   stop: "손절",
   lock_stop: "이익잠금 손절",
   sell_below_50ma: "50일선 이탈 매도",
@@ -25,7 +25,78 @@ const EXIT_REASON_LABEL: Record<string, string> = {
   dust_cleanup: "더스트 정리",
   switch_out: "스위칭 교체",
   manual_position_cap_resize: "포지션 상한 리사이즈",
+  // 래더 계좌
+  stop_locked8: "락 손절(+8%)",
+  trim1_24pct: "1차 트림(+24%)",
+  trim2_50pct: "2차 트림(+50%)",
+  final_100: "최종 청산(+100%)",
 };
+
+export function exitReasonLabel(reason: string): string {
+  if (EXIT_REASON_LABEL[reason]) return EXIT_REASON_LABEL[reason];
+  if (reason.startsWith("stop_lock")) {
+    const lvl = reason.replace("stop_lock", "");
+    return lvl ? `락 청산(+${lvl}%)` : "락 청산";
+  }
+  return reason;
+}
+
+// 티커 옆 "신규" 뱃지 — 코어/래더/래칫 세 카드에서 공용
+export function NewEntryBadge() {
+  return (
+    <span
+      style={{
+        marginLeft: 5,
+        fontSize: 9.5,
+        fontWeight: 700,
+        color: "var(--good)",
+        border: "1px solid var(--good)",
+        borderRadius: 3,
+        padding: "0 3px",
+        verticalAlign: 1,
+      }}
+    >
+      신규
+    </span>
+  );
+}
+
+// "이번 실행 청산 · TICKER ▼-x% (사유)" 한 줄 — 보유 표 아래에 붙임(세 카드 공용)
+export function HoldingsExitLine({ exits }: { exits?: HoldingsExitRow[] | null }) {
+  const rows = exits ?? [];
+  if (rows.length === 0) return null;
+  return (
+    <div
+      style={{
+        fontSize: 12,
+        color: "var(--text-secondary)",
+        marginTop: 10,
+        paddingTop: 8,
+        borderTop: "1px solid var(--border)",
+      }}
+    >
+      <b style={{ color: "var(--critical)" }}>이번 실행 청산</b>{" "}
+      {rows.map((t, i) => {
+        const hasPnl = t.pnlPct != null;
+        const up = hasPnl && (t.pnlPct as number) >= 0;
+        return (
+          <span key={t.ticker}>
+            {i > 0 ? " · " : "· "}
+            {t.ticker}
+            {hasPnl && (
+              <b style={{ color: up ? "var(--good)" : "var(--critical)", marginLeft: 4 }}>
+                {up ? "▲" : "▼"}
+                {(t.pnlPct as number) >= 0 ? "+" : ""}
+                {(t.pnlPct as number).toFixed(1)}%
+              </b>
+            )}{" "}
+            <span className="ink-muted">({exitReasonLabel(t.reason)})</span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 export function HoldingsTable({
   rows,
@@ -104,22 +175,7 @@ export function HoldingsTable({
                   <tr key={p.ticker}>
                     <td className="ink-primary">
                       {p.ticker}
-                      {p.isNewEntry && (
-                        <span
-                          style={{
-                            marginLeft: 5,
-                            fontSize: 9.5,
-                            fontWeight: 700,
-                            color: "var(--good)",
-                            border: "1px solid var(--good)",
-                            borderRadius: 3,
-                            padding: "0 3px",
-                            verticalAlign: 1,
-                          }}
-                        >
-                          신규
-                        </span>
-                      )}
+                      {p.isNewEntry && <NewEntryBadge />}
                     </td>
                     <td className="tabular ink-secondary">{p.entryPx.toFixed(2)}</td>
                     <td className="tabular ink-secondary">{p.lastClose.toFixed(2)}</td>
@@ -153,37 +209,7 @@ export function HoldingsTable({
           </table>
         </div>
       )}
-      {exitRows.length > 0 && (
-        <div
-          style={{
-            fontSize: 12,
-            color: "var(--text-secondary)",
-            marginTop: 10,
-            paddingTop: 8,
-            borderTop: "1px solid var(--border)",
-          }}
-        >
-          <b style={{ color: "var(--critical)" }}>이번 실행 청산</b>{" "}
-          {exitRows.map((t, i) => {
-            const hasPnl = t.pnlPct != null;
-            const up = hasPnl && (t.pnlPct as number) >= 0;
-            return (
-              <span key={t.ticker}>
-                {i > 0 ? " · " : "· "}
-                {t.ticker}
-                {hasPnl && (
-                  <b style={{ color: up ? "var(--good)" : "var(--critical)", marginLeft: 4 }}>
-                    {up ? "▲" : "▼"}
-                    {(t.pnlPct as number) >= 0 ? "+" : ""}
-                    {(t.pnlPct as number).toFixed(1)}%
-                  </b>
-                )}{" "}
-                <span className="ink-muted">({EXIT_REASON_LABEL[t.reason] ?? t.reason})</span>
-              </span>
-            );
-          })}
-        </div>
-      )}
+      <HoldingsExitLine exits={exitRows} />
       <OverviewCards rows={rows} />
     </Card>
   );

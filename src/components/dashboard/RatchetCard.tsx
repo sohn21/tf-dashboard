@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
 import { OverviewCards } from "./OverviewCards";
 import { Sparkline } from "./Sparkline";
-import { STATUS_BADGE } from "./HoldingsTable";
+import { STATUS_BADGE, NewEntryBadge, HoldingsExitLine } from "./HoldingsTable";
 import type { AlphaDecay, RatchetData, RatchetExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -202,6 +202,7 @@ export function RatchetCard({ data }: { data: RatchetData | null }) {
                     <tr key={p.ticker}>
                       <td className="ink-primary">
                         {p.ticker}
+                        {p.isNewEntry && <NewEntryBadge />}
                         {p.isRunner && (
                           <span className="badge" style={{ marginLeft: 6, fontSize: 10 }}>
                             런너
@@ -237,6 +238,7 @@ export function RatchetCard({ data }: { data: RatchetData | null }) {
           </div>
         )}
         <OverviewCards rows={data.holdings} />
+        <HoldingsExitLine exits={data.holdingsExits} />
       </div>
 
       {data.recentTrades.length > 0 && (

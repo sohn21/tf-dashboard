@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
 import { OverviewCards } from "./OverviewCards";
 import { Sparkline } from "./Sparkline";
-import { STATUS_BADGE } from "./HoldingsTable";
+import { STATUS_BADGE, NewEntryBadge, HoldingsExitLine } from "./HoldingsTable";
 import type { AlphaDecay, LadderData, LadderExitReasonRow } from "@/lib/types";
 
 const fmtMoney = (x: number) => `$${x.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -212,7 +212,10 @@ export function LadderCard({ data }: { data: LadderData | null }) {
                           : "ink-secondary";
                   return (
                     <tr key={p.ticker}>
-                      <td className="ink-primary">{p.ticker}</td>
+                      <td className="ink-primary">
+                        {p.ticker}
+                        {p.isNewEntry && <NewEntryBadge />}
+                      </td>
                       <td className="tabular ink-secondary">{p.entryPx.toFixed(2)}</td>
                       <td className="tabular ink-secondary">{p.lastClose.toFixed(2)}</td>
                       <td className={`tabular ${cls}`}>
@@ -242,6 +245,7 @@ export function LadderCard({ data }: { data: LadderData | null }) {
           </div>
         )}
         <OverviewCards rows={data.holdings} />
+        <HoldingsExitLine exits={data.holdingsExits} />
       </div>
 
       {data.recentTrades.length > 0 && (

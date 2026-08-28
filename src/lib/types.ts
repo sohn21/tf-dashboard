@@ -378,6 +378,8 @@ export interface LadderHoldingRow {
   sector?: string | null;
   industry?: string | null;
   overview?: CompanyOverview | null;
+  // 옵셔널(2026-08-28): run_date 에 편입된 종목이면 true
+  isNewEntry?: boolean;
 }
 
 export interface LadderExitReasonRow {
@@ -396,6 +398,8 @@ export interface LadderData {
   nPositions: number;
   navHistory: NavPoint[];
   holdings: LadderHoldingRow[];
+  // 옵셔널(2026-08-28): 이번 실행 청산 종목
+  holdingsExits?: HoldingsExitRow[] | null;
   recentTrades: TradeRow[];
   backtest: LadderBacktestSummary | null;
   alphaDecay: AlphaDecay;
@@ -418,6 +422,8 @@ export interface RatchetHoldingRow {
   sector?: string | null;
   industry?: string | null;
   overview?: CompanyOverview | null;
+  // 옵셔널(2026-08-28): run_date 에 편입된 종목이면 true
+  isNewEntry?: boolean;
 }
 
 export interface RatchetExitReasonRow {
@@ -436,6 +442,8 @@ export interface RatchetData {
   nPositions: number;
   navHistory: NavPoint[];
   holdings: RatchetHoldingRow[];
+  // 옵셔널(2026-08-28): 이번 실행 청산 종목
+  holdingsExits?: HoldingsExitRow[] | null;
   recentTrades: TradeRow[];
   backtest: RatchetBacktestSummary | null;
   alphaDecay: AlphaDecay;
