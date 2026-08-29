@@ -151,38 +151,9 @@ export function RatchetCard({ data }: { data: RatchetData | null }) {
 
   return (
     <Card title="래칫 (Lock 래칫 실험 계좌)">
-      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 10 }}>
-        코어·래더와 별도인 $10,000 실험 계좌 · 래더와 &quot;같은 장에서 청산 로직만 다르게&quot; 비교하는
-        목적이라 부분매도·피라미딩·실적 정리 등은 미적용.
+      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 14 }}>
+        코어·래더와 별도로 운용하는 $10,000 실험 계좌.
       </p>
-      <div
-        style={{
-          marginBottom: 14,
-          padding: "10px 12px",
-          border: "1px solid var(--gridline)",
-          borderRadius: 6,
-          fontSize: 12,
-          lineHeight: 1.65,
-        }}
-      >
-        <div style={{ marginBottom: 5 }}>
-          <b style={{ color: "var(--good)" }}>매수</b>{" "}
-          <span className="ink-secondary">
-            래더와 완전히 동일 — 코어와 같은 후보풀(게이트 G0~G4 + 가드)에서 상위 랭킹 종목을 최대
-            4종목·종목당 NAV 25%까지 신규 매수.
-          </span>
-        </div>
-        <div>
-          <b style={{ color: "var(--critical)" }}>매도</b>{" "}
-          <span className="ink-secondary">
-            기본 손절 진입가 −7%. 보유 중 최고수익이 +15%에 닿으면 스탑을 진입가(본전)로 상향. 이후
-            최고수익이 +25% / +35% / +50% / +70% / +100%… 단계를 넘을 때마다 스탑을 +10% / +20% /
-            +25% / +35% / +60%… 로 단조 상향(절대 안 내림). 부분매도 없이 스탑 이탈 시 전량 청산. 단,
-            한 번이라도 +100%를 찍은 런너는 스탑 이탈만으론 안 팔고 50일선(50일 EMA) 이탈과 동시에만
-            매도.
-          </span>
-        </div>
-      </div>
       <StatRow columns={3}>
         <StatTile label="NAV" value={fmtMoney(data.nav)} />
         <StatTile label="현금" value={fmtMoney(data.cash)} />

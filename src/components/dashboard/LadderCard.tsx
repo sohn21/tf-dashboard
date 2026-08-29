@@ -164,35 +164,9 @@ export function LadderCard({ data }: { data: LadderData | null }) {
 
   return (
     <Card title="래더 (스탑/트림 실험 계좌)">
-      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 10 }}>
-        코어 계좌와 별도인 $10,000 실험 계좌 · 코어의 런너 승격·피라미딩·스위칭·실적 R-tier·노출도
-        상한은 미적용(청산 로직만 비교하는 목적).
+      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 14 }}>
+        코어 계좌와 별도로 운용하는 $10,000 실험 계좌.
       </p>
-      <div
-        style={{
-          marginBottom: 14,
-          padding: "10px 12px",
-          border: "1px solid var(--gridline)",
-          borderRadius: 6,
-          fontSize: 12,
-          lineHeight: 1.65,
-        }}
-      >
-        <div style={{ marginBottom: 5 }}>
-          <b style={{ color: "var(--good)" }}>매수</b>{" "}
-          <span className="ink-secondary">
-            코어 시스템과 동일한 후보 선정(추세추종 게이트 G0~G4 + 가드)을 통과한 상위 랭킹 종목을
-            최대 4종목·종목당 NAV 25%까지 신규 매수. 부분 매수·피라미딩 없음.
-          </span>
-        </div>
-        <div>
-          <b style={{ color: "var(--critical)" }}>매도</b>{" "}
-          <span className="ink-secondary">
-            −8% 손절(초기 하드스톱). +24% 도달 시 보유수량 30% 매도 후 잔량 스탑을 +8%로 고정(이후
-            +8%까지 밀리면 잔량 전량 청산). +50% 도달 시 잔량 절반 매도. +100% 도달 시 전량 매도.
-          </span>
-        </div>
-      </div>
       <StatRow columns={3}>
         <StatTile label="NAV" value={fmtMoney(data.nav)} />
         <StatTile label="현금" value={fmtMoney(data.cash)} />
