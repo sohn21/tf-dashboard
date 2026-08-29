@@ -137,13 +137,36 @@ export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }
   const { seed, period: pr } = data;
   return (
     <Card>
-      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 12, lineHeight: 1.6, fontSize: 12.5 }}>
-        <b style={{ color: "var(--text-primary)" }}>Jegadeesh &amp; Titman (1993)</b> 모멘텀. 최근{" "}
-        <b style={{ color: "var(--text-primary)" }}>6개월 수익률 상위 10종목</b> 동일가중 매수,{" "}
-        <b style={{ color: "var(--text-primary)" }}>매달</b> 새 상위 종목으로 교체한다 (롱온리 · 편도 {data.costBpsOneWay}bp). 세
-        유니버스(S&amp;P500 / NASDAQ100 / 전체 IWB) 각각 시드{" "}
+      <p className="ink-muted" style={{ marginTop: -4, marginBottom: 10, lineHeight: 1.6, fontSize: 12.5 }}>
+        <b style={{ color: "var(--text-primary)" }}>Jegadeesh &amp; Titman (1993)</b> 모멘텀. 롱온리 ·
+        편도 {data.costBpsOneWay}bp · 세 유니버스(S&amp;P500 / NASDAQ100 / 전체 IWB) 각각 시드{" "}
         <b style={{ color: "var(--text-primary)" }}>${seed.toLocaleString()}</b>.
       </p>
+      <div
+        style={{
+          marginBottom: 12,
+          padding: "10px 12px",
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          fontSize: 12,
+          lineHeight: 1.65,
+        }}
+      >
+        <div style={{ marginBottom: 5 }}>
+          <b style={{ color: "var(--good)" }}>매수</b>{" "}
+          <span style={{ color: "var(--text-secondary)" }}>
+            매월 첫 거래일에 각 유니버스에서 최근 <b style={{ color: "var(--text-primary)" }}>6개월
+            수익률 상위 10종목</b>을 동일가중(각 10%)으로 매수.
+          </span>
+        </div>
+        <div>
+          <b style={{ color: "var(--critical)" }}>매도</b>{" "}
+          <span style={{ color: "var(--text-secondary)" }}>
+            매월 첫 거래일 리밸런스에서 상위 10을 벗어난 종목을 전량 매도하고 새 상위 종목으로 교체.
+            장중 손절·트레일링 스탑 없음 — 월 1회 교체만.
+          </span>
+        </div>
+      </div>
 
       {data.live && <LiveBlock live={data.live} />}
 
