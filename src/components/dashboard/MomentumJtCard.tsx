@@ -5,9 +5,38 @@ const money = (x: number) => (x >= 1e6 ? `$${(x / 1e6).toFixed(1)}M` : `$${Math.
 
 const LIVE_LABEL: Record<string, string> = { sp500: "S&P500", nasdaq100: "NASDAQ100", iwb: "전체(IWB)" };
 
+// 유니버스 겹침 색 박스 — n>=3 진한(3계좌 모두), n==2 옅은(2계좌), 그 외 평문.
+// 라이브 계좌 표와 백테스트 최근 픽 양쪽에서 동일 스타일.
+function overlapChip(t: string, n: number, i: number) {
+  const sep = i > 0 ? " · " : "";
+  if (n < 2) return <span key={i}>{sep}{t}</span>;
+  const style =
+    n >= 3
+      ? { background: "color-mix(in srgb, var(--accent, #2a78d6) 24%, transparent)", border: "1px solid var(--accent, #2a78d6)", fontWeight: 600 as const }
+      : { background: "var(--accent-wash, rgba(42,120,214,0.10))", border: "1px solid var(--accent, #2a78d6)" };
+  return (
+    <span key={i}>
+      {sep}
+      <span style={{ ...style, borderRadius: 4, padding: "0 4px" }}>{t}</span>
+    </span>
+  );
+}
+
 function LiveBlock({ live }: { live: MomentumJtLive }) {
   const seed = live.seed;
   const started = !!live.lastRebalance;
+
+  const cnt: Record<string, number> = {};
+  for (const k of ["sp500", "nasdaq100", "iwb"]) {
+    const a = live.accounts.find((x) => x.key === k);
+    if (a) for (const t of a.holdings) cnt[t] = (cnt[t] ?? 0) + 1;
+  }
+  const nShared = Object.values(cnt).filter((n) => n >= 2).length;
+  const sharedAll = Object.entries(cnt)
+    .filter(([, n]) => n >= 3)
+    .map(([t]) => t)
+    .sort();
+
   return (
     <div>
       <div style={{ fontSize: 11.5, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>
@@ -22,40 +51,48 @@ function LiveBlock({ live }: { live: MomentumJtLive }) {
           아직 시작 전 — 매월 첫 거래일에 상위 10종목으로 리밸런스됩니다.
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>계좌</th>
-                <th>시드</th>
-                <th>현재 NAV</th>
-                <th>수익률</th>
-                <th>보유(10종목)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {["sp500", "nasdaq100", "iwb"].map((k) => {
-                const a = live.accounts.find((x) => x.key === k);
-                if (!a) return null;
-                const cls = a.returnPct >= 0 ? "delta-good" : "delta-critical";
-                return (
-                  <tr key={k}>
-                    <td className="ink-primary">{LIVE_LABEL[k] ?? k}</td>
-                    <td className="tabular ink-secondary">${seed.toLocaleString()}</td>
-                    <td className={`tabular ${cls}`}>{money(a.nav)}</td>
-                    <td className={`tabular ${cls}`}>
-                      {a.returnPct >= 0 ? "+" : ""}
-                      {a.returnPct.toFixed(1)}%
-                    </td>
-                    <td className="ink-secondary" style={{ fontSize: 11 }}>
-                      {a.holdings.join(" · ")}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>계좌</th>
+                  <th>시드</th>
+                  <th>현재 NAV</th>
+                  <th>수익률</th>
+                  <th>보유(10종목)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {["sp500", "nasdaq100", "iwb"].map((k) => {
+                  const a = live.accounts.find((x) => x.key === k);
+                  if (!a) return null;
+                  const cls = a.returnPct >= 0 ? "delta-good" : "delta-critical";
+                  return (
+                    <tr key={k}>
+                      <td className="ink-primary">{LIVE_LABEL[k] ?? k}</td>
+                      <td className="tabular ink-secondary">${seed.toLocaleString()}</td>
+                      <td className={`tabular ${cls}`}>{money(a.nav)}</td>
+                      <td className={`tabular ${cls}`}>
+                        {a.returnPct >= 0 ? "+" : ""}
+                        {a.returnPct.toFixed(1)}%
+                      </td>
+                      <td className="ink-secondary" style={{ fontSize: 11 }}>
+                        {a.holdings.map((t, i) => overlapChip(t, cnt[t] ?? 0, i))}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ fontSize: 10.5, color: "var(--text-muted)", marginTop: 6 }}>
+            박스 = 2계좌 이상 공통 · 진한 박스 = 3계좌 모두 · 오늘 {nShared}종목 겹침
+            {sharedAll.length > 0 && (
+              <span className="ink-secondary"> (3계좌 전부: {sharedAll.join(" · ")})</span>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
@@ -210,33 +247,15 @@ export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }
         const cnt: Record<string, number> = {};
         for (const p of data.portfolios) for (const t of p.lastPicks) cnt[t] = (cnt[t] ?? 0) + 1;
         const nShared = Object.values(cnt).filter((n) => n >= 2).length;
-        const chip = (t: string) => {
-          const n = cnt[t] ?? 0;
-          if (n < 2) return <span key={t}>{t}</span>;
-          const style =
-            n >= 3
-              ? { background: "color-mix(in srgb, var(--accent, #2a78d6) 24%, transparent)", border: "1px solid var(--accent, #2a78d6)", fontWeight: 600 }
-              : { background: "var(--accent-wash, rgba(42,120,214,0.10))", border: "1px solid var(--accent, #2a78d6)" };
-          return (
-            <span key={t} style={{ ...style, borderRadius: 4, padding: "0 4px" }}>
-              {t}
-            </span>
-          );
-        };
         return (
           <div style={{ marginTop: 8 }}>
             <div style={{ fontSize: 10.5, color: "var(--text-muted)" }}>
-              박스 = 2개 이상 유니버스 공통 픽 · 진한 박스 = 3개 모두 (오늘 {nShared}종목 겹침)
+              박스 = 2계좌 이상 공통 픽 · 진한 박스 = 3계좌 모두 (백테스트 마지막 달 {nShared}종목 겹침)
             </div>
             {data.portfolios.map((p) => (
               <div key={p.key} style={{ fontSize: 11.5, color: "var(--text-secondary)", marginTop: 3 }}>
                 <b style={{ color: "var(--text-primary)" }}>{p.label}</b> 최근 픽 ({p.lastRebalance}):{" "}
-                {p.lastPicks.map((t, i) => (
-                  <span key={i}>
-                    {i > 0 ? " · " : ""}
-                    {chip(t)}
-                  </span>
-                ))}
+                {p.lastPicks.map((t, i) => overlapChip(t, cnt[t] ?? 0, i))}
               </div>
             ))}
           </div>
