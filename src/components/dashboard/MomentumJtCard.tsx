@@ -5,8 +5,7 @@ const money = (x: number) => (x >= 1e6 ? `$${(x / 1e6).toFixed(1)}M` : `$${Math.
 
 const LIVE_LABEL: Record<string, string> = { sp500: "S&P500", nasdaq100: "NASDAQ100", iwb: "전체(IWB)" };
 
-// 유니버스 겹침 색 박스 — n>=3 진한(3계좌 모두), n==2 옅은(2계좌), 그 외 평문.
-// 라이브 계좌 표와 백테스트 최근 픽 양쪽에서 동일 스타일.
+// 라이브 계좌 표의 유니버스 겹침 색 박스 — n>=3 진한(3계좌 모두), n==2 옅은(2계좌), 그 외 평문.
 function overlapChip(t: string, n: number, i: number) {
   const sep = i > 0 ? " · " : "";
   if (n < 2) return <span key={i}>{sep}{t}</span>;
@@ -242,25 +241,6 @@ export function MomentumJtCard({ data }: { data: MomentumJt | null | undefined }
           </tbody>
         </table>
       </div>
-
-      {(() => {
-        const cnt: Record<string, number> = {};
-        for (const p of data.portfolios) for (const t of p.lastPicks) cnt[t] = (cnt[t] ?? 0) + 1;
-        const nShared = Object.values(cnt).filter((n) => n >= 2).length;
-        return (
-          <div style={{ marginTop: 8 }}>
-            <div style={{ fontSize: 10.5, color: "var(--text-muted)" }}>
-              박스 = 2계좌 이상 공통 픽 · 진한 박스 = 3계좌 모두 (백테스트 마지막 달 {nShared}종목 겹침)
-            </div>
-            {data.portfolios.map((p) => (
-              <div key={p.key} style={{ fontSize: 11.5, color: "var(--text-secondary)", marginTop: 3 }}>
-                <b style={{ color: "var(--text-primary)" }}>{p.label}</b> 최근 픽 ({p.lastRebalance}):{" "}
-                {p.lastPicks.map((t, i) => overlapChip(t, cnt[t] ?? 0, i))}
-              </div>
-            ))}
-          </div>
-        );
-      })()}
 
       <div
         style={{
