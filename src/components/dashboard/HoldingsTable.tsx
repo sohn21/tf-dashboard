@@ -25,6 +25,7 @@ export const EXIT_REASON_LABEL: Record<string, string> = {
   dust_cleanup: "더스트 정리",
   switch_out: "스위칭 교체",
   manual_position_cap_resize: "포지션 상한 리사이즈",
+  merger_exit: "합병 상장폐지 정리",
   // 래더 계좌
   stop_locked8: "락 손절(+8%)",
   trim1_24pct: "1차 트림(+24%)",
