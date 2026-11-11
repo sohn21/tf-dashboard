@@ -1,4 +1,5 @@
 import type { StockEasyUs } from "@/lib/types";
+import { StockEasyMarketCondition } from "./StockEasyMarketCondition";
 
 // StockEasy 미국주식 — 2026-08-27 stockeasy 저장소에 추가된 US 파이프라인(시드 $10,000/4종목 균등).
 // KR용 StockEasyCard 와 같은 레이아웃, 통화·컬럼만 미국식.
@@ -64,7 +65,8 @@ export function StockEasyUsCard({ us }: { us: StockEasyUs | null | undefined }) 
         {us.benchmarkIndex} RS <b>{b.rs ?? "—"}</b> (1M {b.rs1m ?? "—"} / 3M {b.rs3m ?? "—"} / 6M {b.rs6m ?? "—"})
       </div>
 
-      <div style={{ fontSize: 12, color: "var(--text-muted)", margin: "10px 0 6px" }}>미국 래더 보유종목</div>
+      <StockEasyMarketCondition mc={us.marketCondition} />
+      <div style={{ fontSize: 12, color: "var(--text-muted)", margin: "14px 0 6px" }}>미국 래더 보유종목</div>
       {us.positions.length === 0 ? (
         <p className="ink-muted">보유 종목 없음</p>
       ) : (

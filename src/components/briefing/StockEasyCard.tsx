@@ -1,4 +1,5 @@
 import type { StockEasy } from "@/lib/types";
+import { StockEasyMarketCondition } from "./StockEasyMarketCondition";
 
 export function StockEasyCard({ stockeasy }: { stockeasy: StockEasy | null | undefined }) {
   if (!stockeasy) {
@@ -63,7 +64,8 @@ export function StockEasyCard({ stockeasy }: { stockeasy: StockEasy | null | und
           .join(" · ")}
       </div>
 
-      <div style={{ fontSize: 12, color: "var(--text-muted)", margin: "10px 0 6px" }}>래더 보유종목</div>
+      <StockEasyMarketCondition mc={stockeasy.marketCondition} />
+      <div style={{ fontSize: 12, color: "var(--text-muted)", margin: "14px 0 6px" }}>래더 보유종목</div>
       {positions.length === 0 ? (
         <p className="ink-muted">보유 종목 없음</p>
       ) : (

@@ -612,6 +612,28 @@ export interface StockEasyUsCandidate {
   pass: boolean;
 }
 
+// StockEasy 시장 여건(FTD 진입 게이트 + 분할 매수 입력, 2026-11-11) — 스탁이지 "지금 여건" 카드.
+// allow=false 면 신규 진입 차단, 아니면 maxPositions 종목까지 보유.
+export interface StockEasyMarketRow {
+  key: string;
+  name: string;
+  missing: boolean;
+  status?: string | null;
+  exposureRaw?: string | null;
+  distributionDays?: number | null;
+  rallyDay?: string | null;
+  lastFTD?: string | null;
+  allow: boolean;
+  maxPositions: number;
+}
+
+export interface StockEasyMarketCondition {
+  date: string | null;
+  markets: StockEasyMarketRow[];
+  blocked: { name: string | null; reason: string | null }[];
+  blockedDate: string | null;
+}
+
 export interface StockEasyUs {
   seed: number;
   cash: number | null;
@@ -625,6 +647,7 @@ export interface StockEasyUs {
   benchmark: Record<string, number>;
   positions: StockEasyUsPosition[];
   candidates: StockEasyUsCandidate[];
+  marketCondition?: StockEasyMarketCondition | null;
 }
 
 // 교차검증 — StockEasy 미국 스크리너 후보 vs 전략실(코어) 픽. /briefing 05번 아래 표 전용.
@@ -659,6 +682,7 @@ export interface StockEasy {
   benchmark: Record<string, number>;
   positions: StockEasyPosition[];
   candidates: StockEasyCandidate[];
+  marketCondition?: StockEasyMarketCondition | null;
   us?: StockEasyUs | null;
   usCrossCheck?: StockEasyCrossCheck | null;
 }
