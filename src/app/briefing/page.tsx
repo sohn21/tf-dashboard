@@ -91,7 +91,14 @@ export default async function Briefing() {
         <h2 className="stitle">전략실 게이트 상위종목</h2>
         <TermButton termKey="candidates" />
       </div>
-      <CandidatesTable rows={data.candidates} topN={15} sortBy="gates" nSignals={data.summary.candidatesPassed} />
+      <CandidatesTable
+        rows={data.candidatesByGates ?? data.candidates}
+        topN={15}
+        sortBy="gates"
+        nSignals={data.summary.candidatesPassed}
+        globalGatesOff={data.globalGatesOff}
+        idioFullCount={data.idioFullCount}
+      />
 
       {/* 다음 리더 추적 (Stalking) — G0~G4 통과 전 준후보 스코어러, 길어서 기본 접힘. */}
       <details className="csec">

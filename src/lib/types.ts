@@ -255,6 +255,9 @@ export interface CandidateRow {
   passed: boolean;
   held?: boolean; // §05: 코어/래더/래칫 중 보유 중
   nPass?: number; // 통과한 게이트 수 (gates 정렬용)
+  // 옵셔널(2026-11-11): 전역 게이트(G0/G0b) 공통 미충족일 때 그것을 뺀 고유 게이트 통과 수 / phase
+  nPassIdio?: number;
+  phase?: string | null;
   newHigh52w: boolean;
   // 옵셔널(2026-08-25, generatedAt 마이그레이션 패턴과 동일): RS Leading — 이 필드가
   // 추가되기 전에 쓰인 KV blob엔 없을 수 있음
@@ -725,6 +728,10 @@ export interface DashboardData {
   catalyst?: CatalystData | null;
   gateFunnel: GateFunnelRow[];
   candidates: CandidateRow[];
+  // 옵셔널(2026-11-11): 브리핑 §06용 게이트수 정렬 상위(유니버스 전체 기준) + 전역 게이트 폴백
+  candidatesByGates?: CandidateRow[];
+  globalGatesOff?: string[];
+  idioFullCount?: number;
   sectorBreakdown: SectorRow[];
   sectorBandCounts?: SectorBandCounts | null;
   indexRs: IndexRsRow[];

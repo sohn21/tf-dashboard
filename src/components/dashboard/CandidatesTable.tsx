@@ -2,6 +2,17 @@ import { Card } from "./Card";
 import { OverviewCards } from "./OverviewCards";
 import { GATE_KEYS, type CandidateRow } from "@/lib/types";
 
+const PHASE_LABELS: Record<string, string> = {
+  "0": "회피/판정불가", "1": "관찰", "2": "바닥매집", "3": "베이스성숙", "4": "돌파임박", "4+": "돌파임박+",
+  "5": "본격리더", "5+": "본격리더+", "6": "후반피로", "7": "분배의심",
+};
+const phaseCls = (p?: string | null) =>
+  p === "4+" || p === "4" ? "delta-good" : p === "6" || p === "7" ? "delta-critical" : "ink-secondary";
+const GLOBAL_GATE_DESC: Record<string, string> = {
+  G0: "G0 시장 레짐(마켓펄스 Correction)",
+  G0b: "G0b 브레스(50일선 위 종목 비율 < 임계값)",
+};
+
 const fmtCap = (x: number | null) => (x == null ? "-" : `$${(x / 1e9).toLocaleString(undefined, { maximumFractionDigits: 1 })}B`);
 
 export function CandidatesTable({
@@ -9,12 +20,19 @@ export function CandidatesTable({
   topN = 15,
   sortBy = "score",
   nSignals,
+  globalGatesOff,
+  idioFullCount,
 }: {
   rows: CandidateRow[];
   topN?: number;
   sortBy?: "score" | "gates";
   nSignals?: number;
+  globalGatesOff?: string[];
+  idioFullCount?: number;
 }) {
+  const off = globalGatesOff ?? [];
+  const nCountGates = GATE_KEYS.filter((g) => !off.includes(g)).length;
+  const countTitle = off.length ? `${off.join("·")} 전 종목 공통 미충족 → 제외하고 집계` : "G0~G4 통과 수";
   const nPassOf = (r: CandidateRow) => r.nPass ?? Object.values(r.gates).filter(Boolean).length;
   const ranked =
     sortBy === "gates"
@@ -37,6 +55,22 @@ export function CandidatesTable({
           <b style={{ color: nSignals > 0 ? "var(--good)" : "var(--text-muted)" }}>{nSignals}</b>건
         </div>
       )}
+      {sortBy === "gates" && off.length > 0 && (
+        <div
+          style={{
+            borderLeft: "3px solid var(--warning)",
+            background: "var(--bg-subtle, rgba(0,0,0,0.03))",
+            padding: "8px 12px",
+            fontSize: 12,
+            color: "var(--text-secondary)",
+            marginBottom: 10,
+          }}
+        >
+          <b style={{ color: "var(--warning)" }}>전역 게이트 미충족</b> — {off.map((g) => GLOBAL_GATE_DESC[g] ?? g).join(" · ")}. 전
+          종목이 공통으로 탈락하므로 게이트수는 <b>종목 고유 게이트(G1~G4) 기준</b>으로 표시합니다. 고유 게이트 4개 전부 충족{" "}
+          <b>{idioFullCount ?? 0}</b>건 — 전역 게이트가 회복되면 바로 진입 후보가 되는 종목들입니다.
+        </div>
+      )}
       {top.length === 0 ? (
         <p className="ink-muted">신호 데이터 없음</p>
       ) : (
@@ -50,6 +84,7 @@ export function CandidatesTable({
                 <th>종가</th>
                 <th>시총</th>
                 <th>점수</th>
+                <th>Phase</th>
                 <th>MTR</th>
                 <th>A/D</th>
                 <th>RVOL</th>
@@ -57,6 +92,7 @@ export function CandidatesTable({
                 {GATE_KEYS.map((g) => (
                   <th key={g}>{g}</th>
                 ))}
+                <th title={countTitle}>게이트수</th>
                 <th>통과</th>
               </tr>
             </thead>
@@ -102,6 +138,9 @@ export function CandidatesTable({
                     <td className="tabular ink-secondary">{r.close.toFixed(2)}</td>
                     <td className="tabular ink-secondary">{fmtCap(r.marketCap)}</td>
                     <td className="tabular ink-primary">{r.score.toFixed(1)}</td>
+                    <td className={`tabular ${phaseCls(r.phase)}`} title={r.phase ? PHASE_LABELS[r.phase] ?? "" : ""}>
+                      {r.phase ?? "-"}
+                    </td>
                     <td className={`tabular ${mtrCls}`}>
                       {r.mtrState != null ? `${r.mtrState}${r.mtrAccelerating ? "++" : ""}` : "-"}
                     </td>
@@ -116,6 +155,10 @@ export function CandidatesTable({
                         {r.gates[g] ? "✓" : "✗"}
                       </td>
                     ))}
+                    <td className="tabular ink-primary" title={countTitle}>
+                      {r.nPassIdio ?? (off.length ? GATE_KEYS.filter((g) => !off.includes(g) && r.gates[g]).length : nPassOf(r))}/
+                      {nCountGates}
+                    </td>
                     <td className={`gate-cell ${r.passed ? "gate-pass" : "gate-fail"}`}>{r.passed ? "✓" : "✗"}</td>
                   </tr>
                 );
