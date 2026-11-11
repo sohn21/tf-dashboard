@@ -562,7 +562,30 @@ export interface ProtectionRules {
 // 프론트는 dates 길이에 맞춰서만 그리고, 데이터가 느는 대로 자동으로 넓어진다.
 export interface RotationThemeRow {
   name: string;
-  scores: (number | null)[]; // dates와 같은 길이, 인덱스로 매칭
+  scores: (number | null)[]; // dates와 같은 길이, 인덱스로 매칭 — 2026-11-11부터 소표본 보정 점수
+  // 옵셔널(2026-11-11 리본 강화): 이 필드 전에 쓰인 KV blob엔 없음
+  sector?: string | null;
+  rank?: number;
+  ewScore?: number | null;
+  todayRank?: number | null;
+  raw?: (number | null)[];
+  bayesRs?: (number | null)[];
+  rsMean?: (number | null)[];
+  delta1w?: (number | null)[];
+  n?: (number | null)[];
+  members?: { sym: string; rs: number | null; phase: string | null }[];
+  nMembers?: number;
+}
+
+export interface RibbonMeta {
+  leading: number;
+  strong: number;
+  mid: number;
+  priorK: number;
+  rankDays: number;
+  halfLife: number;
+  nIndustries: number;
+  leadingToday: number;
 }
 
 export interface RotationSectorRow {
@@ -578,6 +601,7 @@ export interface Rotation {
   themeConcernThreshold: number;
   sectorStrongThreshold: number;
   sectorConcernThreshold: number;
+  ribbon?: RibbonMeta;
 }
 
 // StockEasy(국내주식 모멘텀 사이드 프로젝트, added 2026-08-26, /briefing 12번 섹션 전용) —
