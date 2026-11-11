@@ -1,3 +1,4 @@
+import { PhasePatternCells } from "./PhasePatternCells";
 import { Card } from "./Card";
 import { OverviewCards } from "./OverviewCards";
 import { Sparkline } from "./Sparkline";
@@ -143,6 +144,8 @@ export function HoldingsTable({
                 <th>진입가</th>
                 <th>현재가</th>
                 <th>수익률</th>
+                <th>Phase</th>
+                <th>패턴</th>
                 <th>비중</th>
                 <th>보유일</th>
                 <th>스탑</th>
@@ -184,6 +187,7 @@ export function HoldingsTable({
                       {arrow} {p.gainPct >= 0 ? "+" : ""}
                       {p.gainPct.toFixed(1)}%
                     </td>
+                    <PhasePatternCells p={p} />
                     <td className="tabular ink-secondary">{p.weightPct != null ? `${p.weightPct.toFixed(1)}%` : "-"}</td>
                     <td className="tabular ink-secondary">{p.daysHeld != null ? `${p.daysHeld}일` : "-"}</td>
                     <td className="tabular ink-secondary">

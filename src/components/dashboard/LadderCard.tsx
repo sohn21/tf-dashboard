@@ -1,5 +1,6 @@
 "use client";
 
+import { PhasePatternCells } from "./PhasePatternCells";
 import { useState } from "react";
 import { Card, StatRow, StatTile } from "./Card";
 import { OverviewCards } from "./OverviewCards";
@@ -188,6 +189,8 @@ export function LadderCard({ data }: { data: LadderData | null }) {
                   <th>진입가</th>
                   <th>현재가</th>
                   <th>수익률</th>
+                  <th>Phase</th>
+                  <th>패턴</th>
                   <th>투자금액</th>
                   <th>스탑</th>
                   <th>손절여유</th>
@@ -221,6 +224,7 @@ export function LadderCard({ data }: { data: LadderData | null }) {
                         {arrow} {p.gainPct >= 0 ? "+" : ""}
                         {p.gainPct.toFixed(1)}%
                       </td>
+                      <PhasePatternCells p={p} />
                       <td className="tabular ink-secondary">{p.entryValue != null ? `$${p.entryValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : "-"}</td>
                       <td className="tabular ink-secondary">
                         {p.currentStopPct >= 0 ? "+" : ""}

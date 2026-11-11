@@ -302,9 +302,17 @@ export interface IndexRsRow {
   rs: number;
 }
 
+// 옵셔널(2026-11-11 §09): 보유종목 현재/진입 시점 phase·패턴 — 이 필드 전에 쓰인 KV blob엔 없음
+export interface HoldingPhasePattern {
+  phase?: string | null;
+  entryPhase?: string | null;
+  pattern?: string | null;
+  entryPattern?: string | null;
+}
+
 export type HoldingStatusCat = "critical" | "review" | "protect" | "normal";
 
-export interface HoldingRow {
+export interface HoldingRow extends HoldingPhasePattern {
   ticker: string;
   entryPx: number;
   lastClose: number;
@@ -363,7 +371,7 @@ export interface TradeRow {
 }
 
 // 래더 계좌(구 "세트2") 타입 — 2026-08-12: 타입명 + KV 스키마 필드명("set2"→"ladder") 모두 정리
-export interface LadderHoldingRow {
+export interface LadderHoldingRow extends HoldingPhasePattern {
   ticker: string;
   entryPx: number;
   lastClose: number;
@@ -410,7 +418,7 @@ export interface LadderData {
 
 // 래칫 계좌(§14-C Lock 래칫, 2026-08-20 추가) — 코어·래더와 별도인 세 번째 라이브 계좌.
 // 래더와 달리 부분매도가 없어 trimStage 대신 maxGainPct/isRunner를 노출한다.
-export interface RatchetHoldingRow {
+export interface RatchetHoldingRow extends HoldingPhasePattern {
   ticker: string;
   entryPx: number;
   lastClose: number;
