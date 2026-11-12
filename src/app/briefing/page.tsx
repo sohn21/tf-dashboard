@@ -6,6 +6,7 @@ import { PhaseTrendCard } from "@/components/dashboard/PhaseTrendCard";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
 import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
+import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { ExposureCard } from "@/components/briefing/ExposureCard";
@@ -189,6 +190,7 @@ export default async function Briefing() {
         <TermButton termKey="holdings" />
       </div>
       <HoldingsTable rows={data.holdings} counts={data.holdingsCounts} exits={data.holdingsExits} />
+      <GapStressCard data={data.gapStress} />
 
       <div className="shead">
         <span className="snum">13</span>

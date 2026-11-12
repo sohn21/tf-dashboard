@@ -13,6 +13,7 @@ import { GateFunnelCard } from "@/components/dashboard/GateFunnelCard";
 import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
 import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
+import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
@@ -75,6 +76,7 @@ export default async function Home() {
       <ThemeLeadershipCard data={data.themeLeadership} />
 
       <HoldingsTable rows={data.holdings} exits={data.holdingsExits} />
+      <GapStressCard data={data.gapStress} />
 
       <RecentTradesTable rows={data.recentTrades} />
 

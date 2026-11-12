@@ -791,4 +791,23 @@ export interface DashboardData {
   ratchet: RatchetData | null;
   // 옵셔널(2026-08-28): J&T 1993 재현 백테스트(라이브 아님)
   momentumJt?: MomentumJt | null;
+  gapStress?: GapStress | null;
+}
+
+// 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.
+export interface GapStressAccount {
+  key: string;
+  label: string;
+  nav: number;
+  cashPct: number;
+  investedPct: number;
+  positions: { ticker: string; weightPct: number; industry: string | null; toStopPct: number }[];
+  gaps: { gapPct: number; navImpactPct: number }[];
+  stopImpactPct: number;
+  topIndustry: { industry: string; weightPct: number; tickers: string[] } | null;
+}
+
+export interface GapStress {
+  accounts: GapStressAccount[];
+  overlap: { ticker: string; accounts: string[] }[];
 }

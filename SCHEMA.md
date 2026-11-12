@@ -361,3 +361,11 @@ changes, update `types.ts` first and treat it as the spec.
 - Key: `dashboard:latest` (single JSON blob, whole-object overwrite daily)
 - No history/versioning in KV — daily snapshots are ephemeral by design,
   consistent with "no historical signal data in public infra"
+
+## `gapStress` — simultaneous gap-down stress on current holdings (added 2026-11-12, display-only)
+
+`{ accounts: GapStressAccount[], overlap: {ticker, accounts[]}[] }` for core/ladder/ratchet.
+`gaps[].navImpactPct` = NAV % lost if every holding gaps down `gapPct` at once (stops are skipped by
+gaps). `stopImpactPct` = NAV % lost if every holding fills exactly at its current stop.
+`topIndustry` = largest same-industry weight. `overlap` = tickers held in ≥2 accounts. Optional —
+absent in older KV blobs, card hides.
