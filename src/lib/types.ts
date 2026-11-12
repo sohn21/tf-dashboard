@@ -792,6 +792,8 @@ export interface DashboardData {
   // 옵셔널(2026-08-28): J&T 1993 재현 백테스트(라이브 아님)
   momentumJt?: MomentumJt | null;
   gapStress?: GapStress | null;
+  rebase?: Rebase | null;
+  anchorLedger?: AnchorLedger | null;
 }
 
 // 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.
@@ -810,4 +812,87 @@ export interface GapStressAccount {
 export interface GapStress {
   accounts: GapStressAccount[];
   overlap: { ticker: string; accounts: string[] }[];
+}
+
+// 2026-11-13 A-1: 전 계좌 09-01 공통 기준 성과(표시 전용). 이전 KV blob엔 없음.
+export interface RebaseAccount {
+  key: string;
+  label: string;
+  startDate: string | null;
+  baseNav: number;
+  nav: number;
+  retSince: number;
+  mddSince: number | null;
+  retInception: number;
+  vsSpy: number | null;
+}
+
+export interface Rebase {
+  baseDate: string;
+  endDate: string;
+  spy: number | null;
+  qqq: number | null;
+  accounts: RebaseAccount[];
+}
+
+// 2026-11-13 A-2: 관찰 전용 앵커 원장 요약(tf_project anchor_ledger.summary_for_export).
+export interface AnchorStat {
+  n: number;
+  avg: number;
+  med: number;
+  win: number;
+  avgA: number | null;
+}
+
+export interface AnchorTypeRow {
+  n: number;
+  status: { strong: number; working: number; failed: number };
+  expired: number;
+  r5: AnchorStat | null;
+  r20: AnchorStat | null;
+  r60: AnchorStat | null;
+  lead?: { r5: AnchorStat | null; r20: AnchorStat | null; r60: AnchorStat | null };
+  member?: { r5: AnchorStat | null; r20: AnchorStat | null; r60: AnchorStat | null };
+}
+
+export interface AnchorControl {
+  days: number;
+  avg: number;
+  win: number;
+  avgA: number | null;
+}
+
+export interface AnchorRecent {
+  date: string;
+  type: string;
+  sym: string;
+  streak: number;
+  role: string | null;
+  accounts: string[] | null;
+  ret: number | null;
+  alpha: number | null;
+  r5: number | null;
+  r20: number | null;
+  peak: number | null;
+  trough: number | null;
+  bd: number | null;
+  status: string | null;
+  expired: boolean;
+}
+
+export interface AnchorLedger {
+  updated: string | null;
+  firstDay: string | null;
+  lastDay: string | null;
+  nDays: number;
+  nAnchors: number;
+  types: { key: string; label: string; rule: string }[];
+  stats: {
+    byType: Record<string, AnchorTypeRow>;
+    control: Partial<Record<"r5" | "r20" | "r60", AnchorControl>>;
+    overlap: Record<string, { events: number; r5: AnchorStat | null; r20: AnchorStat | null }>;
+  };
+  rules: string[];
+  omitted: string[];
+  recent: AnchorRecent[];
 }

@@ -14,6 +14,8 @@ import { CandidatesTable } from "@/components/dashboard/CandidatesTable";
 import { SectorBreakdownTable } from "@/components/dashboard/SectorBreakdownTable";
 import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { GapStressCard } from "@/components/dashboard/GapStressCard";
+import { RebaseCard } from "@/components/dashboard/RebaseCard";
+import { AnchorLedgerCard } from "@/components/dashboard/AnchorLedgerCard";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
@@ -49,6 +51,8 @@ export default async function Home() {
         <NavChart data={data.navHistory} />
       </Card>
 
+      <RebaseCard data={data.rebase} />
+
       <BenchmarkCandlesGrid candles={data.benchmarkCandles} />
 
       <MarketBreadthCard breadth={data.breadth} sentiment={data.sentiment} distributionRally={data.distributionRally} />
@@ -77,6 +81,7 @@ export default async function Home() {
 
       <HoldingsTable rows={data.holdings} exits={data.holdingsExits} />
       <GapStressCard data={data.gapStress} />
+      <AnchorLedgerCard data={data.anchorLedger} />
 
       <RecentTradesTable rows={data.recentTrades} />
 
