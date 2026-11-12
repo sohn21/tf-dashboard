@@ -130,10 +130,17 @@ export interface ThemeLeadershipPoint {
   nTotal: number;
 }
 
+// 2026-11-12: 같은 기간 ETF 누적수익률(첫 날짜=0%, 표시 전용). 이전 KV blob엔 없을 수 있음.
+export interface ThemeCompareSeries {
+  ticker: string;
+  pcts: (number | null)[];
+}
+
 export interface ThemeLeadership {
   points: ThemeLeadershipPoint[];
   bandLo: number;
   bandHi: number;
+  compare?: ThemeCompareSeries[];
 }
 
 // RS 라인이 252일 신고가를 갱신했지만 주가 자체는 아직 52주 신고가가 아닌 종목(added

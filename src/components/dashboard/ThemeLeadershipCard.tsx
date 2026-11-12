@@ -2,11 +2,22 @@
 
 import { useState } from "react";
 import { Card } from "./Card";
-import type { ThemeLeadership, ThemeLeadershipPoint } from "@/lib/types";
+import type { ThemeCompareSeries, ThemeLeadership, ThemeLeadershipPoint } from "@/lib/types";
 
-function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPoint[]; bandLo: number; bandHi: number }) {
+const COMPARE_COLORS: Record<string, string> = {
+  SPY: "#8a8a86", QQQ: "#7a5cc4", MAGS: "#c07a3e", SOXX: "#2e9e6a", XLV: "#c4455a", XBI: "#b8860b",
+};
+
+function lastVal(s: ThemeCompareSeries): number | null {
+  for (let i = s.pcts.length - 1; i >= 0; i--) if (s.pcts[i] !== null) return s.pcts[i];
+  return null;
+}
+
+function LeadershipChart({ points, bandLo, bandHi, compare }: {
+  points: ThemeLeadershipPoint[]; bandLo: number; bandHi: number; compare: ThemeCompareSeries[];
+}) {
   const [hover, setHover] = useState<number | null>(null);
-  const w = 760, h = 220, padL = 34, padR = 16, padT = 12, padB = 24;
+  const w = 760, h = 220, padL = 34, padR = compare.length ? 44 : 16, padT = 12, padB = 24;
   const plotW = w - padL - padR, plotH = h - padT - padB;
   const n = points.length;
 
@@ -19,6 +30,18 @@ function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPo
 
   const linePoints = points.map((p, i) => [xOf(i), yOf(p.nLeading)] as const);
   const pathD = "M " + linePoints.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" L ");
+
+  // 비교선(오른쪽 축, %) — 리딩 테마 수와 같은 x축
+  const allP = compare.flatMap((c) => c.pcts.filter((v): v is number => v !== null));
+  let pMin = Math.min(0, ...allP), pMax = Math.max(0, ...allP);
+  const span = pMax - pMin || 1;
+  pMin -= span * 0.05; pMax += span * 0.05;
+  const ypOf = (v: number) => padT + plotH * (1 - (v - pMin) / (pMax - pMin));
+  const cmpPaths = compare.map((c) => {
+    const segs = c.pcts.map((v, i) => (v === null ? null : `${xOf(i).toFixed(1)},${ypOf(v).toFixed(1)}`)).filter(Boolean);
+    return { ticker: c.ticker, d: segs.length >= 2 ? "M " + segs.join(" L ") : "" };
+  });
+  const pTicks = allP.length ? [Math.ceil(pMin + span * 0.05), 0, Math.floor(pMax - span * 0.05)] : [];
 
   const yTicks = [0, Math.round(vmax / 2), Math.round(vmax)];
   const xTickCount = Math.min(6, n);
@@ -54,6 +77,17 @@ function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPo
         <line x1={padL} y1={yOf(bandHi)} x2={w - padR} y2={yOf(bandHi)} stroke="var(--series-1)" strokeWidth={1} strokeDasharray="4 3" opacity={0.4} />
         <line x1={padL} y1={yOf(bandLo)} x2={w - padR} y2={yOf(bandLo)} stroke="var(--series-1)" strokeWidth={1} strokeDasharray="4 3" opacity={0.4} />
 
+        {allP.length > 0 && (
+          <line x1={padL} y1={ypOf(0)} x2={w - padR} y2={ypOf(0)} stroke="var(--text-muted)" strokeWidth={0.6} strokeDasharray="2 3" opacity={0.6} />
+        )}
+        {cmpPaths.map((c) => c.d && (
+          <path key={c.ticker} d={c.d} fill="none" stroke={COMPARE_COLORS[c.ticker] ?? "#888"} strokeWidth={1.3} opacity={0.85} strokeLinejoin="round" />
+        ))}
+        {[...new Set(pTicks)].map((v) => (
+          <text key={`p${v}`} x={w - padR + 4} y={ypOf(v) + 3} className="ink-muted label-sm">
+            {v > 0 ? "+" : ""}{v}%
+          </text>
+        ))}
         <path d={pathD} fill="none" stroke="var(--series-1)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {hover !== null && (
           <>
@@ -80,6 +114,14 @@ function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPo
           }}
         >
           {points[hover].date}: {points[hover].nLeading}개 / 전체 {points[hover].nTotal}개
+          {compare.map((c) => {
+            const v = c.pcts[hover];
+            return v === null || v === undefined ? null : (
+              <div key={c.ticker} style={{ color: COMPARE_COLORS[c.ticker] ?? "inherit" }}>
+                {c.ticker} {v > 0 ? "+" : ""}{v.toFixed(1)}%
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -87,6 +129,15 @@ function LeadershipChart({ points, bandLo, bandHi }: { points: ThemeLeadershipPo
 }
 
 export function ThemeLeadershipCard({ data }: { data: ThemeLeadership | null }) {
+  const allCompare = data?.compare ?? [];
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const shown = allCompare.filter((c) => !hidden.has(c.ticker));
+  const toggle = (t: string) =>
+    setHidden((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t); else next.add(t);
+      return next;
+    });
   const today = data && data.points.length ? data.points[data.points.length - 1] : null;
   let interp = "";
   if (today && data) {
@@ -113,7 +164,41 @@ export function ThemeLeadershipCard({ data }: { data: ThemeLeadership | null }) 
               {interp}
             </div>
           )}
-          <LeadershipChart points={data.points} bandLo={data.bandLo} bandHi={data.bandHi} />
+          <LeadershipChart points={data.points} bandLo={data.bandLo} bandHi={data.bandHi} compare={shown} />
+          {allCompare.length > 0 && (
+            <>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                {[...allCompare]
+                  .sort((a, b) => (lastVal(b) ?? -1e9) - (lastVal(a) ?? -1e9))
+                  .map((c) => {
+                    const v = lastVal(c);
+                    const off = hidden.has(c.ticker);
+                    return (
+                      <button
+                        key={c.ticker}
+                        type="button"
+                        onClick={() => toggle(c.ticker)}
+                        className="label-sm"
+                        style={{
+                          border: "1px solid var(--border)", borderRadius: 999, padding: "2px 8px",
+                          background: "var(--surface-1)", cursor: "pointer", opacity: off ? 0.4 : 1,
+                          color: "var(--text-primary)",
+                        }}
+                      >
+                        <span style={{ display: "inline-block", width: 10, height: 2, background: COMPARE_COLORS[c.ticker] ?? "#888", verticalAlign: "middle", marginRight: 4 }} />
+                        {c.ticker}{" "}
+                        {v !== null && (
+                          <span className={v >= 0 ? "delta-good" : "delta-critical"}>{v > 0 ? "+" : ""}{v.toFixed(1)}%</span>
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+              <div className="label-sm ink-muted" style={{ marginTop: 4 }}>
+                굵은 선 = 리딩 테마 수(왼쪽 축) · 가는 선 = 같은 기간 ETF 누적수익률(오른쪽 축, 첫날 0%) · 칩을 눌러 켜고 끄기
+              </div>
+            </>
+          )}
         </>
       )}
     </Card>

@@ -67,6 +67,11 @@ Deliberately does not reuse the existing `theme_leading` per-ticker flag (G1) �
 an absolute score threshold instead, so the count actually varies day to day (seen ranging
 33–46 out of 146 industries over the initial 3-month backfill).
 
+Optional `compare?: { ticker, pcts: (number|null)[] }[]` (added 2026-11-12, display-only):
+cumulative % return of SPY/QQQ/MAGS/SOXX/XLV/XBI aligned 1:1 with `points` (first point = 0%).
+Each point date is a KST run date, so the price used is the last US close *before* that date.
+Absent in older KV blobs — card renders without overlay.
+
 ## `phaseTrend` — base Phase distribution, 3-month (added 2026-08-06)
 
 `PhaseTrend { points: PhasePoint[], greenPct, agingPct }`, trailing ~65 trading days.
