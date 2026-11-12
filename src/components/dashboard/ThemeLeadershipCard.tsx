@@ -5,7 +5,7 @@ import { Card } from "./Card";
 import type { ThemeCompareSeries, ThemeLeadership, ThemeLeadershipPoint } from "@/lib/types";
 
 const COMPARE_COLORS: Record<string, string> = {
-  SPY: "#8a8a86", QQQ: "#7a5cc4", MAGS: "#c07a3e", SOXX: "#2e9e6a", XLV: "#c4455a", XBI: "#b8860b",
+  SPY: "#8a8a86", QQQ: "#7a5cc4", MAGS: "#c07a3e", SOXX: "#2e9e6a", XLV: "#c4455a", XBI: "#b8860b", "BTC-USD": "#2f7fc1",
 };
 
 function lastVal(s: ThemeCompareSeries): number | null {
