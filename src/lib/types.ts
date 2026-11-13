@@ -812,16 +812,20 @@ export interface CyclicalCandidate {
   code: string;
   name: string;
   industry: string;
+  tier?: string | null;
   mcap_eok: number | null;
+  debt_eok?: number | null;
   q_op_recent: string | null;
   psr_now: number | null;
-  peak_op_yield: number | null;
+  peak_ev_yield?: number | null;
   red_flags: string | null;
+  watch_note?: string | null;
 }
 export interface Cyclical {
   dataDate: string;
   industries: CyclicalIndustry[];
   topA: CyclicalCandidate[];
+  watch?: CyclicalCandidate[];
   nA: number;
 }
 
