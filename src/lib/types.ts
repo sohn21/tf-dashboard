@@ -821,12 +821,25 @@ export interface CyclicalCandidate {
   red_flags: string | null;
   watch_note?: string | null;
 }
+// 2026-11-14: 전체 경기 국면(통계청 선행·동행 순환변동치 4국면 근사)
+export interface CyclicalMacro {
+  month: string;
+  leading: number;
+  coincident: number;
+  phase: string;
+  now: string;
+  since: string;
+  note: string;
+  hint: string;
+}
+
 export interface Cyclical {
   dataDate: string;
   industries: CyclicalIndustry[];
   topA: CyclicalCandidate[];
   watch?: CyclicalCandidate[];
   nA: number;
+  macro?: CyclicalMacro | null;
 }
 
 // 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.

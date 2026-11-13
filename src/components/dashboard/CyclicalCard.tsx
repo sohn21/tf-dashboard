@@ -57,6 +57,18 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
       <div className="label-sm ink-muted" style={{ marginBottom: 8 }}>
         업종이 불황 바닥을 지나 회복 초입인지, 적자 뒤 흑자로 돌아선 회사가 어디인지 · 국면 ②수량↑ = 출하가 먼저 늘기 시작 · 표시 전용
       </div>
+      {data.macro && (
+        <div style={{ marginBottom: 10, lineHeight: 1.7 }}>
+          <b>전체 경기 국면(근사): {data.macro.phase}기</b>{" "}
+          <span className="label-sm ink-muted">
+            선행지수 순환변동치 {data.macro.leading.toFixed(1)} · {data.macro.month} 기준 · {data.macro.since}부터
+          </span>
+          {data.macro.note && <span className="label-sm delta-warning"> · {data.macro.note}</span>}
+          <div className="label-sm">
+            지금 경기(동행 {data.macro.coincident.toFixed(1)}): {data.macro.now}기 · {data.macro.hint}
+          </div>
+        </div>
+      )}
       <div style={{ overflowX: "auto" }}>
         <table className="data-table">
           <thead>
