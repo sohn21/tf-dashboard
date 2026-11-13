@@ -17,6 +17,7 @@ import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { RebaseCard } from "@/components/dashboard/RebaseCard";
 import { AnchorLedgerCard } from "@/components/dashboard/AnchorLedgerCard";
 import { LiveVsBacktestCard } from "@/components/dashboard/LiveVsBacktestCard";
+import { CyclicalCard } from "@/components/dashboard/CyclicalCard";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
@@ -92,6 +93,8 @@ export default async function Home() {
       <LadderCard data={data.ladder} />
 
       <RatchetCard data={data.ratchet} />
+
+      <CyclicalCard data={data.cyclical} />
     </div>
   );
 }

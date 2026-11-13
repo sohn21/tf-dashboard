@@ -795,6 +795,34 @@ export interface DashboardData {
   rebase?: Rebase | null;
   anchorLedger?: AnchorLedger | null;
   liveVsBacktest?: LiveVsBacktest | null;
+  cyclical?: Cyclical | null;
+}
+
+// 2026-11-13: cycleVI 시클리컬 요약(한국 가치투자, 월간·표시 전용). 이전 KV blob엔 없음.
+export interface CyclicalIndustry {
+  industry: string;
+  stage: string | null;
+  loss_pct: number | null;
+  turn: number;
+  op_q_trough_quarter: string | null;
+  op_q_last: number | null;
+  ship_yoy: number | null;
+}
+export interface CyclicalCandidate {
+  code: string;
+  name: string;
+  industry: string;
+  mcap_eok: number | null;
+  q_op_recent: string | null;
+  psr_now: number | null;
+  peak_op_yield: number | null;
+  red_flags: string | null;
+}
+export interface Cyclical {
+  dataDate: string;
+  industries: CyclicalIndustry[];
+  topA: CyclicalCandidate[];
+  nA: number;
 }
 
 // 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.
