@@ -100,7 +100,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
         </>
       )}
       <div className="label-sm ink-muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-        피크 이익수익률(빚 반영) = 과거 최고 영업이익 ÷ (시총 + 이자 붙는 부채), 현금 미차감. 국면은 최근 3개월
+        피크 이익수익률(빚 반영) = 과거 최고 영업이익 ÷ (시총 + 이자 붙는 부채), 현금 미차감. 최근 분기는 DART 잠정실적·분기보고서로 먼저 채움(마지막=잠정). 국면은 최근 3개월
         출하·제품가격 방향 근사. 자료: wisereport·네이버(실적), 한국은행 ECOS(가격·출하).
       </div>
     </Card>
