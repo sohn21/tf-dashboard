@@ -289,6 +289,10 @@ h1 {
   color: var(--critical);
   font-weight: 600;
 }
+.delta-warning {
+  color: var(--warning);
+  font-weight: 600;
+}
 
 .donut-grid {
   display: grid;

@@ -9,6 +9,7 @@ import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { RebaseCard } from "@/components/dashboard/RebaseCard";
 import { AnchorLedgerCard } from "@/components/dashboard/AnchorLedgerCard";
+import { LiveVsBacktestCard } from "@/components/dashboard/LiveVsBacktestCard";
 import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { ExposureCard } from "@/components/briefing/ExposureCard";
@@ -195,6 +196,7 @@ export default async function Briefing() {
       <HoldingsTable rows={data.holdings} counts={data.holdingsCounts} exits={data.holdingsExits} />
       <GapStressCard data={data.gapStress} />
       <AnchorLedgerCard data={data.anchorLedger} />
+      <LiveVsBacktestCard data={data.liveVsBacktest} />
 
       <div className="shead">
         <span className="snum">13</span>

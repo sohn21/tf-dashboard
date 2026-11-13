@@ -794,6 +794,7 @@ export interface DashboardData {
   gapStress?: GapStress | null;
   rebase?: Rebase | null;
   anchorLedger?: AnchorLedger | null;
+  liveVsBacktest?: LiveVsBacktest | null;
 }
 
 // 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.
@@ -895,4 +896,49 @@ export interface AnchorLedger {
   rules: string[];
   omitted: string[];
   recent: AnchorRecent[];
+}
+
+// 2026-11-13: 라이브 ↔ 백테스트 일치도(월간, 관찰 전용). tf_project paper_trader/live_vs_backtest.py
+export interface LvbSide {
+  entry_date: string;
+  entry_px: number;
+  exit_date: string | null;
+  exit_px: number | null;
+  pnl_pct: number;
+  reason: string;
+  open: boolean;
+}
+
+export interface LvbTrade {
+  kind: "match_exact" | "match_diff" | "live_only" | "bt_only";
+  ticker: string;
+  live: LvbSide | null;
+  bt: LvbSide | null;
+  manual: boolean;
+}
+
+export interface LvbAccount {
+  label: string;
+  nav: {
+    startDate: string | null;
+    endDate: string | null;
+    nDays: number;
+    liveRet: number;
+    btRet: number;
+    gap: number;
+    liveMdd: number;
+    btMdd: number;
+    dailyCorr: number | null;
+    series: { d: string; live: number; bt: number }[];
+  };
+  counts: { matchExact: number; matchDiff: number; liveOnly: number; btOnly: number; manual: number };
+  matchRate: number | null;
+  trades: LvbTrade[];
+}
+
+export interface LiveVsBacktest {
+  generatedAt: string;
+  runDate: string;
+  accounts: Record<string, LvbAccount>;
+  history: ({ runDate: string } & Record<string, unknown>)[];
 }

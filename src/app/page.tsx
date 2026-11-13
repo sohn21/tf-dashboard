@@ -16,6 +16,7 @@ import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { RebaseCard } from "@/components/dashboard/RebaseCard";
 import { AnchorLedgerCard } from "@/components/dashboard/AnchorLedgerCard";
+import { LiveVsBacktestCard } from "@/components/dashboard/LiveVsBacktestCard";
 import { RecentTradesTable } from "@/components/dashboard/RecentTradesTable";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { DaTrendCard } from "@/components/dashboard/DaTrendCard";
@@ -82,6 +83,7 @@ export default async function Home() {
       <HoldingsTable rows={data.holdings} exits={data.holdingsExits} />
       <GapStressCard data={data.gapStress} />
       <AnchorLedgerCard data={data.anchorLedger} />
+      <LiveVsBacktestCard data={data.liveVsBacktest} />
 
       <RecentTradesTable rows={data.recentTrades} />
 
