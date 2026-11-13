@@ -820,6 +820,8 @@ export interface CyclicalCandidate {
   peak_ev_yield?: number | null;
   red_flags: string | null;
   watch_note?: string | null;
+  insider_level?: string | null;
+  insider_text?: string | null;
 }
 // 2026-11-14: 전체 경기 국면(통계청 선행·동행 순환변동치 4국면 근사)
 export interface CyclicalMacro {

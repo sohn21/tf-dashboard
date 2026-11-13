@@ -26,6 +26,7 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
             <th style={{ textAlign: "right" }}>PSR</th>
             <th style={{ textAlign: "right" }}>피크 이익수익률(빚 반영)</th>
             <th>경고</th>
+            <th>매집 신호(12개월)</th>
           </tr>
         </thead>
         <tbody>
@@ -42,6 +43,12 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
               <td className="tabular" style={{ textAlign: "right" }}>{num(c.psr_now, 2)}</td>
               <td className="tabular" style={{ textAlign: "right" }}><b>{c.peak_ev_yield == null ? "—" : `${c.peak_ev_yield.toFixed(0)}%`}</b></td>
               <td className="label-sm delta-warning" style={{ whiteSpace: "normal" }}>{c.red_flags || ""}</td>
+              <td className="label-sm" style={{ whiteSpace: "normal" }}>
+                <b className={c.insider_level === "매집" ? "delta-good" : c.insider_level === "반대" ? "delta-critical" : c.insider_level === "엇갈림" ? "delta-warning" : "ink-muted"}>
+                  {c.insider_level ?? "—"}
+                </b>{" "}
+                <span className="ink-muted">{c.insider_text ?? ""}</span>
+              </td>
             </tr>
           ))}
         </tbody>
