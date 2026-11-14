@@ -35,6 +35,7 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
               <td>
                 <b>{c.name}</b> <span className="label-sm ink-muted">{c.code}</span>
                 {note && <div className="label-sm ink-muted">{c.watch_note} · {c.tier}</div>}
+                {note && c.report_line && <div className="label-sm" style={{ marginTop: 2 }}><b>{c.report_line}</b></div>}
               </td>
               <td className="label-sm">{c.industry}</td>
               <td className="tabular" style={{ textAlign: "right" }}>{num(c.mcap_eok)}</td>

@@ -820,6 +820,8 @@ export interface CyclicalCandidate {
   peak_ev_yield?: number | null;
   red_flags: string | null;
   watch_note?: string | null;
+  report_line?: string | null; // 2026-11-14: 리포트 판단·목표가 한 줄(cycleVI watchlist.json report, 표시 전용)
+  to_sell_start_pct?: number | null;
   insider_level?: string | null;
   insider_text?: string | null;
 }
