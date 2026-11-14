@@ -676,6 +676,39 @@ export interface StockEasyMarketCondition {
   blockedDate: string | null;
 }
 
+// StockEasy 오늘의 주도주·업종 — 표시 전용(래더 진입 규칙과 무관). 2026-11-14.
+export interface StockEasyLeaderStock {
+  name: string | null;
+  chg: string | null;
+  star: boolean;
+  starDays: number | null;
+}
+
+export interface StockEasyLeaderGroup {
+  kind: string;
+  name: string | null;
+  chg: string | null;
+  value: string | null;
+  days: number;
+  stocks: StockEasyLeaderStock[];
+}
+
+export interface StockEasyLeaders {
+  date: string | null;
+  history: number;
+  groups: StockEasyLeaderGroup[];
+  screenOverlap: {
+    code: string;
+    name: string | null;
+    market: string | null;
+    status: string | null;
+    rs: number | null;
+    screened: boolean;
+    star: boolean;
+    in: string[];
+  }[];
+}
+
 export interface StockEasyUs {
   seed: number;
   cash: number | null;
@@ -725,6 +758,7 @@ export interface StockEasy {
   positions: StockEasyPosition[];
   candidates: StockEasyCandidate[];
   marketCondition?: StockEasyMarketCondition | null;
+  leaders?: StockEasyLeaders | null;
   us?: StockEasyUs | null;
   usCrossCheck?: StockEasyCrossCheck | null;
 }
