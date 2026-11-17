@@ -880,6 +880,23 @@ export interface Cyclical {
   watch?: CyclicalCandidate[];
   nA: number;
   macro?: CyclicalMacro | null;
+  review?: CyclicalReview | null; // 2026-11-17: 관심 종목 검토 신호(표시 전용)
+}
+
+export interface CyclicalReviewRow {
+  code: string;
+  name: string;
+  date: string | null;
+  kind: string;
+  level: "매도 검토" | "주의" | "매수 검토" | "참고" | string;
+  text: string;
+  src?: string | null;
+  new?: boolean;
+}
+
+export interface CyclicalReview {
+  asof: string | null;
+  rows: CyclicalReviewRow[];
 }
 
 // 2026-11-12: 보유 종목 동시 갭 하락 스트레스(표시 전용). 이전 KV blob엔 없음.

@@ -1,5 +1,5 @@
 import { Card } from "./Card";
-import type { Cyclical, CyclicalCandidate } from "@/lib/types";
+import type { Cyclical, CyclicalCandidate, CyclicalReview } from "@/lib/types";
 
 // 2026-11-13: cycleVI(타짱 방식 한국 시클리컬 가치투자) 요약 — 월 1회 갱신, 표시 전용.
 // 계산은 cycleVI scripts/build_board.py, 내보내기는 tf_project export_public._cyclical_safe().
@@ -58,6 +58,35 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
   );
 }
 
+const LEVEL_CLS: Record<string, string> = { "매도 검토": "delta-critical", 주의: "delta-warning", "매수 검토": "delta-good" };
+
+// 2026-11-17: 관심 종목 검토 신호 — cycleVI scripts/review_signals.py(아침 크론). 리포트를 다시 볼 이유, 매매 지시 아님.
+function ReviewSignals({ review }: { review?: CyclicalReview | null }) {
+  if (!review) return null;
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ fontSize: 13, marginBottom: 4 }}>
+        <b>관심 종목 검토 신호</b>{" "}
+        <span className="label-sm ink-muted">({review.asof} · DART 공시·리포트 목표가·업종 지표 · 매매 지시 아님)</span>
+      </div>
+      {review.rows.length === 0 && <div className="label-sm ink-muted">최근 14일 신호 없음</div>}
+      {review.rows.map((s, i) => (
+        <div key={i} className="label-sm" style={{ padding: "3px 0", borderBottom: "1px dashed var(--gridline)", lineHeight: 1.5 }}>
+          {s.new && <b className="delta-good" style={{ fontSize: 10.5 }}>NEW </b>}
+          <b className={LEVEL_CLS[s.level] ?? "ink-muted"}>{s.level}</b> · <b>{s.name}</b>{" "}
+          <span className="ink-muted">{s.date ?? ""}</span> {s.kind} — <span className="ink-secondary">{s.text}</span>
+          {s.src && (
+            <>
+              {" "}
+              <a href={s.src} target="_blank" rel="noopener noreferrer">공시</a>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function CyclicalCard({ data }: { data?: Cyclical | null }) {
   if (!data || !data.industries?.length) return null;
   return (
@@ -77,6 +106,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
           </div>
         </div>
       )}
+      <ReviewSignals review={data.review} />
       <div style={{ overflowX: "auto" }}>
         <table className="data-table">
           <thead>
