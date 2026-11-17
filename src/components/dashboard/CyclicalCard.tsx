@@ -62,7 +62,7 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
 const LEVEL_CLS: Record<string, string> = { "매도 검토": "delta-critical", 주의: "delta-warning", "매수 검토": "delta-good" };
 
 // 2026-11-17: 관심 종목 검토 신호 — cycleVI scripts/review_signals.py(아침 크론). 리포트를 다시 볼 이유, 매매 지시 아님.
-function ReviewSignals({ review }: { review?: CyclicalReview | null }) {
+export function ReviewSignals({ review }: { review?: CyclicalReview | null }) {
   if (!review) return null;
   return (
     <div style={{ marginBottom: 14 }}>
@@ -89,7 +89,7 @@ function ReviewSignals({ review }: { review?: CyclicalReview | null }) {
 }
 
 // 2026-11-17: cycleVI 연습계좌 — 사람이 정한 매매만 기록(scripts/paper.py), 평가는 아침 크론. 자동매매 아님.
-function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
+export function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
   if (!p) return null;
   const cls = (v: number) => (v > 0 ? "delta-good" : v < 0 ? "delta-critical" : "");
   return (
@@ -150,7 +150,7 @@ function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
   );
 }
 
-function MacroPhase({ m }: { m?: CyclicalMacro | null }) {
+export function MacroPhase({ m }: { m?: CyclicalMacro | null }) {
   if (!m) return null;
   return (
     <div style={{ marginBottom: 10, lineHeight: 1.7 }}>

@@ -873,6 +873,20 @@ export interface CyclicalMacro {
   hint: string;
 }
 
+// 2026-11-17: /cyclevi 페이지용 시클리컬 보드 전체(별도 KV 키 cyclevi:latest). 행은 cycleVI build_board.py 그대로.
+export interface CycleviMacroRow { month: string; leading: number; coincident: number; phase: string }
+export interface CycleviSeries { group: string; series: string; item: string; points: [string, number][] }
+export interface CycleviIndustryQ { industry: string; quarter: string; op_sum_eok: number; profitable_pct: number; n: number }
+export type CycleviRow = Record<string, string | number | boolean | null>;
+export interface CycleviBoard {
+  dataDate: string;
+  macro: CycleviMacroRow[];
+  industries: CycleviRow[];
+  industryQ: CycleviIndustryQ[];
+  series: CycleviSeries[];
+  candidates: CycleviRow[];
+}
+
 export interface Cyclical {
   dataDate: string;
   industries: CyclicalIndustry[];
