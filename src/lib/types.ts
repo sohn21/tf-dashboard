@@ -897,6 +897,8 @@ export interface CyclicalPaperHolding {
   sell_start?: number | null;
   target_high?: number | null;
   to_sell_start_pct?: number | null;
+  adv_mn?: number | null; // 60일 거래대금 중앙값(백만원)
+  days_to_exit?: number | null; // 하루 거래대금 20%씩이면 전량 매도에 며칠
 }
 
 export interface CyclicalPaper {
