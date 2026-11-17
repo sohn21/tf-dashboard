@@ -119,7 +119,7 @@ function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
                 <th style={{ textAlign: "right" }}>손익</th>
                 <th style={{ textAlign: "right" }}>비중</th>
                 <th style={{ textAlign: "right" }}>분할 매도 시작가(남은 폭)</th>
-                <th style={{ textAlign: "right" }}>하루 거래대금(백만) · 전량 매도</th>
+                <th style={{ textAlign: "right" }}>하루 거래대금(백만, 60일) · 전량 매도</th>
               </tr>
             </thead>
             <tbody>
@@ -137,7 +137,7 @@ function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
                     {h.sell_start ? `${num(h.sell_start)}원 (${(h.to_sell_start_pct ?? 0) > 0 ? "+" : ""}${h.to_sell_start_pct?.toFixed(1)}%)` : "—"}
                   </td>
                   <td className={`tabular ${(h.days_to_exit ?? 0) > 1 ? "delta-warning" : ""}`} style={{ textAlign: "right" }}>
-                    {h.adv_mn ? `${num(h.adv_mn)} · ${h.days_to_exit}일` : "—"}
+                    {h.adv_mn ? `중앙 ${num(h.adv_mn)}${h.adv_mean_mn ? ` / 평균 ${num(h.adv_mean_mn)}` : ""} · ${h.days_to_exit}일` : "—"}
                   </td>
                 </tr>
               ))}
