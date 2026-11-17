@@ -1,5 +1,5 @@
 import { Card } from "./Card";
-import type { Cyclical, CyclicalCandidate, CyclicalReview } from "@/lib/types";
+import type { Cyclical, CyclicalCandidate, CyclicalPaper, CyclicalReview } from "@/lib/types";
 
 // 2026-11-13: cycleVI(타짱 방식 한국 시클리컬 가치투자) 요약 — 월 1회 갱신, 표시 전용.
 // 계산은 cycleVI scripts/build_board.py, 내보내기는 tf_project export_public._cyclical_safe().
@@ -87,6 +87,64 @@ function ReviewSignals({ review }: { review?: CyclicalReview | null }) {
   );
 }
 
+// 2026-11-17: cycleVI 연습계좌 — 사람이 정한 매매만 기록(scripts/paper.py), 평가는 아침 크론. 자동매매 아님.
+function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
+  if (!p) return null;
+  const cls = (v: number) => (v > 0 ? "delta-good" : v < 0 ? "delta-critical" : "");
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ fontSize: 13, marginBottom: 4 }}>
+        <b>연습계좌 (원화)</b>{" "}
+        <span className="label-sm ink-muted">
+          ({p.start_date} 시작 · {p.asof} 종가 · 사람이 정한 매매만 기록, 자동매매 아님)
+        </span>
+      </div>
+      <div className="label-sm">
+        평가 <b>{num(p.nav)}원</b> <span className={cls(p.ret_pct)}>{p.ret_pct > 0 ? "+" : ""}{p.ret_pct.toFixed(2)}%</span>
+        <span className="ink-muted">
+          {" "}· KOSPI {p.kospi_ret_pct > 0 ? "+" : ""}{p.kospi_ret_pct.toFixed(2)}% · 현금 {p.cash_pct.toFixed(0)}% · MDD {p.mdd_pct.toFixed(1)}% · 실현손익 {num(p.realized)}원
+        </span>
+      </div>
+      {p.holdings.length === 0 ? (
+        <div className="label-sm ink-muted">보유 없음</div>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>종목</th>
+                <th style={{ textAlign: "right" }}>주식수</th>
+                <th style={{ textAlign: "right" }}>평단</th>
+                <th style={{ textAlign: "right" }}>종가</th>
+                <th style={{ textAlign: "right" }}>손익</th>
+                <th style={{ textAlign: "right" }}>비중</th>
+                <th style={{ textAlign: "right" }}>분할 매도 시작가(남은 폭)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.holdings.map((h) => (
+                <tr key={h.code}>
+                  <td><b>{h.name}</b></td>
+                  <td className="tabular" style={{ textAlign: "right" }}>{num(h.shares)}</td>
+                  <td className="tabular" style={{ textAlign: "right" }}>{num(h.avg)}</td>
+                  <td className="tabular" style={{ textAlign: "right" }}>{num(h.close)}</td>
+                  <td className={`tabular ${cls(h.pnl_pct)}`} style={{ textAlign: "right" }}>
+                    {h.pnl_pct > 0 ? "+" : ""}{h.pnl_pct.toFixed(2)}%
+                  </td>
+                  <td className="tabular" style={{ textAlign: "right" }}>{((h.value / p.nav) * 100).toFixed(0)}%</td>
+                  <td className="tabular" style={{ textAlign: "right" }}>
+                    {h.sell_start ? `${num(h.sell_start)}원 (${(h.to_sell_start_pct ?? 0) > 0 ? "+" : ""}${h.to_sell_start_pct?.toFixed(1)}%)` : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function CyclicalCard({ data }: { data?: Cyclical | null }) {
   if (!data || !data.industries?.length) return null;
   return (
@@ -107,6 +165,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
         </div>
       )}
       <ReviewSignals review={data.review} />
+      <PaperAccount p={data.paper} />
       <div style={{ overflowX: "auto" }}>
         <table className="data-table">
           <thead>

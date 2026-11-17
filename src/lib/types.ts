@@ -881,6 +881,38 @@ export interface Cyclical {
   nA: number;
   macro?: CyclicalMacro | null;
   review?: CyclicalReview | null; // 2026-11-17: 관심 종목 검토 신호(표시 전용)
+  paper?: CyclicalPaper | null; // 2026-11-17: cycleVI 연습계좌(사람이 정한 매매만 기록)
+}
+
+export interface CyclicalPaperHolding {
+  code: string;
+  name: string;
+  shares: number;
+  avg: number;
+  close: number;
+  value: number;
+  pnl: number;
+  pnl_pct: number;
+  first: string;
+  sell_start?: number | null;
+  target_high?: number | null;
+  to_sell_start_pct?: number | null;
+}
+
+export interface CyclicalPaper {
+  asof: string;
+  start_date: string;
+  start_cash: number;
+  cash: number;
+  equity: number;
+  nav: number;
+  ret_pct: number;
+  kospi_ret_pct: number;
+  mdd_pct: number;
+  cash_pct: number;
+  realized: number;
+  holdings: CyclicalPaperHolding[];
+  trades: { date: string; name: string; side: string; shares: string; price: string; reason: string }[];
 }
 
 export interface CyclicalReviewRow {
