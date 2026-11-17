@@ -10,7 +10,7 @@ import { GapStressCard } from "@/components/dashboard/GapStressCard";
 import { RebaseCard } from "@/components/dashboard/RebaseCard";
 import { AnchorLedgerCard } from "@/components/dashboard/AnchorLedgerCard";
 import { LiveVsBacktestCard } from "@/components/dashboard/LiveVsBacktestCard";
-import { CyclicalCard } from "@/components/dashboard/CyclicalCard";
+import { CyclicalMacroCard } from "@/components/dashboard/CyclicalCard";
 import { ThemeLeadershipCard } from "@/components/dashboard/ThemeLeadershipCard";
 import { AlphaDecayCard } from "@/components/dashboard/AlphaDecayCard";
 import { ExposureCard } from "@/components/briefing/ExposureCard";
@@ -260,9 +260,9 @@ export default async function Briefing() {
 
       <div className="shead" style={{ marginTop: 36, borderTop: "1px dashed var(--border)", paddingTop: 20 }}>
         <span className="snum">21</span>
-        <h2 className="stitle">시클리컬 요약 (한국 가치투자)</h2>
+        <h2 className="stitle">전체 경기 국면 (한국)</h2>
       </div>
-      <CyclicalCard data={data.cyclical} />
+      <CyclicalMacroCard data={data.cyclical} />
     </div>
   );
 }

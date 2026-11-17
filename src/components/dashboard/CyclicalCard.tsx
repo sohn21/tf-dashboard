@@ -1,5 +1,6 @@
 import { Card } from "./Card";
-import type { Cyclical, CyclicalCandidate, CyclicalPaper, CyclicalReview } from "@/lib/types";
+import Link from "next/link";
+import type { Cyclical, CyclicalCandidate, CyclicalMacro, CyclicalPaper, CyclicalReview } from "@/lib/types";
 
 // 2026-11-13: cycleVI(타짱 방식 한국 시클리컬 가치투자) 요약 — 월 1회 갱신, 표시 전용.
 // 계산은 cycleVI scripts/build_board.py, 내보내기는 tf_project export_public._cyclical_safe().
@@ -149,6 +150,36 @@ function PaperAccount({ p }: { p?: CyclicalPaper | null }) {
   );
 }
 
+function MacroPhase({ m }: { m?: CyclicalMacro | null }) {
+  if (!m) return null;
+  return (
+    <div style={{ marginBottom: 10, lineHeight: 1.7 }}>
+      <b>전체 경기 국면(근사): {m.phase}기</b>{" "}
+      <span className="label-sm ink-muted">
+        선행지수 순환변동치 {m.leading.toFixed(1)} · {m.month} 기준 · {m.since}부터
+      </span>
+      {m.note && <span className="label-sm delta-warning"> · {m.note}</span>}
+      <div className="label-sm">
+        지금 경기(동행 {m.coincident.toFixed(1)}): {m.now}기 · {m.hint}
+      </div>
+    </div>
+  );
+}
+
+// 2026-11-17: 메인·브리핑에는 전체 경기 국면 한 줄만 — 업종·후보·검토 신호·연습계좌는 /cyclevi 페이지로 분리(사용자 요청).
+export function CyclicalMacroCard({ data }: { data?: Cyclical | null }) {
+  if (!data?.macro) return null;
+  return (
+    <Card title="전체 경기 국면 (한국, 통계청 순환변동치)">
+      <MacroPhase m={data.macro} />
+      <div className="label-sm">
+        <Link href="/cyclevi">cycleVI 페이지 →</Link>{" "}
+        <span className="ink-muted">업종 국면 · 후보 · 관심 종목 검토 신호 · 연습계좌</span>
+      </div>
+    </Card>
+  );
+}
+
 export function CyclicalCard({ data }: { data?: Cyclical | null }) {
   if (!data || !data.industries?.length) return null;
   return (
@@ -156,18 +187,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
       <div className="label-sm ink-muted" style={{ marginBottom: 8 }}>
         업종이 불황 바닥을 지나 회복 초입인지, 적자 뒤 흑자로 돌아선 회사가 어디인지 · 국면 ②수량↑ = 출하가 먼저 늘기 시작 · 표시 전용
       </div>
-      {data.macro && (
-        <div style={{ marginBottom: 10, lineHeight: 1.7 }}>
-          <b>전체 경기 국면(근사): {data.macro.phase}기</b>{" "}
-          <span className="label-sm ink-muted">
-            선행지수 순환변동치 {data.macro.leading.toFixed(1)} · {data.macro.month} 기준 · {data.macro.since}부터
-          </span>
-          {data.macro.note && <span className="label-sm delta-warning"> · {data.macro.note}</span>}
-          <div className="label-sm">
-            지금 경기(동행 {data.macro.coincident.toFixed(1)}): {data.macro.now}기 · {data.macro.hint}
-          </div>
-        </div>
-      )}
+      <MacroPhase m={data.macro} />
       <ReviewSignals review={data.review} />
       <PaperAccount p={data.paper} />
       <div style={{ overflowX: "auto" }}>
