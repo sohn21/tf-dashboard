@@ -24,7 +24,7 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
             <th style={{ textAlign: "right" }}>부채(억)</th>
             <th style={{ textAlign: "right" }}>최근 4분기 영업이익</th>
             <th style={{ textAlign: "right" }}>PSR</th>
-            <th style={{ textAlign: "right" }}>피크 이익수익률(빚 반영)</th>
+            <th style={{ textAlign: "right" }}>피크 이익수익률(EV 기준)</th>
             <th>경고</th>
             <th>매집 신호(12개월)</th>
           </tr>
@@ -42,7 +42,7 @@ function CandTable({ rows, note }: { rows: CyclicalCandidate[]; note?: boolean }
               <td className="tabular" style={{ textAlign: "right" }}>{num(c.debt_eok)}</td>
               <td className="tabular label-sm" style={{ textAlign: "right" }}>{c.q_op_recent ?? "—"}</td>
               <td className="tabular" style={{ textAlign: "right" }}>{num(c.psr_now, 2)}</td>
-              <td className="tabular" style={{ textAlign: "right" }}><b>{c.peak_ev_yield == null ? "—" : `${c.peak_ev_yield.toFixed(0)}%`}</b></td>
+              <td className="tabular" style={{ textAlign: "right" }}><b className={c.ev_neg ? "delta-good" : undefined}>{c.ev_neg ? "순현금>시총" : c.peak_ev_yield == null ? "—" : `${c.peak_ev_yield.toFixed(0)}%`}</b></td>
               <td className="label-sm delta-warning" style={{ whiteSpace: "normal" }}>{c.red_flags || ""}</td>
               <td className="label-sm" style={{ whiteSpace: "normal" }}>
                 <b className={c.insider_level === "매집" ? "delta-good" : c.insider_level === "반대" ? "delta-critical" : c.insider_level === "엇갈림" ? "delta-warning" : "ink-muted"}>
@@ -108,7 +108,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
         </table>
       </div>
       <div style={{ fontSize: 13, margin: "14px 0 4px" }}>
-        <b>A 전환 조짐 상위 5</b> <span className="label-sm ink-muted">(전체 {data.nA}곳 · 빚 반영 피크 이익수익률 순)</span>
+        <b>A 전환 조짐 상위 5</b> <span className="label-sm ink-muted">(전체 {data.nA}곳 · EV 기준 피크 이익수익률 순)</span>
       </div>
       <CandTable rows={data.topA} />
       {data.watch && data.watch.length > 0 && (
@@ -120,7 +120,7 @@ export function CyclicalCard({ data }: { data?: Cyclical | null }) {
         </>
       )}
       <div className="label-sm ink-muted" style={{ marginTop: 10, lineHeight: 1.7 }}>
-        피크 이익수익률(빚 반영) = 과거 최고 영업이익 ÷ (시총 + 이자 붙는 부채), 현금 미차감. 최근 분기는 DART 잠정실적·분기보고서로 먼저 채움(마지막=잠정). 국면은 최근 3개월
+        피크 이익수익률(EV 기준) = 과거 최고 영업이익 ÷ EV(시총 + 이자 붙는 부채 − 현금·단기 금융자산, DART 최근 분기말). EV가 0 이하(현금이 시총+빚보다 많음)면 수익률 대신 "순현금&gt;시총"으로 표시하고 맨 위에 둠. 최근 분기는 DART 잠정실적·분기보고서로 먼저 채움(마지막=잠정). 국면은 최근 3개월
         출하·제품가격 방향 근사. 자료: wisereport·네이버(실적), 한국은행 ECOS(가격·출하).
       </div>
     </Card>

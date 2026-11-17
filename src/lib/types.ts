@@ -851,7 +851,9 @@ export interface CyclicalCandidate {
   debt_eok?: number | null;
   q_op_recent: string | null;
   psr_now: number | null;
-  peak_ev_yield?: number | null;
+  peak_ev_yield?: number | null; // 2026-11-17: EV = 시총 + 이자부채 − 현금·단기금융자산
+  cash_eok?: number | null;
+  ev_neg?: boolean | null; // EV ≤ 0 (순현금 > 시총+빚) — peak_ev_yield 는 null, 정렬 맨 위
   red_flags: string | null;
   watch_note?: string | null;
   report_line?: string | null; // 2026-11-14: 리포트 판단·목표가 한 줄(cycleVI watchlist.json report, 표시 전용)
